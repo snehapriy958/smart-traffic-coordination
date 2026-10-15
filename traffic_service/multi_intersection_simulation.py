@@ -134,6 +134,19 @@ class MultiIntersectionSimulation:
             step_length=step_length,
         )
 
+        # MARL Decision Controller for 'marl_dqn' and 'marl_ppo'
+        if self.mode in ("marl_dqn", "marl_ppo"):
+            from .ai.marl_controller import MARLCorridorController
+            algo = "ppo" if self.mode == "marl_ppo" else "dqn"
+            self.marl_controller: Optional[MARLCorridorController] = MARLCorridorController(
+                algorithm=algo,
+                junctions=["J1", "J2", "J3"],
+                controllers=self.controllers,
+                communication_hub=self.hub,
+            )
+        else:
+            self.marl_controller = None
+
         self._next_decision_time: float = 0.0
 
     def start(self, seed: int = 42) -> None:
@@ -212,6 +225,11 @@ class MultiIntersectionSimulation:
             if actions is not None:
                 # External AI Agent Action Execution
                 self._apply_ai_actions(actions, sim_time)
+            elif self.mode in ("marl_dqn", "marl_ppo") and self.marl_controller is not None:
+                # MARL Coordinated Decision Execution
+                ai_obs = self.get_ai_observations(states)
+                decisions = self.marl_controller.decide(ai_obs, sim_time, eval_mode=True)
+                self.marl_controller.apply_decisions(decisions, sim_time)
             elif self.mode == "coordinated":
                 # Built-in Coordinated Adaptive Strategy
                 self._run_coordinated_control(states, sim_time)

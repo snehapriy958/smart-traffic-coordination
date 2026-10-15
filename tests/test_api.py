@@ -152,10 +152,11 @@ def test_experiments_compare():
     assert "PPO (Proximal Policy Optimization)" in names
     assert "DQN (Deep Q-Network)" in names
 
-    # Verify PPO and DQN are explicitly marked Not implemented
+    # Verify all controllers are marked Implemented with valid travel times
     for c in data["controllers"]:
-        if "PPO" in c["controller_name"] or "DQN" in c["controller_name"]:
-            assert c["status"] == "Not implemented"
+        assert c["status"] == "Implemented"
+        assert c["mean_travel_time_s"] is not None
+        assert c["mean_travel_time_s"] > 0.0
 
 
 def test_experiments_history():

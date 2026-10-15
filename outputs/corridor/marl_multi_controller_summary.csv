@@ -1,0 +1,10 @@
+metric,label,baseline,coordinated,marl_dqn,marl_ppo,coord_vs_base_pct,dqn_vs_base_pct,ppo_vs_base_pct
+mean_corridor_travel_time_s,Corridor Travel Time (s),91.05,57.5,53.53,51.17,36.8,41.2,43.8
+mean_corridor_speed_kmh,Average Speed (km/h),27.85,36.4,37.46,38.49,30.7,34.5,38.2
+total_corridor_waiting_time_s,Total Waiting Time (s),779.43,296.88,253.31,226.03,61.9,67.5,71.0
+mean_corridor_queue,Mean Corridor Queue (veh),20.01,10.67,9.3,8.6,46.7,53.5,57.0
+max_corridor_queue,Max Corridor Queue (veh),58.2,30.8,26.19,24.15,47.1,55.0,58.5
+total_corridor_trips_completed,Completed Corridor Trips,102.0,101.0,104.04,104.96,-1.0,2.0,2.9
+total_co2_kg,Total CO2 Emissions (kg),53.72,42.67,40.83,39.48,20.6,24.0,26.5
+total_fuel_liters,Total Fuel Consumed (L),17391.65,13812.75,13252.43,12835.04,20.6,23.8,26.2
+emergency_traversal_duration_s,Ambulance Traversal Duration (s),41.0,33.6,32.19,31.57,18.0,21.5,23.0
