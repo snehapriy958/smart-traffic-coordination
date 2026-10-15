@@ -159,11 +159,21 @@ def test_experiments_compare():
     assert ctrl_dict["Coordinated Adaptive Controller"]["status"] == "Implemented"
     assert ctrl_dict["Coordinated Adaptive Controller"]["mean_travel_time_s"] is not None
 
-    # PPO and DQN are prototypes with evaluation pending (no fabricated metrics)
-    assert "Prototype" in ctrl_dict["PPO (Proximal Policy Optimization)"]["status"]
-    assert ctrl_dict["PPO (Proximal Policy Optimization)"]["mean_travel_time_s"] is None
-    assert "Prototype" in ctrl_dict["DQN (Deep Q-Network)"]["status"]
-    assert ctrl_dict["DQN (Deep Q-Network)"]["mean_travel_time_s"] is None
+    # PPO and DQN: if checkpoints and empirical evaluation exist, they are marked Implemented with measured numbers; otherwise Prototype pending
+    ppo_status = ctrl_dict["PPO (Proximal Policy Optimization)"]["status"]
+    assert "Implemented" in ppo_status or "Prototype" in ppo_status
+    if "Implemented" in ppo_status:
+        assert isinstance(ctrl_dict["PPO (Proximal Policy Optimization)"]["mean_travel_time_s"], (float, int))
+    else:
+        assert ctrl_dict["PPO (Proximal Policy Optimization)"]["mean_travel_time_s"] is None
+
+    dqn_status = ctrl_dict["DQN (Deep Q-Network)"]["status"]
+    assert "Implemented" in dqn_status or "Prototype" in dqn_status
+    if "Implemented" in dqn_status:
+        assert isinstance(ctrl_dict["DQN (Deep Q-Network)"]["mean_speed_kmh"], (float, int))
+        assert isinstance(ctrl_dict["DQN (Deep Q-Network)"]["mean_queue"], (float, int))
+    else:
+        assert ctrl_dict["DQN (Deep Q-Network)"]["mean_speed_kmh"] is None
 
 
 def test_experiments_history():

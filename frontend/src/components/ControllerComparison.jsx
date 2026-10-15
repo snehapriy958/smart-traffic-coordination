@@ -133,7 +133,8 @@ export function ControllerComparison({ compareData }) {
           </thead>
           <tbody className="divide-y divide-slate-100 font-mono">
             {controllers.map((ctrl, i) => {
-              const isImplemented = ctrl.status === 'Implemented';
+              const isTrained = ctrl.status.toLowerCase().includes('trained');
+              const isImplemented = ctrl.status === 'Implemented' || isTrained;
               const isPrototype = ctrl.status.toLowerCase().includes('prototype');
               return (
                 <tr
@@ -149,7 +150,12 @@ export function ControllerComparison({ compareData }) {
                     </div>
                   </td>
                   <td className="py-3 px-3 font-sans">
-                    {isImplemented ? (
+                    {isTrained ? (
+                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold bg-purple-50 text-purple-800 border border-purple-300">
+                        <CheckCircle2 className="h-3 w-3 text-purple-600" />
+                        <span>Trained & Verified</span>
+                      </span>
+                    ) : isImplemented ? (
                       <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-50 text-emerald-800 border border-emerald-300">
                         <CheckCircle2 className="h-3 w-3 text-emerald-600" />
                         <span>Implemented (Measured)</span>

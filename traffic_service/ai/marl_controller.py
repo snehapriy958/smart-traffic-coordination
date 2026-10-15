@@ -12,7 +12,9 @@ Features:
 
 from __future__ import annotations
 
+import json
 import logging
+from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 import numpy as np
 
@@ -287,3 +289,39 @@ class MARLCorridorController:
             "is_fallback": True,
             "is_emergency": False,
         }
+
+    def save_checkpoint(self, filepath: Path | str) -> None:
+        """Saves current agent weights and hyperparameters to a JSON checkpoint file."""
+        path = Path(filepath)
+        path.parent.mkdir(parents=True, exist_ok=True)
+        checkpoint_data = {
+            "algorithm": self.algorithm,
+            "seed": self.seed,
+            "junctions": self.junctions,
+            "agents": {
+                j_id: agent.get_state_dict() for j_id, agent in self.agents.items()
+            },
+        }
+        with open(path, "w", encoding="utf-8") as f:
+            json.dump(checkpoint_data, f, indent=2)
+        logger.info(f"Saved MARL checkpoint to: {path}")
+
+    def load_checkpoint(self, filepath: Path | str) -> bool:
+        """Loads agent weights from a checkpoint file. Returns True if successfully loaded."""
+        path = Path(filepath)
+        if not path.is_file():
+            logger.warning(f"Checkpoint file not found: {path}")
+            return False
+        try:
+            with open(path, "r", encoding="utf-8") as f:
+                checkpoint_data = json.load(f)
+            agents_dict = checkpoint_data.get("agents", {})
+            for j_id, agent_state in agents_dict.items():
+                if j_id in self.agents:
+                    self.agents[j_id].load_state_dict(agent_state)
+            logger.info(f"Loaded MARL checkpoint from: {path}")
+            return True
+        except Exception as exc:
+            logger.error(f"Failed to load MARL checkpoint: {exc}")
+            return False
+

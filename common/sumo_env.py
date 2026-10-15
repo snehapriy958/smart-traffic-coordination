@@ -49,7 +49,16 @@ def _candidate_sumo_homes() -> list[Path]:
     if "SUMO_HOME" in os.environ and os.environ["SUMO_HOME"].strip():
         candidates.append(Path(os.environ["SUMO_HOME"].strip()))
 
-    # 2. Derive from sumo executable if in PATH
+    # 2. Derive from python sumo package (eclipse-sumo)
+    try:
+        import sumo
+        sumo_pkg = Path(sumo.__file__).resolve().parent
+        if (sumo_pkg / "bin" / ("sumo.exe" if sys.platform == "win32" else "sumo")).is_file():
+            candidates.append(sumo_pkg)
+    except Exception:
+        pass
+
+    # 3. Derive from sumo executable if in PATH
     sumo_which = shutil.which("sumo")
     if sumo_which:
         p = Path(sumo_which).resolve()

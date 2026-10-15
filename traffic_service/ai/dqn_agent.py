@@ -194,14 +194,21 @@ class DQNAgent:
         return loss
 
     def get_state_dict(self) -> Dict[str, Any]:
+        raw_w = self.q_network.get_weights()
+        serializable_w = {k: v.tolist() if hasattr(v, "tolist") else v for k, v in raw_w.items()}
         return {
             "agent_id": self.agent_id,
-            "epsilon": self.epsilon,
-            "q_network_weights": self.q_network.get_weights(),
+            "epsilon": float(self.epsilon),
+            "q_network_weights": serializable_w,
         }
 
     def load_state_dict(self, state_dict: Dict[str, Any]) -> None:
         self.epsilon = float(state_dict.get("epsilon", self.epsilon_min))
         if "q_network_weights" in state_dict:
-            self.q_network.set_weights(state_dict["q_network_weights"])
+            raw_w = state_dict["q_network_weights"]
+            converted_w = {
+                k: np.array(v, dtype=np.float32) if not isinstance(v, np.ndarray) else v
+                for k, v in raw_w.items()
+            }
+            self.q_network.set_weights(converted_w)
             self.update_target_network()

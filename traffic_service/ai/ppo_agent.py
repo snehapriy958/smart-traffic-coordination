@@ -230,11 +230,18 @@ class PPOAgent:
         }
 
     def get_state_dict(self) -> Dict[str, Any]:
+        raw_w = self.ac_network.get_weights()
+        serializable_w = {k: v.tolist() if hasattr(v, "tolist") else v for k, v in raw_w.items()}
         return {
             "agent_id": self.agent_id,
-            "weights": self.ac_network.get_weights(),
+            "weights": serializable_w,
         }
 
     def load_state_dict(self, state_dict: Dict[str, Any]) -> None:
         if "weights" in state_dict:
-            self.ac_network.set_weights(state_dict["weights"])
+            raw_w = state_dict["weights"]
+            converted_w = {
+                k: np.array(v, dtype=np.float32) if not isinstance(v, np.ndarray) else v
+                for k, v in raw_w.items()
+            }
+            self.ac_network.set_weights(converted_w)

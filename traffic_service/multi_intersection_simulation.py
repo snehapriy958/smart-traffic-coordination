@@ -144,6 +144,9 @@ class MultiIntersectionSimulation:
                 controllers=self.controllers,
                 communication_hub=self.hub,
             )
+            ckpt_file = Path(__file__).resolve().parent.parent / "checkpoints" / f"marl_{algo}_corridor.json"
+            if ckpt_file.is_file():
+                self.marl_controller.load_checkpoint(ckpt_file)
         else:
             self.marl_controller = None
 
