@@ -67,45 +67,15 @@ def get_controller_comparison() -> ExperimentCompareResponse:
     c_fuel = metrics.get("total_fuel_liters", {}).get("coordinated", 13812.75)
     c_amb = metrics.get("emergency_traversal_duration_s", {}).get("coordinated", 33.6)
 
-    # Parse MARL multi-controller summary CSV if available
-    marl_csv = BASE_DIR / "outputs" / "corridor" / "marl_multi_controller_summary.csv"
-    marl_metrics: dict[str, dict[str, float]] = {}
-    if marl_csv.is_file():
-        try:
-            with open(marl_csv, "r", encoding="utf-8") as f:
-                reader = csv.DictReader(f)
-                for row in reader:
-                    metric_key = row.get("metric", "")
-                    marl_metrics[metric_key] = {
-                        "dqn": float(row.get("marl_dqn", 0.0)),
-                        "ppo": float(row.get("marl_ppo", 0.0)),
-                    }
-        except Exception as exc:
-            print(f"[Experiments] Error reading marl summary CSV: {exc}")
-
-    # DQN numbers
-    dqn_tt = marl_metrics.get("mean_corridor_travel_time_s", {}).get("dqn", 53.53)
-    dqn_spd = marl_metrics.get("mean_corridor_speed_kmh", {}).get("dqn", 37.46)
-    dqn_wait = marl_metrics.get("total_corridor_waiting_time_s", {}).get("dqn", 253.31)
-    dqn_q = marl_metrics.get("mean_corridor_queue", {}).get("dqn", 9.30)
-    dqn_co2 = marl_metrics.get("total_co2_kg", {}).get("dqn", 40.83)
-    dqn_fuel = marl_metrics.get("total_fuel_liters", {}).get("dqn", 13252.43)
-    dqn_amb = marl_metrics.get("emergency_traversal_duration_s", {}).get("dqn", 32.19)
-
-    # PPO numbers
-    ppo_tt = marl_metrics.get("mean_corridor_travel_time_s", {}).get("ppo", 51.17)
-    ppo_spd = marl_metrics.get("mean_corridor_speed_kmh", {}).get("ppo", 38.49)
-    ppo_wait = marl_metrics.get("total_corridor_waiting_time_s", {}).get("ppo", 226.03)
-    ppo_q = marl_metrics.get("mean_corridor_queue", {}).get("ppo", 8.60)
-    ppo_co2 = marl_metrics.get("total_co2_kg", {}).get("ppo", 39.48)
-    ppo_fuel = marl_metrics.get("total_fuel_liters", {}).get("ppo", 12835.04)
-    ppo_amb = marl_metrics.get("emergency_traversal_duration_s", {}).get("ppo", 31.57)
-
+    # Note: PPO and DQN architectures (actor-critic, dueling DQN, experience replay,
+    # action masking, GAE) are implemented in traffic_service/ai/. However, until full
+    # simulation training runs and converged checkpoints are executed, their metrics
+    # remain unverified prototypes (None) to ensure academic & technical integrity.
     controllers_list: List[ControllerMetricComparison] = [
         ControllerMetricComparison(
             controller_name="Fixed-Time Baseline",
             status="Implemented",
-            description="Uncoordinated static time allocations across J1, J2, and J3.",
+            description="Uncoordinated static time allocations across J1, J2, and J3 (5-seed empirical SUMO benchmark).",
             mean_travel_time_s=round(b_tt, 2),
             mean_speed_kmh=round(b_spd, 2),
             total_waiting_time_s=round(b_wait, 2),
@@ -126,33 +96,33 @@ def get_controller_comparison() -> ExperimentCompareResponse:
             total_co2_kg=round(c_co2, 2),
             total_fuel_liters=round(c_fuel, 2),
             emergency_traversal_duration_s=round(c_amb, 2),
-            notes="Achieves 36.8% faster corridor travel time, 61.9% waiting time reduction, and 18.0% faster ambulance traversal.",
+            notes="Achieves 36.8% faster corridor travel time, 61.9% waiting time reduction, and 18.0% faster ambulance traversal (5-seed benchmark).",
         ),
         ControllerMetricComparison(
             controller_name="PPO (Proximal Policy Optimization)",
-            status="Implemented",
+            status="Prototype (Evaluation Pending)",
             description="Multi-agent actor-critic policy with clipped surrogate objective, GAE advantage estimation, and inter-intersection communication.",
-            mean_travel_time_s=round(ppo_tt, 2),
-            mean_speed_kmh=round(ppo_spd, 2),
-            total_waiting_time_s=round(ppo_wait, 2),
-            mean_queue=round(ppo_q, 2),
-            total_co2_kg=round(ppo_co2, 2),
-            total_fuel_liters=round(ppo_fuel, 2),
-            emergency_traversal_duration_s=round(ppo_amb, 2),
-            notes="Achieves 43.8% faster corridor travel time, 71.0% waiting time reduction, and 23.0% faster emergency traversal via cooperative phase allocation.",
+            mean_travel_time_s=None,
+            mean_speed_kmh=None,
+            total_waiting_time_s=None,
+            mean_queue=None,
+            total_co2_kg=None,
+            total_fuel_liters=None,
+            emergency_traversal_duration_s=None,
+            notes="Prototype architecture implemented. No verified evaluation reported until actual multi-seed simulation training runs and converged checkpoints exist.",
         ),
         ControllerMetricComparison(
             controller_name="DQN (Deep Q-Network)",
-            status="Implemented",
+            status="Prototype (Evaluation Pending)",
             description="Multi-agent Double-DQN with dueling architecture, experience replay buffer, and upstream inflow anticipation.",
-            mean_travel_time_s=round(dqn_tt, 2),
-            mean_speed_kmh=round(dqn_spd, 2),
-            total_waiting_time_s=round(dqn_wait, 2),
-            mean_queue=round(dqn_q, 2),
-            total_co2_kg=round(dqn_co2, 2),
-            total_fuel_liters=round(dqn_fuel, 2),
-            emergency_traversal_duration_s=round(dqn_amb, 2),
-            notes="Achieves 41.2% faster corridor travel time, 67.5% waiting time reduction, and 21.5% faster emergency traversal.",
+            mean_travel_time_s=None,
+            mean_speed_kmh=None,
+            total_waiting_time_s=None,
+            mean_queue=None,
+            total_co2_kg=None,
+            total_fuel_liters=None,
+            emergency_traversal_duration_s=None,
+            notes="Prototype architecture implemented. No verified evaluation reported until actual multi-seed simulation training runs and converged checkpoints exist.",
         ),
     ]
 

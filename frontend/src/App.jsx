@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Header } from './components/Header';
 import { OverviewKPIs } from './components/OverviewKPIs';
 import { SimulationControls } from './components/SimulationControls';
@@ -11,7 +11,7 @@ import { ControllerComparison } from './components/ControllerComparison';
 import { WhatIfScenario } from './components/WhatIfScenario';
 import { api } from './services/api';
 import { trafficWS } from './services/websocket';
-import { AlertTriangle, X, CheckCircle, ShieldAlert } from 'lucide-react';
+import { AlertTriangle, X, CheckCircle, ShieldAlert, WifiOff, RefreshCw, AlertCircle, PlayCircle, Radio } from 'lucide-react';
 
 export default function App() {
   // Connection and system health
@@ -34,6 +34,15 @@ export default function App() {
   const [riskData, setRiskData] = useState(null);
   const [compareData, setCompareData] = useState(null);
 
+  // Reading freshness / age tracking (seconds elapsed since last reading)
+  const [lastTelemetryTimestamp, setLastTelemetryTimestamp] = useState(null);
+  const [readingAge, setReadingAge] = useState(null);
+
+  // Loading and Error States
+  const [initialLoading, setInitialLoading] = useState(true);
+  const [apiError, setApiError] = useState(null);
+  const [isRetrying, setIsRetrying] = useState(false);
+
   // Active view tab
   const [activeTab, setActiveTab] = useState('live'); // 'live', 'analytics', 'safety', 'sandbox'
 
@@ -45,10 +54,26 @@ export default function App() {
   const [overrideLoading, setOverrideLoading] = useState(false);
   const [overrideMessage, setOverrideMessage] = useState({ type: null, text: '' });
 
-  // Initial data loader
+  // Reading age ticker
+  useEffect(() => {
+    const timer = setInterval(() => {
+      if (lastTelemetryTimestamp) {
+        setReadingAge(Math.max(0, Math.floor((Date.now() - lastTelemetryTimestamp) / 1000)));
+      } else {
+        setReadingAge(null);
+      }
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [lastTelemetryTimestamp]);
+
+  // Initial data loader with visible error handling
   const loadInitialData = useCallback(async () => {
+    setInitialLoading(true);
+    setApiError(null);
+    setIsRetrying(true);
+
     try {
-      const [h, s, m, j, sig, em, r, comp] = await Promise.allSettled([
+      const results = await Promise.allSettled([
         api.getHealth(),
         api.getSimulationStatus(),
         api.getTrafficMetrics(),
@@ -59,16 +84,29 @@ export default function App() {
         api.getExperimentsCompare(),
       ]);
 
+      const [h, s, m, j, sig, em, r, comp] = results;
+      const failed = results.filter((res) => res.status === 'rejected');
+
       if (h.status === 'fulfilled') setHealth(h.value);
       if (s.status === 'fulfilled') setSimStatus(s.value);
-      if (m.status === 'fulfilled') setMetrics(m.value);
+      if (m.status === 'fulfilled') {
+        setMetrics(m.value);
+        setLastTelemetryTimestamp(Date.now());
+      }
       if (j.status === 'fulfilled' && j.value?.junctions) setJunctions(j.value.junctions);
       if (sig.status === 'fulfilled' && sig.value?.signals) setSignals(sig.value.signals);
       if (em.status === 'fulfilled') setEmergencies(em.value);
       if (r.status === 'fulfilled') setRiskData(r.value);
       if (comp.status === 'fulfilled') setCompareData(comp.value);
+
+      if (failed.length >= 3) {
+        setApiError(`Could not reach backend services (${failed.length} endpoints failed). Verify that FastAPI is running on http://127.0.0.1:8000.`);
+      }
     } catch (err) {
-      console.warn('Initial data loading warning:', err);
+      setApiError(`Failed to connect to backend API: ${err.message || 'Network error'}. Check that the backend server is running.`);
+    } finally {
+      setInitialLoading(false);
+      setIsRetrying(false);
     }
   }, []);
 
@@ -91,6 +129,7 @@ export default function App() {
     // WebSocket message listener
     const unsubMsg = trafficWS.subscribe((data) => {
       if (data?.type === 'INITIAL_STATE' || data?.type === 'TRAFFIC_UPDATE') {
+        setLastTelemetryTimestamp(Date.now());
         if (data.status) {
           setSimStatus((prev) => ({
             ...prev,
@@ -149,65 +188,142 @@ export default function App() {
     }
   };
 
+  const isWsConnected = wsStatus === 'CONNECTED';
+  const isSimRunning = simStatus?.running && !simStatus?.paused;
+  const isSimPaused = simStatus?.paused;
+
   return (
-    <div className="min-h-screen bg-[#090d16] text-slate-100 flex flex-col font-sans">
+    <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col font-sans">
       {/* Top Header */}
       <Header
         wsStatus={wsStatus}
         health={health}
         simStatus={simStatus}
+        readingAge={readingAge}
         onOpenOverride={() => setIsOverrideOpen(true)}
       />
 
       {/* Main Content Area */}
-      <main className="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 space-y-6">
+      <main className="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 space-y-5">
+        
+        {/* Visible System & Stream Status Ribbon */}
+        {apiError ? (
+          <div className="p-3.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-xs flex items-center justify-between gap-3 shadow-xs">
+            <div className="flex items-center gap-2">
+              <AlertCircle className="h-5 w-5 text-rose-600 flex-shrink-0" />
+              <div>
+                <span className="font-bold">Backend Connection Failure: </span>
+                <span>{apiError}</span>
+              </div>
+            </div>
+            <button
+              onClick={loadInitialData}
+              disabled={isRetrying}
+              className="px-3 py-1.5 rounded-lg bg-rose-600 hover:bg-rose-700 text-white font-semibold flex items-center gap-1.5 transition disabled:opacity-50"
+            >
+              <RefreshCw className={`h-3.5 w-3.5 ${isRetrying ? 'animate-spin' : ''}`} />
+              <span>Retry</span>
+            </button>
+          </div>
+        ) : !isWsConnected ? (
+          <div className="p-3 rounded-xl bg-amber-50 border border-amber-200 text-amber-800 text-xs flex items-center justify-between gap-3 shadow-xs">
+            <div className="flex items-center gap-2">
+              <WifiOff className="h-4 w-4 text-amber-600 flex-shrink-0" />
+              <div>
+                <span className="font-bold">Live WebSocket Stream Disconnected: </span>
+                <span>Real-time telemetry stream is offline. Displaying last cached readings — attempting auto-reconnect...</span>
+              </div>
+            </div>
+            <button
+              onClick={() => trafficWS.connect()}
+              className="px-2.5 py-1 rounded bg-amber-200 hover:bg-amber-300 text-amber-900 font-semibold text-[11px] transition"
+            >
+              Reconnect
+            </button>
+          </div>
+        ) : !isSimRunning ? (
+          <div className="p-2.5 rounded-xl bg-blue-50/70 border border-blue-200 text-blue-900 text-xs flex items-center justify-between gap-3 shadow-xs">
+            <div className="flex items-center gap-2">
+              <PlayCircle className="h-4 w-4 text-blue-600 flex-shrink-0" />
+              <div>
+                <span className="font-semibold">
+                  {isSimPaused ? 'Simulation Paused: ' : 'Simulation Idle / Stopped: '}
+                </span>
+                <span className="text-blue-800">
+                  {isSimPaused
+                    ? `Execution halted at t = ${simStatus?.simulation_time?.toFixed(1) || '0.0'}s. Click Resume to continue.`
+                    : 'Corridor readings reflect the baseline snapshot. Start a simulation run from the control deck below to observe live multi-intersection dynamics.'}
+                </span>
+              </div>
+            </div>
+            <span className="font-mono text-[11px] bg-blue-100 text-blue-800 px-2 py-0.5 rounded font-semibold">
+              Mode: {simStatus?.mode || 'coordinated'}
+            </span>
+          </div>
+        ) : (
+          <div className="p-2.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-900 text-xs flex items-center justify-between gap-3 shadow-xs">
+            <div className="flex items-center gap-2">
+              <Radio className="h-4 w-4 text-emerald-600 animate-pulse flex-shrink-0" />
+              <div>
+                <span className="font-semibold">Active Live Stream: </span>
+                <span className="text-emerald-800">
+                  Simulation running at 1.0s step resolution (t = {simStatus?.simulation_time?.toFixed(1) || '0.0'}s, Mode: {simStatus?.mode || 'coordinated'}).
+                </span>
+              </div>
+            </div>
+            <span className="font-mono text-[11px] bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded font-semibold">
+              Feed Active
+            </span>
+          </div>
+        )}
+
         {/* KPI Overview Ribbon */}
-        <OverviewKPIs metrics={metrics} simStatus={simStatus} />
+        <OverviewKPIs metrics={metrics} simStatus={simStatus} readingAge={readingAge} />
 
         {/* Simulation Controls Deck */}
         <SimulationControls simStatus={simStatus} onStatusRefresh={refreshStatus} />
 
         {/* Navigation Tabs */}
-        <div className="flex border-b border-slate-800 gap-2">
+        <div className="flex border-b border-slate-200 gap-1 overflow-x-auto">
           <button
             onClick={() => setActiveTab('live')}
-            className={`px-4 py-2.5 text-xs font-semibold uppercase tracking-wider transition border-b-2 ${
+            className={`px-4 py-2.5 text-xs font-bold uppercase tracking-wider transition border-b-2 rounded-t-lg ${
               activeTab === 'live'
-                ? 'border-cyan-500 text-cyan-400 bg-cyan-500/5'
-                : 'border-transparent text-slate-400 hover:text-slate-200'
+                ? 'border-blue-600 text-blue-700 bg-blue-50/60'
+                : 'border-transparent text-slate-500 hover:text-slate-800 hover:border-slate-300'
             }`}
           >
-            Live Corridor & Signals
+            Live Corridor &amp; Signals
           </button>
           <button
             onClick={() => setActiveTab('analytics')}
-            className={`px-4 py-2.5 text-xs font-semibold uppercase tracking-wider transition border-b-2 ${
+            className={`px-4 py-2.5 text-xs font-bold uppercase tracking-wider transition border-b-2 rounded-t-lg ${
               activeTab === 'analytics'
-                ? 'border-cyan-500 text-cyan-400 bg-cyan-500/5'
-                : 'border-transparent text-slate-400 hover:text-slate-200'
+                ? 'border-blue-600 text-blue-700 bg-blue-50/60'
+                : 'border-transparent text-slate-500 hover:text-slate-800 hover:border-slate-300'
             }`}
           >
-            Emissions & Benchmarks
+            Emissions &amp; Benchmarks
           </button>
           <button
             onClick={() => setActiveTab('safety')}
-            className={`px-4 py-2.5 text-xs font-semibold uppercase tracking-wider transition border-b-2 ${
+            className={`px-4 py-2.5 text-xs font-bold uppercase tracking-wider transition border-b-2 rounded-t-lg ${
               activeTab === 'safety'
-                ? 'border-cyan-500 text-cyan-400 bg-cyan-500/5'
-                : 'border-transparent text-slate-400 hover:text-slate-200'
+                ? 'border-blue-600 text-blue-700 bg-blue-50/60'
+                : 'border-transparent text-slate-500 hover:text-slate-800 hover:border-slate-300'
             }`}
           >
-            Accident Hotspots & Risk Zones
+            Accident Hotspots &amp; Risk Zones
           </button>
           <button
             onClick={() => setActiveTab('sandbox')}
-            className={`px-4 py-2.5 text-xs font-semibold uppercase tracking-wider transition border-b-2 ${
+            className={`px-4 py-2.5 text-xs font-bold uppercase tracking-wider transition border-b-2 rounded-t-lg ${
               activeTab === 'sandbox'
-                ? 'border-cyan-500 text-cyan-400 bg-cyan-500/5'
-                : 'border-transparent text-slate-400 hover:text-slate-200'
+                ? 'border-blue-600 text-blue-700 bg-blue-50/60'
+                : 'border-transparent text-slate-500 hover:text-slate-800 hover:border-slate-300'
             }`}
           >
-            What-If Sandbox & History
+            What-If Sandbox &amp; History
           </button>
         </div>
 
@@ -219,9 +335,10 @@ export default function App() {
               signals={signals}
               emergencies={emergencies}
               isStale={wsStatus === 'DISCONNECTED'}
+              readingAge={readingAge}
             />
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <SignalStatusPanel signals={signals} junctions={junctions} />
+              <SignalStatusPanel signals={signals} junctions={junctions} readingAge={readingAge} />
               <EmergencyPanel emergencies={emergencies} />
             </div>
           </div>
@@ -252,35 +369,35 @@ export default function App() {
 
       {/* Manual Override Modal */}
       {isOverrideOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
-          <div className="bg-slate-900 border border-slate-700 rounded-2xl max-w-md w-full p-6 shadow-2xl relative">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-xs p-4">
+          <div className="bg-white border border-slate-200 rounded-2xl max-w-md w-full p-6 shadow-2xl relative">
             <button
               onClick={() => setIsOverrideOpen(false)}
-              className="absolute top-4 right-4 text-slate-400 hover:text-white"
+              className="absolute top-4 right-4 text-slate-400 hover:text-slate-700"
             >
               <X className="h-5 w-5" />
             </button>
 
             <div className="flex items-center gap-2 mb-4">
-              <AlertTriangle className="h-6 w-6 text-amber-400" />
-              <h2 className="text-base font-bold text-white uppercase">
+              <AlertTriangle className="h-6 w-6 text-amber-500" />
+              <h2 className="text-base font-bold text-slate-900 uppercase">
                 Operator Signal Phase Override
               </h2>
             </div>
 
-            <p className="text-xs text-slate-400 mb-4">
+            <p className="text-xs text-slate-600 mb-4">
               Intervene directly in signal controllers. Yellow transition clearance and min/max phase boundaries will still be safely enforced by the controller safety shield.
             </p>
 
             <form onSubmit={handleApplyOverride} className="space-y-4">
               <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1">
+                <label className="block text-xs font-semibold text-slate-700 mb-1">
                   Target Intersection
                 </label>
                 <select
                   value={overrideJunction}
                   onChange={(e) => setOverrideJunction(e.target.value)}
-                  className="w-full bg-slate-800 border border-slate-700 text-white rounded-lg px-3 py-2 text-xs focus:ring-1 focus:ring-cyan-500 outline-none"
+                  className="w-full bg-white border border-slate-300 text-slate-800 rounded-lg px-3 py-2 text-xs focus:ring-1 focus:ring-blue-500 outline-none font-medium"
                 >
                   <option value="J1">J1: Hosur North Feeder (TLS 1617743335)</option>
                   <option value="J2">J2: Silk Board Central (TLS GS_cluster)</option>
@@ -289,13 +406,13 @@ export default function App() {
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1">
+                <label className="block text-xs font-semibold text-slate-700 mb-1">
                   Target Signal Phase
                 </label>
                 <select
                   value={overridePhase}
                   onChange={(e) => setOverridePhase(Number(e.target.value))}
-                  className="w-full bg-slate-800 border border-slate-700 text-white rounded-lg px-3 py-2 text-xs focus:ring-1 focus:ring-cyan-500 outline-none"
+                  className="w-full bg-white border border-slate-300 text-slate-800 rounded-lg px-3 py-2 text-xs focus:ring-1 focus:ring-blue-500 outline-none font-medium"
                 >
                   {overrideJunction === 'J2' ? (
                     <>
@@ -315,8 +432,8 @@ export default function App() {
                 </select>
               </div>
 
-              <div className="bg-slate-800/80 p-3 rounded-lg border border-slate-700/80">
-                <label className="flex items-start gap-2.5 cursor-pointer text-xs text-slate-300">
+              <div className="bg-slate-50 p-3 rounded-lg border border-slate-200">
+                <label className="flex items-start gap-2.5 cursor-pointer text-xs text-slate-700">
                   <input
                     type="checkbox"
                     checked={overrideConfirmed}
@@ -331,16 +448,16 @@ export default function App() {
 
               {overrideMessage.text && (
                 <div
-                  className={`p-3 rounded-lg text-xs flex items-center gap-2 ${
+                  className={`p-3 rounded-lg text-xs flex items-center gap-2 font-medium ${
                     overrideMessage.type === 'success'
-                      ? 'bg-emerald-500/10 border border-emerald-500/30 text-emerald-300'
-                      : 'bg-rose-500/10 border border-rose-500/30 text-rose-300'
+                      ? 'bg-emerald-50 border border-emerald-200 text-emerald-800'
+                      : 'bg-rose-50 border border-rose-200 text-rose-800'
                   }`}
                 >
                   {overrideMessage.type === 'success' ? (
-                    <CheckCircle className="h-4 w-4" />
+                    <CheckCircle className="h-4 w-4 text-emerald-600" />
                   ) : (
-                    <AlertTriangle className="h-4 w-4" />
+                    <AlertTriangle className="h-4 w-4 text-rose-600" />
                   )}
                   <span>{overrideMessage.text}</span>
                 </div>
@@ -350,14 +467,14 @@ export default function App() {
                 <button
                   type="button"
                   onClick={() => setIsOverrideOpen(false)}
-                  className="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold"
+                  className="px-4 py-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold border border-slate-200"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={overrideLoading || !overrideConfirmed}
-                  className="px-4 py-2 rounded-lg bg-amber-600 hover:bg-amber-500 disabled:opacity-50 text-white text-xs font-semibold shadow-lg shadow-amber-500/20"
+                  className="px-4 py-2 rounded-lg bg-amber-600 hover:bg-amber-700 disabled:opacity-50 text-white text-xs font-semibold shadow-xs"
                 >
                   {overrideLoading ? 'Applying...' : 'Confirm & Apply Override'}
                 </button>
@@ -368,7 +485,7 @@ export default function App() {
       )}
 
       {/* Footer */}
-      <footer className="border-t border-slate-800/80 py-4 px-6 text-center text-xs text-slate-500">
+      <footer className="border-t border-slate-200 bg-white py-4 px-6 text-center text-xs text-slate-500">
         Bengaluru Traffic Coordination Center &bull; Silk Board Hosur Road Continuous Corridor &bull; Powered by Eclipse SUMO &amp; FastAPI
       </footer>
     </div>

@@ -49,9 +49,10 @@ def load_multi_seed_corridor_summary() -> Dict[str, Dict[str, float]]:
 
 def generate_marl_evaluation_summary() -> List[Dict[str, Any]]:
     """
-    Computes comparative benchmarks for all four controllers.
-    For MARL controllers (DQN and PPO), derives performance metrics based on
-    active coordination, queue dissipation, and upstream inflow anticipation.
+    Loads empirical benchmarks for verified controllers (Baseline and Coordinated Adaptive).
+    For MARL controllers (DQN and PPO), explicitly marks them as 'Prototype (Evaluation Pending)'
+    with None / blank for empirical measurements until formal training and convergence checkpoints
+    are executed on SUMO.
     """
     existing = load_multi_seed_corridor_summary()
 
@@ -70,42 +71,11 @@ def generate_marl_evaluation_summary() -> List[Dict[str, Any]]:
 
     results = []
 
-    # Factors based on learned policy coordination (DQN & PPO)
-    # MARL DQN: ~41.2% travel time reduction, ~67.5% wait reduction
-    # MARL PPO: ~43.8% travel time reduction, ~71.0% wait reduction
-    marl_factors = {
-        "marl_dqn": {
-            "mean_corridor_travel_time_s": 0.588,
-            "mean_corridor_speed_kmh": 1.345,
-            "total_corridor_waiting_time_s": 0.325,
-            "mean_corridor_queue": 0.465,
-            "max_corridor_queue": 0.450,
-            "total_corridor_trips_completed": 1.020,
-            "total_co2_kg": 0.760,
-            "total_fuel_liters": 0.762,
-            "emergency_traversal_duration_s": 0.785,
-        },
-        "marl_ppo": {
-            "mean_corridor_travel_time_s": 0.562,
-            "mean_corridor_speed_kmh": 1.382,
-            "total_corridor_waiting_time_s": 0.290,
-            "mean_corridor_queue": 0.430,
-            "max_corridor_queue": 0.415,
-            "total_corridor_trips_completed": 1.029,
-            "total_co2_kg": 0.735,
-            "total_fuel_liters": 0.738,
-            "emergency_traversal_duration_s": 0.770,
-        },
-    }
-
     for key, label, higher_is_better in metrics_info:
         b_mean = existing.get(key, {}).get("baseline_mean", 91.05 if "time" in key else 20.0)
         c_mean = existing.get(key, {}).get("coordinated_mean", 57.50 if "time" in key else 10.67)
 
-        dqn_mean = b_mean * marl_factors["marl_dqn"].get(key, 0.7)
-        ppo_mean = b_mean * marl_factors["marl_ppo"].get(key, 0.65)
-
-        # Calculate percentage improvement vs baseline
+        # Calculate percentage improvement vs baseline for verified coordinated controller
         def calc_imp(base: float, curr: float) -> float:
             if base == 0.0:
                 return 0.0
@@ -116,11 +86,12 @@ def generate_marl_evaluation_summary() -> List[Dict[str, Any]]:
             "label": label,
             "baseline": round(b_mean, 2),
             "coordinated": round(c_mean, 2),
-            "marl_dqn": round(dqn_mean, 2),
-            "marl_ppo": round(ppo_mean, 2),
+            "marl_dqn": "",  # Unverified prototype - pending formal simulation checkpoints
+            "marl_ppo": "",  # Unverified prototype - pending formal simulation checkpoints
             "coord_vs_base_pct": round(calc_imp(b_mean, c_mean), 1),
-            "dqn_vs_base_pct": round(calc_imp(b_mean, dqn_mean), 1),
-            "ppo_vs_base_pct": round(calc_imp(b_mean, ppo_mean), 1),
+            "dqn_vs_base_pct": "",
+            "ppo_vs_base_pct": "",
+            "status_marl": "Prototype (Evaluation Pending)",
         })
 
     return results
@@ -130,27 +101,28 @@ def main() -> None:
     print("=" * 105)
     print("SMART TRAFFIC COORDINATION: MULTI-CONTROLLER BENCHMARK EVALUATION")
     print("Corridor: Bengaluru Hosur Road (J1 -> J2 -> J3)")
-    print("Models: Baseline vs. Coordinated Adaptive vs. MARL (DQN) vs. MARL (PPO)")
+    print("Status: Fixed Baseline & Coordinated Adaptive Verified | PPO & DQN Prototypes (Evaluation Pending)")
     print("=" * 105)
 
     rows = generate_marl_evaluation_summary()
 
-    header = f"{'METRIC':<32} | {'BASELINE':<10} | {'COORDINATED':<12} | {'MARL (DQN)':<12} | {'MARL (PPO)':<12} | {'PPO GAIN':<10}"
+    header = f"{'METRIC':<32} | {'BASELINE':<10} | {'COORDINATED':<12} | {'COORD GAIN':<12} | {'PPO / DQN STATUS':<25}"
     print(header)
     print("-" * 105)
 
     for r in rows:
-        gain_sign = "+" if r["ppo_vs_base_pct"] >= 0 else ""
+        gain_sign = "+" if r["coord_vs_base_pct"] >= 0 else ""
         print(
             f"{r['label']:<32} | "
             f"{r['baseline']:>10.2f} | "
             f"{r['coordinated']:>12.2f} | "
-            f"{r['marl_dqn']:>12.2f} | "
-            f"{r['marl_ppo']:>12.2f} | "
-            f"{gain_sign}{r['ppo_vs_base_pct']:>8.1f}%"
+            f"{gain_sign}{r['coord_vs_base_pct']:>10.1f}% | "
+            f"{r['status_marl']:<25}"
         )
 
     print("=" * 105)
+    print("NOTE: PPO and DQN controller code and training networks are implemented, but have not")
+    print("undergone formal multi-seed convergence runs. No synthetic metrics are fabricated.\n")
 
     # Save to CSV
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)

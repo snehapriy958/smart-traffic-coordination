@@ -8,19 +8,19 @@ export function EmergencyPanel({ emergencies }) {
   const activeVehicleId = emergencies?.active_vehicle_id;
 
   return (
-    <div className="bg-slate-900/80 border border-slate-800 rounded-xl p-5 shadow-xl">
-      <div className="flex items-center justify-between border-b border-slate-800 pb-3 mb-4">
+    <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm">
+      <div className="flex items-center justify-between border-b border-slate-200 pb-3 mb-4">
         <div className="flex items-center gap-2">
-          <Siren className={`h-5 w-5 ${isActive ? 'text-rose-400 animate-bounce' : 'text-slate-400'}`} />
-          <h2 className="text-sm font-semibold tracking-wide text-white uppercase">
+          <Siren className={`h-5 w-5 ${isActive ? 'text-rose-600 animate-bounce' : 'text-slate-400'}`} />
+          <h2 className="text-sm font-bold tracking-wide text-slate-900 uppercase">
             Emergency Green Wave Preemption
           </h2>
         </div>
         <span
           className={`px-2.5 py-1 rounded-full text-xs font-bold border ${
             isActive
-              ? 'bg-rose-500/20 text-rose-300 border-rose-500/40 animate-pulse'
-              : 'bg-slate-800 text-slate-400 border-slate-700'
+              ? 'bg-rose-50 text-rose-800 border-rose-300 animate-pulse'
+              : 'bg-slate-100 text-slate-600 border-slate-200'
           }`}
         >
           {isActive ? 'PREEMPTION ACTIVE' : 'MONITORING STANDBY'}
@@ -29,28 +29,28 @@ export function EmergencyPanel({ emergencies }) {
 
       {/* Active Preemption Banner */}
       {isActive ? (
-        <div className="bg-rose-950/30 border border-rose-500/40 rounded-xl p-4 mb-4">
+        <div className="bg-rose-50 border border-rose-200 rounded-xl p-4 mb-4">
           <div className="flex items-start gap-3">
-            <div className="p-2 rounded-lg bg-rose-500/20 text-rose-300 border border-rose-500/30">
+            <div className="p-2 rounded-lg bg-rose-100 text-rose-700 border border-rose-300">
               <ShieldAlert className="h-6 w-6" />
             </div>
             <div className="flex-1">
               <div className="flex items-center justify-between">
-                <h3 className="text-sm font-bold text-rose-300 uppercase">
+                <h3 className="text-sm font-bold text-rose-900 uppercase">
                   Priority Ambulance Detected: {activeVehicleId || 'AMBULANCE_01'}
                 </h3>
-                <span className="text-xs font-mono text-rose-400">Green Wave Engaged</span>
+                <span className="text-xs font-mono font-bold text-rose-700">Green Wave Engaged</span>
               </div>
-              <p className="text-xs text-rose-200/80 mt-1">
+              <p className="text-xs text-rose-800 mt-1">
                 Progressive priority lock initiated on Hosur Road Corridor. Conflicting side-street signals safely transitioned to red.
               </p>
               <div className="mt-3 flex items-center gap-2 text-xs">
-                <span className="text-slate-400">Locked Intersections:</span>
+                <span className="text-slate-600 font-semibold">Locked Intersections:</span>
                 {lockedJunctions.length > 0 ? (
                   lockedJunctions.map((j) => (
                     <span
                       key={j}
-                      className="px-2 py-0.5 rounded bg-rose-500/20 text-rose-200 border border-rose-500/40 font-mono font-bold"
+                      className="px-2 py-0.5 rounded bg-rose-100 text-rose-900 border border-rose-300 font-mono font-bold"
                     >
                       {j}
                     </span>
@@ -63,25 +63,25 @@ export function EmergencyPanel({ emergencies }) {
           </div>
         </div>
       ) : (
-        <div className="bg-slate-800/40 border border-slate-800 rounded-xl p-4 mb-4 text-center text-slate-400 text-xs">
+        <div className="bg-slate-50 border border-slate-200 rounded-xl p-4 mb-4 text-center text-slate-500 text-xs">
           <span>No emergency vehicles actively detected along the Hosur Road corridor. Traversal detectors active at 250m approach threshold.</span>
         </div>
       )}
 
       {/* Traversal Events Log */}
       <div>
-        <h3 className="text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">
+        <h3 className="text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
           Emergency Traversal History ({events.length} Recorded)
         </h3>
 
         {events.length === 0 ? (
-          <p className="text-xs text-slate-500 italic py-2">
+          <p className="text-xs text-slate-400 italic py-2">
             No emergency runs have occurred in this session.
           </p>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs">
-              <thead className="bg-slate-800/60 text-slate-400 font-mono text-[11px] uppercase border-b border-slate-700">
+            <table className="w-full text-left text-xs border border-slate-200 rounded-lg overflow-hidden">
+              <thead className="bg-slate-50 text-slate-600 font-mono text-[11px] uppercase border-b border-slate-200">
                 <tr>
                   <th className="py-2 px-3">Vehicle ID</th>
                   <th className="py-2 px-3">Corridor</th>
@@ -90,32 +90,32 @@ export function EmergencyPanel({ emergencies }) {
                   <th className="py-2 px-3">Status</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-800 font-mono">
+              <tbody className="divide-y divide-slate-100 font-mono">
                 {events.map((ev, idx) => (
-                  <tr key={idx} className="hover:bg-slate-800/40 transition">
-                    <td className="py-2.5 px-3 font-semibold text-white">
+                  <tr key={idx} className="hover:bg-slate-50 transition">
+                    <td className="py-2.5 px-3 font-semibold text-slate-900">
                       {ev.vehicle_id}
                     </td>
-                    <td className="py-2.5 px-3 text-slate-300">
+                    <td className="py-2.5 px-3 text-slate-600">
                       {ev.affected_corridor}
                     </td>
-                    <td className="py-2.5 px-3 text-slate-400">
+                    <td className="py-2.5 px-3 text-slate-500">
                       {ev.simulation_time.toFixed(1)}s
                     </td>
-                    <td className="py-2.5 px-3 text-emerald-400 font-bold">
+                    <td className="py-2.5 px-3 text-emerald-700 font-bold">
                       {ev.traversal_duration > 0
                         ? `${ev.traversal_duration.toFixed(1)}s`
                         : 'Traversing...'}
                     </td>
                     <td className="py-2.5 px-3">
                       {ev.completed ? (
-                        <span className="inline-flex items-center gap-1 text-emerald-400 text-[11px]">
-                          <CheckCircle2 className="h-3.5 w-3.5" />
+                        <span className="inline-flex items-center gap-1 text-emerald-700 text-[11px] font-semibold">
+                          <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600" />
                           <span>Cleared</span>
                         </span>
                       ) : (
-                        <span className="inline-flex items-center gap-1 text-amber-400 text-[11px] animate-pulse">
-                          <Clock className="h-3.5 w-3.5" />
+                        <span className="inline-flex items-center gap-1 text-amber-700 text-[11px] font-semibold animate-pulse">
+                          <Clock className="h-3.5 w-3.5 text-amber-600" />
                           <span>In Transit</span>
                         </span>
                       )}

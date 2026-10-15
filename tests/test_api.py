@@ -152,11 +152,18 @@ def test_experiments_compare():
     assert "PPO (Proximal Policy Optimization)" in names
     assert "DQN (Deep Q-Network)" in names
 
-    # Verify all controllers are marked Implemented with valid travel times
-    for c in data["controllers"]:
-        assert c["status"] == "Implemented"
-        assert c["mean_travel_time_s"] is not None
-        assert c["mean_travel_time_s"] > 0.0
+    # Verify verified controllers have measured metrics, while AI prototypes are pending
+    ctrl_dict = {c["controller_name"]: c for c in data["controllers"]}
+    assert ctrl_dict["Fixed-Time Baseline"]["status"] == "Implemented"
+    assert ctrl_dict["Fixed-Time Baseline"]["mean_travel_time_s"] is not None
+    assert ctrl_dict["Coordinated Adaptive Controller"]["status"] == "Implemented"
+    assert ctrl_dict["Coordinated Adaptive Controller"]["mean_travel_time_s"] is not None
+
+    # PPO and DQN are prototypes with evaluation pending (no fabricated metrics)
+    assert "Prototype" in ctrl_dict["PPO (Proximal Policy Optimization)"]["status"]
+    assert ctrl_dict["PPO (Proximal Policy Optimization)"]["mean_travel_time_s"] is None
+    assert "Prototype" in ctrl_dict["DQN (Deep Q-Network)"]["status"]
+    assert ctrl_dict["DQN (Deep Q-Network)"]["mean_travel_time_s"] is None
 
 
 def test_experiments_history():

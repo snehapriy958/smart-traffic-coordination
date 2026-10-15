@@ -8,42 +8,42 @@ export function RiskHotspotsPanel({ riskData }) {
   const getRiskBadge = (level) => {
     switch (level?.toUpperCase()) {
       case 'CRITICAL':
-        return 'bg-rose-500/20 text-rose-300 border-rose-500/40';
+        return 'bg-rose-50 text-rose-800 border-rose-300';
       case 'HIGH':
-        return 'bg-amber-500/20 text-amber-300 border-amber-500/40';
+        return 'bg-amber-50 text-amber-800 border-amber-300';
       case 'MEDIUM':
-        return 'bg-yellow-500/20 text-yellow-300 border-yellow-500/40';
+        return 'bg-yellow-50 text-yellow-800 border-yellow-300';
       default:
-        return 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40';
+        return 'bg-emerald-50 text-emerald-800 border-emerald-300';
     }
   };
 
   return (
-    <div className="bg-slate-900/80 border border-slate-800 rounded-xl p-5 shadow-xl">
-      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800 pb-3 mb-4">
+    <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm">
+      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-200 pb-3 mb-4">
         <div className="flex items-center gap-2">
-          <AlertOctagon className="h-5 w-5 text-rose-400" />
-          <h2 className="text-sm font-semibold tracking-wide text-white uppercase">
-            Accident Blackspots & MoRTH Risk Zones
+          <AlertOctagon className="h-5 w-5 text-rose-600" />
+          <h2 className="text-sm font-bold tracking-wide text-slate-900 uppercase">
+            Accident Blackspots &amp; MoRTH Risk Zones
           </h2>
         </div>
         <div className="flex items-center gap-2 text-xs">
-          <span className="text-rose-400 font-bold">{riskData?.critical_zones || 0} Critical</span>
-          <span className="text-slate-500">&bull;</span>
-          <span className="text-amber-400 font-bold">{riskData?.high_zones || 0} High</span>
-          <span className="text-slate-500">&bull;</span>
-          <span className="text-slate-400">{riskData?.total_zones || 0} Zones</span>
+          <span className="text-rose-700 font-bold">{riskData?.critical_zones || 0} Critical</span>
+          <span className="text-slate-300">&bull;</span>
+          <span className="text-amber-700 font-bold">{riskData?.high_zones || 0} High</span>
+          <span className="text-slate-300">&bull;</span>
+          <span className="text-slate-500 font-medium">{riskData?.total_zones || 0} Total Zones</span>
         </div>
       </div>
 
       {/* Methodology Notice */}
-      <div className="bg-slate-800/60 border border-slate-700 rounded-lg p-3 text-xs text-slate-300 mb-4 flex items-start gap-2">
-        <Info className="h-4 w-4 text-cyan-400 flex-shrink-0 mt-0.5" />
+      <div className="bg-slate-50 border border-slate-200 rounded-lg p-3 text-xs text-slate-700 mb-4 flex items-start gap-2">
+        <Info className="h-4 w-4 text-blue-600 flex-shrink-0 mt-0.5" />
         <div>
-          <p className="font-semibold text-white">IRC / MoRTH Road Safety Audit Methodology</p>
-          <p className="text-[11px] text-slate-400 mt-0.5">
+          <p className="font-bold text-slate-900">IRC / MoRTH Road Safety Audit Methodology</p>
+          <p className="text-[11px] text-slate-600 mt-0.5 leading-relaxed">
             Risk scores represent Composite Risk Index (CRI = Fatal &times; 5.0 + Non-Fatal &times; 2.0 + corridor proximity weight) derived from Bengaluru Traffic Police records.
-            <span className="text-cyan-300 font-medium"> Note: Evaluated on historical spatial observations; no unverified predictive AI claims.</span>
+            <span className="text-blue-700 font-medium"> Note: Evaluated on historical spatial observations; no unverified predictive AI claims.</span>
           </p>
         </div>
       </div>
@@ -53,34 +53,34 @@ export function RiskHotspotsPanel({ riskData }) {
         {zones.map((zone) => (
           <div
             key={zone.zone_id}
-            className="p-3.5 rounded-xl border border-slate-700/80 bg-slate-800/40 hover:bg-slate-800 transition"
+            className="p-3.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 transition shadow-xs"
           >
             <div className="flex items-start justify-between gap-2 mb-2">
               <div>
-                <h3 className="text-xs font-bold text-white uppercase">{zone.zone_name}</h3>
-                <span className="text-[10px] text-slate-400 font-mono">ID: {zone.zone_id}</span>
+                <h3 className="text-xs font-bold text-slate-900 uppercase">{zone.zone_name}</h3>
+                <span className="text-[10px] text-slate-500 font-mono">ID: {zone.zone_id}</span>
               </div>
               <span className={`px-2 py-0.5 text-[10px] font-bold rounded border ${getRiskBadge(zone.risk_level)}`}>
                 {zone.risk_level} (CRI: {zone.composite_risk_score})
               </span>
             </div>
 
-            <div className="grid grid-cols-3 gap-2 text-center text-xs bg-slate-900/60 p-2 rounded-lg border border-slate-700/40 mb-2 font-mono">
+            <div className="grid grid-cols-3 gap-2 text-center text-xs bg-slate-50 p-2 rounded-lg border border-slate-200 mb-2 font-mono">
               <div>
-                <span className="text-[10px] text-slate-400 block">Total Crashes</span>
-                <span className="text-white font-semibold">{zone.total_crashes}</span>
+                <span className="text-[10px] text-slate-500 block">Total Crashes</span>
+                <span className="text-slate-900 font-bold">{zone.total_crashes}</span>
               </div>
               <div>
-                <span className="text-[10px] text-rose-400 block">Fatal Crashes</span>
-                <span className="text-rose-400 font-bold">{zone.fatal_crashes}</span>
+                <span className="text-[10px] text-rose-700 block font-semibold">Fatal Crashes</span>
+                <span className="text-rose-700 font-bold">{zone.fatal_crashes}</span>
               </div>
               <div>
-                <span className="text-[10px] text-slate-400 block">Target TLS</span>
-                <span className="text-cyan-300">{zone.associated_junction || 'Corridor Link'}</span>
+                <span className="text-[10px] text-slate-500 block">Target TLS</span>
+                <span className="text-blue-700 font-bold">{zone.associated_junction || 'Corridor Link'}</span>
               </div>
             </div>
 
-            <p className="text-[11px] text-slate-300 italic border-l-2 border-slate-600 pl-2">
+            <p className="text-[11px] text-slate-600 italic border-l-2 border-slate-300 pl-2">
               &ldquo;{zone.safety_advisory}&rdquo;
             </p>
           </div>
@@ -90,34 +90,34 @@ export function RiskHotspotsPanel({ riskData }) {
       {/* Spatial Hotspots Table */}
       {hotspots.length > 0 && (
         <div>
-          <h3 className="text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">
+          <h3 className="text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
             DBSCAN Spatial Hotspot Clusters ({hotspots.length})
           </h3>
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs font-mono">
-              <thead className="bg-slate-800/60 text-slate-400 text-[10px] uppercase border-b border-slate-700">
+            <table className="w-full text-left text-xs font-mono border border-slate-200 rounded-lg overflow-hidden">
+              <thead className="bg-slate-50 text-slate-600 text-[10px] uppercase border-b border-slate-200">
                 <tr>
-                  <th className="py-1.5 px-3">Cluster ID</th>
-                  <th className="py-1.5 px-3">Relevance</th>
-                  <th className="py-1.5 px-3">Total Crashes</th>
-                  <th className="py-1.5 px-3">Fatal</th>
-                  <th className="py-1.5 px-3">Severity Score</th>
-                  <th className="py-1.5 px-3">Coordinates (Lat, Lon)</th>
+                  <th className="py-2 px-3">Cluster ID</th>
+                  <th className="py-2 px-3">Relevance</th>
+                  <th className="py-2 px-3">Total Crashes</th>
+                  <th className="py-2 px-3">Fatal</th>
+                  <th className="py-2 px-3">Severity Score</th>
+                  <th className="py-2 px-3">Coordinates (Lat, Lon)</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-800 text-[11px]">
+              <tbody className="divide-y divide-slate-100 text-[11px]">
                 {hotspots.map((hs) => (
-                  <tr key={hs.hotspot_id} className="hover:bg-slate-800/30">
-                    <td className="py-2 px-3 font-semibold text-white">{hs.hotspot_id}</td>
+                  <tr key={hs.hotspot_id} className="hover:bg-slate-50">
+                    <td className="py-2 px-3 font-semibold text-slate-900">{hs.hotspot_id}</td>
                     <td className="py-2 px-3">
-                      <span className={`px-1.5 py-0.5 rounded text-[10px] ${hs.corridor_relevance === 'CORRIDOR' ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/30' : 'text-slate-400'}`}>
+                      <span className={`px-1.5 py-0.5 rounded text-[10px] font-bold ${hs.corridor_relevance === 'CORRIDOR' ? 'bg-blue-50 text-blue-700 border border-blue-200' : 'text-slate-500'}`}>
                         {hs.corridor_relevance}
                       </span>
                     </td>
-                    <td className="py-2 px-3 text-slate-200">{hs.total_crashes}</td>
-                    <td className="py-2 px-3 text-rose-400 font-bold">{hs.fatal_crashes}</td>
-                    <td className="py-2 px-3 text-amber-300 font-semibold">{hs.severity_score}</td>
-                    <td className="py-2 px-3 text-slate-400">
+                    <td className="py-2 px-3 text-slate-800">{hs.total_crashes}</td>
+                    <td className="py-2 px-3 text-rose-700 font-bold">{hs.fatal_crashes}</td>
+                    <td className="py-2 px-3 text-amber-700 font-semibold">{hs.severity_score}</td>
+                    <td className="py-2 px-3 text-slate-500">
                       {hs.center_latitude.toFixed(4)}, {hs.center_longitude.toFixed(4)}
                     </td>
                   </tr>
