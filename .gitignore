@@ -59,3 +59,4 @@ sumo_run_*.xml
 *~
 .DS_Store
 Thumbs.db
+scratch/
