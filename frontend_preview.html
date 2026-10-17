@@ -949,11 +949,14 @@
       lucide.createIcons();
     }
 
-    // WebSocket Management with Automatic Reconnect
+    // WebSocket Management with Automatic Reconnect & Keepalive Heartbeat
+    let pingTimer = null;
+
     function initWebSocket() {
       if (ws) {
         try { ws.close(); } catch(e) {}
       }
+      if (pingTimer) clearInterval(pingTimer);
 
       const streamBadge = document.getElementById('streamStatusText');
       const pulseIcon = document.getElementById('streamPulseIcon');
@@ -967,26 +970,44 @@
       }
 
       ws.onopen = () => {
-        streamBadge.innerText = 'CONNECTED';
+        streamBadge.innerText = 'WS LIVE';
         streamBadge.className = 'font-semibold text-emerald-700';
         pulseIcon.className = 'h-3.5 w-3.5 text-emerald-600 animate-pulse';
         console.log("WebSocket connected to", WS_URL);
+
+        // Client Keepalive Heartbeat every 4s
+        pingTimer = setInterval(() => {
+          if (ws && ws.readyState === WebSocket.OPEN) {
+            try { ws.send("ping"); } catch (e) {}
+          }
+        }, 4000);
       };
 
       ws.onmessage = (event) => {
         try {
           const payload = JSON.parse(event.data);
           handleTelemetry(payload);
+          streamBadge.innerText = 'WS LIVE';
+          streamBadge.className = 'font-semibold text-emerald-700';
+          pulseIcon.className = 'h-3.5 w-3.5 text-emerald-600 animate-pulse';
         } catch (e) {
           console.error("Error parsing WS payload:", e);
         }
       };
 
       ws.onclose = () => {
-        streamBadge.innerText = 'DISCONNECTED';
-        streamBadge.className = 'font-semibold text-rose-700';
-        pulseIcon.className = 'h-3.5 w-3.5 text-rose-500';
-        console.warn("WebSocket disconnected. Falling back to REST polling...");
+        if (pingTimer) clearInterval(pingTimer);
+        const isHealthy = (Date.now() - simState.lastUpdated) < 3500;
+        if (isHealthy) {
+          streamBadge.innerText = 'REST ACTIVE';
+          streamBadge.className = 'font-semibold text-blue-700';
+          pulseIcon.className = 'h-3.5 w-3.5 text-blue-600 animate-pulse';
+        } else {
+          streamBadge.innerText = 'RECONNECTING';
+          streamBadge.className = 'font-semibold text-amber-700';
+          pulseIcon.className = 'h-3.5 w-3.5 text-amber-500';
+        }
+        console.warn("WebSocket stream disconnected. Falling back to active REST polling...");
         startPolling();
         setTimeout(initWebSocket, 3000);
       };
@@ -996,38 +1017,56 @@
       };
     }
 
-    // REST Polling Fallback
+    // Robust Multi-Endpoint REST Polling Fallback
+    async function pollTelemetryOnce() {
+      try {
+        // 1. Check combined corridor endpoint
+        const corridorRes = await fetch(`${API_BASE}/traffic/corridor`);
+        if (corridorRes.ok) {
+          const cData = await corridorRes.json();
+          handleTelemetry({
+            simulation_time: cData.simulation_time,
+            status: cData.status,
+            mode: cData.mode,
+            metrics: cData.metrics || cData.corridor_metrics,
+            junctions: cData.junctions,
+            signals: cData.signals
+          });
+          return;
+        }
+
+        // 2. Fallback: poll separate endpoints in parallel
+        const [statusRes, metricsRes, liveRes, signalsRes] = await Promise.all([
+          fetch(`${API_BASE}/simulation/status`),
+          fetch(`${API_BASE}/traffic/metrics`),
+          fetch(`${API_BASE}/traffic/live`),
+          fetch(`${API_BASE}/signals`)
+        ]);
+
+        if (statusRes.ok) {
+          const st = await statusRes.json();
+          const met = metricsRes.ok ? await metricsRes.json() : null;
+          const live = liveRes.ok ? await liveRes.json() : null;
+          const sig = signalsRes.ok ? await signalsRes.json() : null;
+
+          handleTelemetry({
+            simulation_time: st.simulation_time,
+            status: st.running ? (st.paused ? 'PAUSED' : 'RUNNING') : 'STOPPED',
+            mode: st.mode,
+            metrics: met,
+            junctions: live ? live.junctions : null,
+            signals: sig ? sig.signals : null
+          });
+        }
+      } catch (err) {
+        console.debug("REST polling tick error:", err);
+      }
+    }
+
     function startPolling() {
       if (pollTimer) return;
-      pollTimer = setInterval(async () => {
-        try {
-          const res = await fetch(`${API_BASE}/simulation/status`);
-          if (res.ok) {
-            const data = await res.json();
-            handleTelemetry({
-              simulation_time: data.simulation_time,
-              status: data.running ? (data.paused ? 'PAUSED' : 'RUNNING') : 'STOPPED',
-              mode: data.mode
-            });
-          }
-          const [corridorRes, signalsRes] = await Promise.all([
-            fetch(`${API_BASE}/traffic/corridor`),
-            fetch(`${API_BASE}/signals`)
-          ]);
-          if (corridorRes.ok && signalsRes.ok) {
-            const corridorData = await corridorRes.json();
-            const signalsData = await signalsRes.json();
-            handleTelemetry({
-              simulation_time: corridorData.simulation_time,
-              metrics: corridorData.corridor_metrics,
-              junctions: corridorData.junctions,
-              signals: signalsData.signals
-            });
-          }
-        } catch (e) {
-          // backend offline or restarting
-        }
-      }, 1500);
+      pollTelemetryOnce();
+      pollTimer = setInterval(pollTelemetryOnce, 1000);
     }
 
     // Telemetry Update Handler
@@ -1057,6 +1096,23 @@
         readingAgeText.innerText = 'Feed: Live (<1s ago)';
       } else {
         readingAgeText.innerText = `Feed: Stale (${Math.round(ageMs/1000)}s ago)`;
+      }
+
+      // Stream Status Badge
+      const streamBadge = document.getElementById('streamStatusText');
+      const pulseIcon = document.getElementById('streamPulseIcon');
+      if (ws && ws.readyState === WebSocket.OPEN) {
+        streamBadge.innerText = 'WS LIVE';
+        streamBadge.className = 'font-semibold text-emerald-700';
+        pulseIcon.className = 'h-3.5 w-3.5 text-emerald-600 animate-pulse';
+      } else if (ageMs < 3500) {
+        streamBadge.innerText = 'REST ACTIVE';
+        streamBadge.className = 'font-semibold text-blue-700';
+        pulseIcon.className = 'h-3.5 w-3.5 text-blue-600 animate-pulse';
+      } else {
+        streamBadge.innerText = 'DISCONNECTED';
+        streamBadge.className = 'font-semibold text-rose-700';
+        pulseIcon.className = 'h-3.5 w-3.5 text-rose-500';
       }
 
       const simStateBadge = document.getElementById('simStateBadge');
@@ -1111,6 +1167,24 @@
         document.getElementById('kpiWait').innerText = `${Math.round(m.total_corridor_waiting_time_s || 0)} veh-s`;
         document.getElementById('kpiCo2').innerText = `${(m.total_co2_kg || 0).toFixed(2)} kg`;
 
+        // Update Relative Comparison Badges
+        const spdDiff = m.mean_speed_kmh ? (((m.mean_speed_kmh - 27.85) / 27.85) * 100).toFixed(1) : null;
+        if (spdDiff !== null) {
+          const elSpdDiff = document.getElementById('kpiSpeedDiff');
+          if (elSpdDiff) elSpdDiff.innerText = `${spdDiff >= 0 ? '+' : ''}${spdDiff}% vs Baseline (27.8 km/h)`;
+        }
+
+        const qDiff = m.mean_corridor_queue !== undefined ? (((m.mean_corridor_queue - 20.01) / 20.01) * 100).toFixed(1) : null;
+        if (qDiff !== null) {
+          const elQDiff = document.getElementById('kpiQueueDiff');
+          if (elQDiff) elQDiff.innerText = `${qDiff <= 0 ? '' : '+'}${qDiff}% vs Baseline (20.0 veh)`;
+        }
+
+        const elCo2Diff = document.getElementById('kpiCo2Diff');
+        if (elCo2Diff && m.total_fuel_liters !== undefined) {
+          elCo2Diff.innerText = `Fuel: ${m.total_fuel_liters.toFixed(1)} L (HBEFA3)`;
+        }
+
         // Push to Live Chart
         if (emissionsChart && simState.time > 0) {
           const labels = emissionsChart.data.labels;
@@ -1148,10 +1222,10 @@
         const sData = simState.signals[jId];
 
         if (jData) {
-          const phaseText = jData.current_phase !== undefined ? `Phase ${jData.current_phase}` : '--';
-          const qText = jData.total_queue !== undefined ? `${jData.total_queue} veh` : '-- veh';
-          const spdText = jData.average_speed_kmh !== undefined ? `${jData.average_speed_kmh.toFixed(1)} km/h` : '-- km/h';
-          const cntText = jData.vehicle_count !== undefined ? `${jData.vehicle_count}` : '--';
+          const phaseText = jData.current_phase !== undefined ? `Phase ${jData.current_phase}` : 'Phase 0';
+          const qText = jData.total_queue !== undefined ? `${jData.total_queue} veh` : '0 veh';
+          const spdText = jData.average_speed_kmh !== undefined ? `${jData.average_speed_kmh.toFixed(1)} km/h` : '0.0 km/h';
+          const cntText = jData.vehicle_count !== undefined ? `${jData.vehicle_count}` : '0';
 
           const elPhase = document.getElementById(`topo-${jLower}-phase`);
           const elQueue = document.getElementById(`topo-${jLower}-queue`);

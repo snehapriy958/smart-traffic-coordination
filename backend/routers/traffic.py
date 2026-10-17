@@ -43,3 +43,24 @@ def get_traffic_metrics() -> TrafficMetricsResponse:
         emergency_traversal_duration_s=data.get("emergency_traversal_duration_s", 0.0),
         junction_queues=data.get("junction_queues", {}),
     )
+
+
+@router.get("/corridor")
+def get_corridor_summary():
+    """Returns combined corridor summary including metrics, junction states, and signals."""
+    status_obj = sim_service.get_status()
+    st_str = "RUNNING" if status_obj.running and not status_obj.paused else ("PAUSED" if status_obj.paused else "STOPPED")
+    metrics_data = sim_service.get_metrics()
+    junctions_data = sim_service.get_live_junctions()
+    signals_data = sim_service.get_signals()
+    return {
+        "simulation_time": status_obj.simulation_time,
+        "status": st_str,
+        "mode": status_obj.mode,
+        "controller": status_obj.controller,
+        "corridor_metrics": metrics_data,
+        "metrics": metrics_data,
+        "junctions": junctions_data,
+        "signals": signals_data,
+    }
+
