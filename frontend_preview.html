@@ -1249,12 +1249,28 @@
             bulbGreen.className = 'traffic-bulb bg-emerald-950' + (sData.is_green && !sData.is_yellow ? ' active-green' : '');
           }
 
-          const phaseDesc = {
-            0: 'North-South Through / Right',
-            1: 'North-South Clearance',
-            2: 'East-West Arterial Through',
-            3: 'East-West Clearance'
-          }[sData.current_phase] || `Phase ${sData.current_phase}`;
+          const phaseDescriptions = {
+            J1: {
+              0: 'North-South Cross Movement',
+              1: 'North-South Amber Clearance',
+              2: 'Hosur Rd East-West Arterial',
+              3: 'East-West Amber Clearance'
+            },
+            J2: {
+              0: 'Hosur Rd East-West Arterial',
+              1: 'East-West Amber Clearance',
+              2: 'North-South Central Interchange',
+              3: 'Central Interchange Clearance'
+            },
+            J3: {
+              0: 'North-South Cross Movement',
+              1: 'North-South Amber Clearance',
+              2: 'Hosur Rd East-West Arterial',
+              3: 'East-West Amber Clearance'
+            }
+          };
+          const jMap = phaseDescriptions[jId] || {};
+          const phaseDesc = jMap[sData.current_phase] || `Phase ${sData.current_phase}`;
 
           const elPhaseName = document.getElementById(`sig-${jLower}-phase-name`);
           const elPhaseNum = document.getElementById(`sig-${jLower}-phase-num`);
