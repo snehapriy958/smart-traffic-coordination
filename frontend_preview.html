@@ -17,27 +17,54 @@
       font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     }
     .traffic-bulb {
-      width: 24px;
-      height: 24px;
+      width: 26px;
+      height: 26px;
       border-radius: 9999px;
-      transition: all 0.3s ease;
-      opacity: 0.25;
-      box-shadow: inset 0 2px 4px rgba(0,0,0,0.4);
+      transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+      opacity: 0.2;
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.6);
+      position: relative;
+    }
+    .traffic-bulb::after {
+      content: '';
+      position: absolute;
+      top: 3px;
+      left: 6px;
+      width: 8px;
+      height: 5px;
+      border-radius: 9999px;
+      background: rgba(255, 255, 255, 0.35);
+      pointer-events: none;
     }
     .traffic-bulb.active-red {
-      opacity: 1;
-      background-color: #ef4444;
-      box-shadow: 0 0 16px rgba(239, 68, 68, 0.9), inset 0 2px 4px rgba(255,255,255,0.4);
+      opacity: 1 !important;
+      background-color: #ef4444 !important;
+      box-shadow: 0 0 18px #ef4444, 0 0 32px rgba(239, 68, 68, 0.6), inset 0 2px 4px rgba(255,255,255,0.7) !important;
+      animation: pulse-red 1.6s infinite ease-in-out;
     }
     .traffic-bulb.active-yellow {
-      opacity: 1;
-      background-color: #f59e0b;
-      box-shadow: 0 0 16px rgba(245, 158, 11, 0.9), inset 0 2px 4px rgba(255,255,255,0.4);
+      opacity: 1 !important;
+      background-color: #f59e0b !important;
+      box-shadow: 0 0 18px #f59e0b, 0 0 32px rgba(245, 158, 11, 0.6), inset 0 2px 4px rgba(255,255,255,0.7) !important;
+      animation: pulse-yellow 0.9s infinite ease-in-out;
     }
     .traffic-bulb.active-green {
-      opacity: 1;
-      background-color: #10b981;
-      box-shadow: 0 0 16px rgba(16, 185, 129, 0.9), inset 0 2px 4px rgba(255,255,255,0.4);
+      opacity: 1 !important;
+      background-color: #10b981 !important;
+      box-shadow: 0 0 18px #10b981, 0 0 32px rgba(16, 185, 129, 0.6), inset 0 2px 4px rgba(255,255,255,0.7) !important;
+      animation: pulse-green 1.6s infinite ease-in-out;
+    }
+    @keyframes pulse-red {
+      0%, 100% { box-shadow: 0 0 16px #ef4444, 0 0 26px rgba(239, 68, 68, 0.5); transform: scale(1); }
+      50% { box-shadow: 0 0 24px #ef4444, 0 0 38px rgba(239, 68, 68, 0.85); transform: scale(1.05); }
+    }
+    @keyframes pulse-yellow {
+      0%, 100% { box-shadow: 0 0 16px #f59e0b, 0 0 26px rgba(245, 158, 11, 0.5); transform: scale(1); }
+      50% { box-shadow: 0 0 24px #f59e0b, 0 0 38px rgba(245, 158, 11, 0.85); transform: scale(1.06); }
+    }
+    @keyframes pulse-green {
+      0%, 100% { box-shadow: 0 0 16px #10b981, 0 0 26px rgba(16, 185, 129, 0.5); transform: scale(1); }
+      50% { box-shadow: 0 0 24px #10b981, 0 0 38px rgba(16, 185, 129, 0.85); transform: scale(1.05); }
     }
     .corridor-arrow {
       animation: pulse-arrow 1.5s infinite;
@@ -1243,42 +1270,80 @@
           const bulbYellow = document.getElementById(`sig-${jLower}-bulb-yellow`);
           const bulbGreen = document.getElementById(`sig-${jLower}-bulb-green`);
 
+          const p = sData.current_phase !== undefined ? sData.current_phase : 0;
+
+          // Determine Real Optical Signal Aspect for Hosur Road Arterial Corridor:
+          // J1: Phase 2 is Green, Phase 3 is Yellow, Phase 0 & 1 are RED (Cross street active)
+          // J2: Phase 0 is Green, Phase 1 is Yellow, Phase 2 & 3 are RED (Cross street active)
+          // J3: Phase 2 is Green, Phase 3 is Yellow, Phase 0 & 1 are RED (Cross street active)
+          let arterialAspect = 'RED';
+          if (jId === 'J1' || jId === 'J3') {
+            if (p === 2) arterialAspect = 'GREEN';
+            else if (p === 3) arterialAspect = 'YELLOW';
+            else arterialAspect = 'RED';
+          } else if (jId === 'J2') {
+            if (p === 0) arterialAspect = 'GREEN';
+            else if (p === 1) arterialAspect = 'YELLOW';
+            else arterialAspect = 'RED';
+          }
+
+          if (elPhase) {
+            let topoColor = arterialAspect === 'GREEN' ? 'text-emerald-600' : (arterialAspect === 'YELLOW' ? 'text-amber-600' : 'text-rose-600');
+            elPhase.innerHTML = `<span class="font-bold ${topoColor}">● ${arterialAspect}</span> (P${p})`;
+          }
+
           if (bulbRed && bulbYellow && bulbGreen) {
-            bulbRed.className = 'traffic-bulb bg-red-950' + (sData.is_yellow ? '' : (sData.is_green ? '' : ' active-red'));
-            bulbYellow.className = 'traffic-bulb bg-amber-950' + (sData.is_yellow ? ' active-yellow' : '');
-            bulbGreen.className = 'traffic-bulb bg-emerald-950' + (sData.is_green && !sData.is_yellow ? ' active-green' : '');
+            bulbRed.className = 'traffic-bulb bg-red-950' + (arterialAspect === 'RED' ? ' active-red' : '');
+            bulbYellow.className = 'traffic-bulb bg-amber-950' + (arterialAspect === 'YELLOW' ? ' active-yellow' : '');
+            bulbGreen.className = 'traffic-bulb bg-emerald-950' + (arterialAspect === 'GREEN' ? ' active-green' : '');
           }
 
           const phaseDescriptions = {
             J1: {
-              0: 'North-South Cross Movement',
+              0: 'North-South Cross Movement (Hosur Rd Stopped)',
               1: 'North-South Amber Clearance',
-              2: 'Hosur Rd East-West Arterial',
-              3: 'East-West Amber Clearance'
+              2: 'Hosur Rd East-West Arterial (Green Wave)',
+              3: 'Hosur Rd East-West Amber Clearance'
             },
             J2: {
-              0: 'Hosur Rd East-West Arterial',
-              1: 'East-West Amber Clearance',
-              2: 'North-South Central Interchange',
+              0: 'Hosur Rd East-West Arterial (Green Wave)',
+              1: 'Hosur Rd East-West Amber Clearance',
+              2: 'Central Cross Movement (Hosur Rd Stopped)',
               3: 'Central Interchange Clearance'
             },
             J3: {
-              0: 'North-South Cross Movement',
+              0: 'North-South Cross Movement (Hosur Rd Stopped)',
               1: 'North-South Amber Clearance',
-              2: 'Hosur Rd East-West Arterial',
-              3: 'East-West Amber Clearance'
+              2: 'Hosur Rd East-West Arterial (Green Wave)',
+              3: 'Hosur Rd East-West Amber Clearance'
             }
           };
           const jMap = phaseDescriptions[jId] || {};
-          const phaseDesc = jMap[sData.current_phase] || `Phase ${sData.current_phase}`;
+          const phaseDesc = jMap[p] || `Phase ${p}`;
 
           const elPhaseName = document.getElementById(`sig-${jLower}-phase-name`);
           const elPhaseNum = document.getElementById(`sig-${jLower}-phase-num`);
           const elElapsed = document.getElementById(`sig-${jLower}-elapsed`);
           const elSwitch = document.getElementById(`sig-${jLower}-switch`);
 
+          let aspectBadge = '';
+          if (arterialAspect === 'GREEN') {
+            aspectBadge = '<span class="px-2 py-0.5 rounded text-[10px] font-bold border bg-emerald-50 text-emerald-700 border-emerald-300 shadow-xs animate-pulse">GO (GREEN)</span>';
+          } else if (arterialAspect === 'YELLOW') {
+            aspectBadge = '<span class="px-2 py-0.5 rounded text-[10px] font-bold border bg-amber-50 text-amber-700 border-amber-300 shadow-xs animate-pulse">CLEAR (AMBER)</span>';
+          } else {
+            aspectBadge = '<span class="px-2 py-0.5 rounded text-[10px] font-bold border bg-rose-50 text-rose-700 border-rose-300 shadow-xs">STOP (RED)</span>';
+          }
+
           if (elPhaseName) elPhaseName.innerText = phaseDesc;
-          if (elPhaseNum) elPhaseNum.innerText = `Phase ${sData.current_phase} (${sData.is_yellow ? 'Yellow' : (sData.is_green ? 'Green' : 'Red')})`;
+          if (elPhaseNum) {
+            elPhaseNum.innerHTML = `
+              <div class="flex items-center gap-1.5">
+                ${aspectBadge}
+                <span class="text-slate-700 font-semibold text-xs">Phase ${p}</span>
+              </div>
+            `;
+          }
           if (elElapsed) elElapsed.innerText = `${(sData.phase_elapsed || 0).toFixed(1)} s`;
           if (elSwitch) elSwitch.innerText = `${(sData.time_to_switch || 0).toFixed(1)} s`;
         }
