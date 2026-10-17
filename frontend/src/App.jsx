@@ -181,8 +181,13 @@ export default function App() {
 
   const handleLaunchScenario = async (params) => {
     try {
+      if (simStatus?.running) {
+        await api.stopSimulation();
+        await new Promise((r) => setTimeout(r, 600));
+      }
       await api.startSimulation(params);
       await refreshStatus();
+      setActiveTab('live');
     } catch (err) {
       alert(`Failed to launch scenario: ${err.message}`);
     }
@@ -385,9 +390,16 @@ export default function App() {
               </h2>
             </div>
 
-            <p className="text-xs text-slate-600 mb-4">
+            <p className="text-xs text-slate-600 mb-3">
               Intervene directly in signal controllers. Yellow transition clearance and min/max phase boundaries will still be safely enforced by the controller safety shield.
             </p>
+
+            {!isSimRunning && (
+              <div className="mb-3 p-2.5 rounded-lg bg-amber-50 border border-amber-200 text-amber-800 text-[11px] flex items-center gap-2 font-medium">
+                <AlertTriangle className="h-4 w-4 text-amber-600 flex-shrink-0" />
+                <span>Note: Simulation is currently stopped. Overrides take active effect when simulation is running.</span>
+              </div>
+            )}
 
             <form onSubmit={handleApplyOverride} className="space-y-4">
               <div>

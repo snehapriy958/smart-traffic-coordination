@@ -21,9 +21,13 @@ class TrafficWebSocket {
     }
 
     this._setStatus('CONNECTING');
-    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-    // Use host from window.location in dev (proxied by Vite) or direct
-    const wsUrl = `${protocol}//${window.location.host}/ws/traffic`;
+    let wsUrl;
+    if (typeof window !== 'undefined' && (window.location.protocol === 'file:' || !window.location.host)) {
+      wsUrl = 'ws://127.0.0.1:8000/ws/traffic';
+    } else {
+      const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+      wsUrl = `${protocol}//${window.location.host}/ws/traffic`;
+    }
 
     try {
       this.ws = new WebSocket(wsUrl);

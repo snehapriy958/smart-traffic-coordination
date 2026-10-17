@@ -11,9 +11,11 @@ import asyncio
 from contextlib import asynccontextmanager
 from typing import AsyncGenerator
 
-from fastapi import FastAPI, WebSocket, WebSocketDisconnect
+from pathlib import Path
+from fastapi import FastAPI, Request, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
+from fastapi.responses import FileResponse, HTMLResponse, JSONResponse
+from fastapi.staticfiles import StaticFiles
 
 from backend.config import CORS_ORIGINS, DEBUG
 from backend.database import init_db
@@ -76,8 +78,40 @@ app.include_router(decisions.router)
 app.include_router(experiments.router)
 
 
-@app.get("/", tags=["Root"])
-def root():
+STATIC_DIR = Path(__file__).resolve().parent / "static"
+if STATIC_DIR.is_dir():
+    app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
+
+
+@app.get("/", tags=["Dashboard"])
+def root(request: Request):
+    """Serves the live interactive dashboard when accessed via browser, or API descriptor for programmatic requests."""
+    accept = request.headers.get("accept", "")
+    index_file = STATIC_DIR / "index.html"
+    if ("text/html" in accept or "application/xhtml+xml" in accept) and index_file.is_file():
+        return FileResponse(str(index_file), media_type="text/html")
+    return {
+        "service": "Smart Traffic Coordination System",
+        "corridor": "Bengaluru Silk Board (J1 -> J2 -> J3)",
+        "dashboard": "/dashboard",
+        "docs": "/docs",
+        "health": "/api/health",
+        "websocket": "/ws/traffic",
+    }
+
+
+@app.get("/dashboard", tags=["Dashboard"])
+def get_dashboard():
+    """Explicitly serves the live interactive corridor dashboard."""
+    index_file = STATIC_DIR / "index.html"
+    if index_file.is_file():
+        return FileResponse(str(index_file), media_type="text/html")
+    return HTMLResponse("<h3>Dashboard file not found in backend/static/index.html</h3>", status_code=404)
+
+
+@app.get("/api", tags=["Root"])
+def api_info():
+    """API Service Descriptor."""
     return {
         "service": "Smart Traffic Coordination System",
         "corridor": "Bengaluru Silk Board (J1 -> J2 -> J3)",
@@ -85,6 +119,7 @@ def root():
         "health": "/api/health",
         "websocket": "/ws/traffic",
     }
+
 
 
 # ----------------------------------------------------

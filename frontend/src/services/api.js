@@ -4,7 +4,13 @@
  * Central API client for the Smart Traffic Coordination REST backend.
  */
 
-const API_BASE = '/api';
+const getApiBase = () => {
+  if (typeof window === 'undefined') return 'http://127.0.0.1:8000/api';
+  if (window.location.protocol === 'file:') return 'http://127.0.0.1:8000/api';
+  return '/api';
+};
+
+const API_BASE = getApiBase();
 
 async function fetchJson(endpoint, options = {}) {
   const url = `${API_BASE}${endpoint}`;

@@ -180,3 +180,28 @@ def test_experiments_history():
     response = client.get("/api/experiments/history")
     assert response.status_code == 200
     assert isinstance(response.json(), list)
+
+
+def test_root_dashboard_html():
+    response = client.get("/", headers={"accept": "text/html,application/xhtml+xml"})
+    assert response.status_code == 200
+    assert "text/html" in response.headers.get("content-type", "")
+    assert "Bengaluru Traffic Coordination Center" in response.text
+    assert "Silk Board Corridor" in response.text
+
+
+def test_dashboard_endpoint():
+    response = client.get("/dashboard")
+    assert response.status_code == 200
+    assert "text/html" in response.headers.get("content-type", "")
+    assert "Live Directional Corridor Topology" in response.text
+
+
+def test_api_descriptor_endpoint():
+    response = client.get("/api")
+    assert response.status_code == 200
+    data = response.json()
+    assert data["service"] == "Smart Traffic Coordination System"
+    assert "Bengaluru Silk Board" in data["corridor"]
+    assert data["websocket"] == "/ws/traffic"
+

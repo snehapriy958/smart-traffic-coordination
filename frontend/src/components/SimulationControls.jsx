@@ -144,8 +144,8 @@ export function SimulationControls({ simStatus, onStatusRefresh }) {
           >
             <option value="coordinated">Coordinated Adaptive (Silk Board)</option>
             <option value="baseline">Fixed-Time Baseline</option>
-            <option value="marl_ppo">MARL PPO (Prototype)</option>
-            <option value="marl_dqn">MARL DQN (Prototype)</option>
+            <option value="marl_ppo">MARL PPO (Trained Checkpoint)</option>
+            <option value="marl_dqn">MARL DQN (Trained Checkpoint)</option>
           </select>
         </div>
 
