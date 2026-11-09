@@ -88,7 +88,7 @@ Each candidate controller was paired seed-for-seed with the Fixed-Time Baseline 
 | | Cumulative Delay ($\text{veh}\cdot\text{s}$) | **$-4348.8$** | **$-35.13\%$** | 359.4 | **$-38.26$** | **$2.83 \times 10^{-11}$** | $[-4605.9, -4091.7]$ | 0.0 | **$0.00195$** | 12.10 | **STATISTICALLY SIGNIFICANT** |
 | | $\text{CO}_2$ Emissions (kg) | **$-8.43$** | **$-15.17\%$** | 0.74 | **$-36.18$** | **$4.66 \times 10^{-11}$** | $[-8.96, -7.90]$ | 0.0 | **$0.00195$** | 11.44 | **STATISTICALLY SIGNIFICANT** |
 | | Fuel Consumption (L) | **$-3.64$** | **$-15.17\%$** | 0.32 | **$-36.17$** | **$4.68 \times 10^{-11}$** | $[-3.87, -3.41]$ | 0.0 | **$0.00195$** | 11.44 | **STATISTICALLY SIGNIFICANT** |
-| **MARL PPO vs. Baseline** | Travel Time (s) | **$-4.52$** | **$-5.01\%$** | 5.90 | **$-2.42$** | **$0.03842$** | $[-8.74, -0.30]$ | 2.0 | **$0.00586$** | 0.77 | **Marginally Significant** |
+| **MARL PPO vs. Baseline** | Travel Time (s) | **$-4.52$** | **$-5.01\%$** | 5.90 | **$-2.42$** | **$0.03842$** | $[-8.74, -0.30]$ | 2.0 | **$0.00586$** | 0.77 | **Not Significant after Bonferroni ($p_{\text{adj}} = 0.115$)** |
 | | Speed (km/h) | **$-2.64$** | **$-9.34\%$** | 1.07 | **$-7.83$** | **$2.63 \times 10^{-5}$** | $[-3.41, -1.88]$ | 0.0 | **$0.00195$** | 2.48 | **SIGNIFICANT PENALTY** |
 | | Cumulative Delay ($\text{veh}\cdot\text{s}$) | **$-209.6$** | **$-1.66\%$** | 950.8 | **$-0.70$** | **$0.50331$** | $[-889.7, +470.5]$ | 25.0 | **$0.84570$** | 0.22 | **Not Significant** |
 | | $\text{CO}_2$ Emissions (kg) | **$-0.55$** | **$-0.98\%$** | 1.78 | **$-0.97$** | **$0.35522$** | $[-1.82, +0.72]$ | 23.0 | **$0.69531$** | 0.31 | **Not Significant** |

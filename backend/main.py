@@ -118,6 +118,7 @@ async def websocket_traffic_endpoint(websocket: WebSocket):
         "signals": sim_service.get_signals(),
         "emergencies": sim_service.get_emergencies(),
         "decisions": [d.model_dump() for d in sim_service.get_decisions()[-5:]],
+        "vehicles": sim_service.get_live_vehicles(),
     }
     session = await ws_manager.connect(websocket, initial_payload=initial_payload)
     try:

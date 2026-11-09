@@ -52,6 +52,7 @@ export const api = {
   // Traffic & Metrics
   getTrafficLive: () => fetchJson('/traffic/live'),
   getTrafficMetrics: () => fetchJson('/traffic/metrics'),
+  getTrafficVehicles: () => fetchJson('/traffic/vehicles'),
 
   // Signals & Manual Override
   getSignals: () => fetchJson('/signals'),

@@ -14,7 +14,20 @@
       8,
       9,
       10
-    ]
+    ],
+    "statistical_definitions": {
+      "standard_deviation_std": "Sample standard deviation (s), representing the empirical dispersion/variability across the N=10 random seeds. Formula: s = sqrt(sum((x_i - mean)^2) / (N - 1)).",
+      "standard_error_se": "Standard error of the sample mean (SE), quantifying the precision and uncertainty of the estimated mean parameter. Formula: SE = s / sqrt(N).",
+      "confidence_interval_ci_95": "Two-sided 95% Confidence Interval for the true population mean: [mean - t_crit * SE, mean + t_crit * SE], using Student's t-distribution with df = N - 1 = 9 and t_critical = 2.26216.",
+      "hypothesis_testing": "Two-tailed paired t-test against the Fixed-Time Baseline across identical random seeds, complemented by non-parametric Wilcoxon signed-rank test and Cohen's dz effect size.",
+      "multiple_comparisons_correction": {
+        "method": "Bonferroni correction",
+        "num_hypotheses_m": 3,
+        "family_wise_alpha": 0.05,
+        "adjusted_alpha": 0.016666666666666666,
+        "rule": "A controller comparison against baseline is statistically significant if and only if p_value <= alpha / 3 (or bonferroni_p_value <= 0.05)."
+      }
+    }
   },
   "descriptive_statistics": {
     "baseline": {
@@ -496,7 +509,11 @@
         "wilcoxon_p_value": 0.001953125,
         "cohen_dz": 18.736,
         "significant_at_alpha_0_05": true,
-        "improved": true
+        "improved": true,
+        "bonferroni_adjusted_alpha": 0.016667,
+        "bonferroni_p_value": 0.0,
+        "significant_bonferroni": true,
+        "statistical_verdict": "Statistically Significant Improvement (p_adj < 0.05)"
       },
       "avg_speed_kmh": {
         "metric_name": "Corridor Speed (km/h)",
@@ -526,7 +543,11 @@
         "wilcoxon_p_value": 0.001953125,
         "cohen_dz": 25.7101,
         "significant_at_alpha_0_05": true,
-        "improved": true
+        "improved": true,
+        "bonferroni_adjusted_alpha": 0.016667,
+        "bonferroni_p_value": 0.0,
+        "significant_bonferroni": true,
+        "statistical_verdict": "Statistically Significant Improvement (p_adj < 0.05)"
       },
       "cumulative_delay_veh_s": {
         "metric_name": "Cumulative Delay (veh-s)",
@@ -556,7 +577,11 @@
         "wilcoxon_p_value": 0.001953125,
         "cohen_dz": 20.3655,
         "significant_at_alpha_0_05": true,
-        "improved": true
+        "improved": true,
+        "bonferroni_adjusted_alpha": 0.016667,
+        "bonferroni_p_value": 0.0,
+        "significant_bonferroni": true,
+        "statistical_verdict": "Statistically Significant Improvement (p_adj < 0.05)"
       },
       "co2_kg": {
         "metric_name": "CO2 Emissions (kg)",
@@ -586,7 +611,11 @@
         "wilcoxon_p_value": 0.001953125,
         "cohen_dz": 19.081,
         "significant_at_alpha_0_05": true,
-        "improved": true
+        "improved": true,
+        "bonferroni_adjusted_alpha": 0.016667,
+        "bonferroni_p_value": 0.0,
+        "significant_bonferroni": true,
+        "statistical_verdict": "Statistically Significant Improvement (p_adj < 0.05)"
       },
       "fuel_liters": {
         "metric_name": "Fuel Consumption (L)",
@@ -616,7 +645,11 @@
         "wilcoxon_p_value": 0.001953125,
         "cohen_dz": 19.0984,
         "significant_at_alpha_0_05": true,
-        "improved": true
+        "improved": true,
+        "bonferroni_adjusted_alpha": 0.016667,
+        "bonferroni_p_value": 0.0,
+        "significant_bonferroni": true,
+        "statistical_verdict": "Statistically Significant Improvement (p_adj < 0.05)"
       }
     },
     "marl_dqn": {
@@ -648,7 +681,11 @@
         "wilcoxon_p_value": 0.001953125,
         "cohen_dz": 14.4102,
         "significant_at_alpha_0_05": true,
-        "improved": true
+        "improved": true,
+        "bonferroni_adjusted_alpha": 0.016667,
+        "bonferroni_p_value": 0.0,
+        "significant_bonferroni": true,
+        "statistical_verdict": "Statistically Significant Improvement (p_adj < 0.05)"
       },
       "avg_speed_kmh": {
         "metric_name": "Corridor Speed (km/h)",
@@ -678,7 +715,11 @@
         "wilcoxon_p_value": 0.001953125,
         "cohen_dz": 6.4881,
         "significant_at_alpha_0_05": true,
-        "improved": true
+        "improved": true,
+        "bonferroni_adjusted_alpha": 0.016667,
+        "bonferroni_p_value": 0.0,
+        "significant_bonferroni": true,
+        "statistical_verdict": "Statistically Significant Improvement (p_adj < 0.05)"
       },
       "cumulative_delay_veh_s": {
         "metric_name": "Cumulative Delay (veh-s)",
@@ -708,7 +749,11 @@
         "wilcoxon_p_value": 0.001953125,
         "cohen_dz": 12.0996,
         "significant_at_alpha_0_05": true,
-        "improved": true
+        "improved": true,
+        "bonferroni_adjusted_alpha": 0.016667,
+        "bonferroni_p_value": 0.0,
+        "significant_bonferroni": true,
+        "statistical_verdict": "Statistically Significant Improvement (p_adj < 0.05)"
       },
       "co2_kg": {
         "metric_name": "CO2 Emissions (kg)",
@@ -738,7 +783,11 @@
         "wilcoxon_p_value": 0.001953125,
         "cohen_dz": 11.4415,
         "significant_at_alpha_0_05": true,
-        "improved": true
+        "improved": true,
+        "bonferroni_adjusted_alpha": 0.016667,
+        "bonferroni_p_value": 0.0,
+        "significant_bonferroni": true,
+        "statistical_verdict": "Statistically Significant Improvement (p_adj < 0.05)"
       },
       "fuel_liters": {
         "metric_name": "Fuel Consumption (L)",
@@ -768,7 +817,11 @@
         "wilcoxon_p_value": 0.001953125,
         "cohen_dz": 11.4367,
         "significant_at_alpha_0_05": true,
-        "improved": true
+        "improved": true,
+        "bonferroni_adjusted_alpha": 0.016667,
+        "bonferroni_p_value": 0.0,
+        "significant_bonferroni": true,
+        "statistical_verdict": "Statistically Significant Improvement (p_adj < 0.05)"
       }
     },
     "marl_ppo": {
@@ -800,7 +853,11 @@
         "wilcoxon_p_value": 0.005859375,
         "cohen_dz": 0.7662,
         "significant_at_alpha_0_05": true,
-        "improved": true
+        "improved": true,
+        "bonferroni_adjusted_alpha": 0.016667,
+        "bonferroni_p_value": 0.115253,
+        "significant_bonferroni": false,
+        "statistical_verdict": "Not Statistically Significant after Bonferroni Correction (raw p = 0.0384, p_adj = 0.1153 > 0.05)"
       },
       "avg_speed_kmh": {
         "metric_name": "Corridor Speed (km/h)",
@@ -830,7 +887,11 @@
         "wilcoxon_p_value": 0.001953125,
         "cohen_dz": 2.4761,
         "significant_at_alpha_0_05": true,
-        "improved": false
+        "improved": false,
+        "bonferroni_adjusted_alpha": 0.016667,
+        "bonferroni_p_value": 7.9e-05,
+        "significant_bonferroni": true,
+        "statistical_verdict": "Statistically Significant Degradation (p_adj < 0.05)"
       },
       "cumulative_delay_veh_s": {
         "metric_name": "Cumulative Delay (veh-s)",
@@ -860,7 +921,11 @@
         "wilcoxon_p_value": 0.845703125,
         "cohen_dz": 0.2205,
         "significant_at_alpha_0_05": false,
-        "improved": true
+        "improved": true,
+        "bonferroni_adjusted_alpha": 0.016667,
+        "bonferroni_p_value": 1.0,
+        "significant_bonferroni": false,
+        "statistical_verdict": "Not Statistically Significant (p = 0.5033 >= 0.05)"
       },
       "co2_kg": {
         "metric_name": "CO2 Emissions (kg)",
@@ -890,7 +955,11 @@
         "wilcoxon_p_value": 0.6953125,
         "cohen_dz": 0.3082,
         "significant_at_alpha_0_05": false,
-        "improved": true
+        "improved": true,
+        "bonferroni_adjusted_alpha": 0.016667,
+        "bonferroni_p_value": 1.0,
+        "significant_bonferroni": false,
+        "statistical_verdict": "Not Statistically Significant (p = 0.3552 >= 0.05)"
       },
       "fuel_liters": {
         "metric_name": "Fuel Consumption (L)",
@@ -920,7 +989,11 @@
         "wilcoxon_p_value": 0.6953125,
         "cohen_dz": 0.3069,
         "significant_at_alpha_0_05": false,
-        "improved": true
+        "improved": true,
+        "bonferroni_adjusted_alpha": 0.016667,
+        "bonferroni_p_value": 1.0,
+        "significant_bonferroni": false,
+        "statistical_verdict": "Not Statistically Significant (p = 0.3571 >= 0.05)"
       }
     }
   }

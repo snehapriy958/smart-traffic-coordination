@@ -12,15 +12,17 @@ import { sumoToThreeCoords, DEFAULT_SCENE_ANCHOR } from './coordinateTransform.j
 
 // Visual Material Constants
 export const ROAD_STYLE = Object.freeze({
-  ASPHALT_GROUND: '#23272e',      // Dark slate asphalt
-  ASPHALT_FLYOVER: '#2a2f38',     // Slightly lighter concrete-deck asphalt
-  ASPHALT_JUNCTION: '#1f2329',    // High-wear intersection asphalt
-  LANE_MARKING_WHITE: '#e6edf3',  // Reflectorized thermoplastic white
-  LANE_MARKING_YELLOW: '#e3b341', // Median yellow marking
-  SHOULDER_LINE: '#d0d7de',       // Edge boundary line
-  PILLAR_CONCRETE: '#6e7681',     // Reinforced concrete piers
-  GROUND_TERRAIN: '#14171c',      // Ambient urban terrain
-  Z_FIGHT_BIAS: 0.02,             // Elevation bias (meters) for markings above asphalt
+  ASPHALT_GROUND: '#2a313d',      // Crisp dark slate asphalt
+  ASPHALT_FLYOVER: '#384252',     // Concrete-deck flyover asphalt
+  ASPHALT_UNDERPASS: '#1c212b',   // Depressed underpass asphalt
+  ASPHALT_JUNCTION: '#242a35',    // High-wear intersection asphalt
+  LANE_MARKING_WHITE: '#ffffff',  // Reflectorized thermoplastic white
+  LANE_MARKING_YELLOW: '#f59e0b', // Median amber marking
+  SHOULDER_LINE: '#cbd5e1',       // Road boundary edge line / curb
+  PILLAR_CONCRETE: '#94a3b8',     // Reinforced concrete piers
+  FLYOVER_BARRIER: '#64748b',     // 3D flyover guardrail parapet
+  GROUND_TERRAIN: '#11151c',      // Ambient urban terrain
+  Z_FIGHT_BIAS: 0.03,             // Elevation bias (meters) for markings above asphalt
 });
 
 /**
@@ -287,13 +289,139 @@ export function createPillarsGeometry(centerlinePts, spacing = 30.0, radius = 0.
     // Only instantiate pillars if elevated above ground level (> 2.5m)
     if (pt.y > 2.5) {
       const height = pt.y;
-      const cyl = new THREE.CylinderGeometry(radius, radius, height, 12);
+      const cyl = new THREE.CylinderGeometry(radius, radius, height, 16);
       cyl.translate(pt.x, height / 2.0, pt.z);
       pillarGeometries.push(cyl);
+
+      // Top pier cap / crosshead supporting the flyover deck
+      const cap = new THREE.BoxGeometry(radius * 3.8, 0.6, radius * 2.4);
+      cap.translate(pt.x, height - 0.3, pt.z);
+      pillarGeometries.push(cap);
     }
   }
 
   return mergeBufferGeometries(pillarGeometries);
+}
+
+/**
+ * Generates solid shoulder line ribbons along the outer left and right boundaries of an edge.
+ * @param {Array<Array<THREE.Vector3>>} lanePoints - Points for all lanes of the edge
+ * @param {Array<object>} lanes - Lane definitions with widths
+ * @param {number} [lineWidth=0.35] - Shoulder line width in meters
+ * @returns {Array<THREE.BufferGeometry>}
+ */
+export function createRoadBorderGeometries(lanePoints, lanes, lineWidth = 0.35) {
+  if (!lanePoints || lanePoints.length === 0) return [];
+  const borders = [];
+
+  // Outermost left boundary of first lane
+  const firstLanePts = lanePoints[0];
+  const firstLaneWidth = lanes[0]?.width || 3.20;
+  if (firstLanePts && firstLanePts.length >= 2) {
+    const normals = computePolylineNormals(firstLanePts);
+    const halfW = firstLaneWidth / 2.0;
+    const outerLeftPts = firstLanePts.map((p, idx) => {
+      const norm = normals[idx];
+      return new THREE.Vector3(
+        p.x - norm.x * halfW,
+        p.y,
+        p.z - norm.z * halfW
+      );
+    });
+    borders.push(createRibbonGeometry(outerLeftPts, lineWidth, ROAD_STYLE.Z_FIGHT_BIAS));
+  }
+
+  // Outermost right boundary of last lane
+  const lastLaneIdx = lanePoints.length - 1;
+  const lastLanePts = lanePoints[lastLaneIdx];
+  const lastLaneWidth = lanes[lastLaneIdx]?.width || 3.20;
+  if (lastLanePts && lastLanePts.length >= 2) {
+    const normals = computePolylineNormals(lastLanePts);
+    const halfW = lastLaneWidth / 2.0;
+    const outerRightPts = lastLanePts.map((p, idx) => {
+      const norm = normals[idx];
+      return new THREE.Vector3(
+        p.x + norm.x * halfW,
+        p.y,
+        p.z + norm.z * halfW
+      );
+    });
+    borders.push(createRibbonGeometry(outerRightPts, lineWidth, ROAD_STYLE.Z_FIGHT_BIAS));
+  }
+
+  return borders;
+}
+
+/**
+ * Extrudes continuous 3D parapet barriers along a 3D polyline (e.g. flyover guardrails).
+ * @param {Array<THREE.Vector3>} points
+ * @param {number} [height=1.1]
+ * @param {number} [width=0.35]
+ * @returns {THREE.BufferGeometry}
+ */
+export function createBarrierGeometry(points, height = 1.1, width = 0.35) {
+  if (!points || points.length < 2) return new THREE.BufferGeometry();
+  const normals = computePolylineNormals(points);
+  const halfW = width / 2.0;
+  const n = points.length;
+  const positions = new Float32Array(n * 4 * 3);
+  const indices = [];
+
+  for (let i = 0; i < n; i++) {
+    const p = points[i];
+    const norm = normals[i];
+    const bl_x = p.x - norm.x * halfW;
+    const bl_y = p.y;
+    const bl_z = p.z - norm.z * halfW;
+
+    const br_x = p.x + norm.x * halfW;
+    const br_y = p.y;
+    const br_z = p.z + norm.z * halfW;
+
+    const tl_x = bl_x;
+    const tl_y = bl_y + height;
+    const tl_z = bl_z;
+
+    const tr_x = br_x;
+    const tr_y = br_y + height;
+    const tr_z = br_z;
+
+    const base = i * 4;
+    positions[(base + 0) * 3 + 0] = bl_x;
+    positions[(base + 0) * 3 + 1] = bl_y;
+    positions[(base + 0) * 3 + 2] = bl_z;
+
+    positions[(base + 1) * 3 + 0] = br_x;
+    positions[(base + 1) * 3 + 1] = br_y;
+    positions[(base + 1) * 3 + 2] = br_z;
+
+    positions[(base + 2) * 3 + 0] = tl_x;
+    positions[(base + 2) * 3 + 1] = tl_y;
+    positions[(base + 2) * 3 + 2] = tl_z;
+
+    positions[(base + 3) * 3 + 0] = tr_x;
+    positions[(base + 3) * 3 + 1] = tr_y;
+    positions[(base + 3) * 3 + 2] = tr_z;
+
+    if (i < n - 1) {
+      const next = (i + 1) * 4;
+      // Top face
+      indices.push(base + 2, next + 2, base + 3);
+      indices.push(base + 3, next + 2, next + 3);
+      // Left outer face
+      indices.push(base + 0, base + 2, next + 0);
+      indices.push(next + 0, base + 2, next + 2);
+      // Right inner face
+      indices.push(base + 1, next + 1, base + 3);
+      indices.push(base + 3, next + 1, next + 3);
+    }
+  }
+
+  const geom = new THREE.BufferGeometry();
+  geom.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+  geom.setIndex(indices);
+  geom.computeVertexNormals();
+  return geom;
 }
 
 /**
@@ -320,10 +448,12 @@ export function createJunctionGeometry(sumoPolygon, elevation = 0.0, anchor = DE
   const shape = new THREE.Shape(threePts);
   const geom2d = new THREE.ShapeGeometry(shape);
 
-  // ShapeGeometry creates vertices in XY plane; rotate into XZ plane
-  geom2d.rotateX(Math.PI / 2);
-  // Shift to elevation
-  geom2d.translate(0, elevation, 0);
+  // ShapeGeometry creates vertices in XY plane with normal (0, 0, 1).
+  // Rotate by -PI/2 around X axis so normal points UP to (0, 1, 0) in Three.js world space.
+  geom2d.rotateX(-Math.PI / 2);
+  // Shift to elevation with slight positive bias to avoid z-fighting with terrain
+  geom2d.translate(0, elevation + 0.015, 0);
+  geom2d.computeVertexNormals();
 
   return geom2d;
 }
@@ -394,8 +524,8 @@ export function mergeBufferGeometries(geometries) {
 
 /**
  * Builds all categorized corridor 3D geometries (ground roads, flyovers,
- * underpasses, junctions, lane dividers, pillars) into merged draw-call optimized
- * BufferGeometries for rendering in React Three Fiber.
+ * underpasses, junctions, lane dividers, road borders, barriers, pillars) into
+ * merged draw-call optimized BufferGeometries for rendering in React Three Fiber.
  *
  * @param {object} networkData - Raw or loaded corridorNetworkGeometry JSON
  * @param {object} [anchor=DEFAULT_SCENE_ANCHOR] - Georeferencing anchor
@@ -409,6 +539,8 @@ export function buildCorridorSceneGeometries(networkData, anchor = DEFAULT_SCENE
       underpassRoads: new THREE.BufferGeometry(),
       junctions: new THREE.BufferGeometry(),
       laneDividers: new THREE.BufferGeometry(),
+      roadBorders: new THREE.BufferGeometry(),
+      barriers: new THREE.BufferGeometry(),
       pillars: new THREE.BufferGeometry(),
     };
   }
@@ -420,6 +552,8 @@ export function buildCorridorSceneGeometries(networkData, anchor = DEFAULT_SCENE
   const flyoverRibbons = [];
   const underpassRibbons = [];
   const dividerGeoms = [];
+  const borderGeoms = [];
+  const barrierGeoms = [];
   const pillarGeoms = [];
 
   for (const edge of edges) {
@@ -437,18 +571,52 @@ export function buildCorridorSceneGeometries(networkData, anchor = DEFAULT_SCENE
       }
     }
 
-    // Lane divider dashed lines between adjacent lanes
+    // Lane divider dashed lines between adjacent lanes (0.30m width for crisp resolution)
     for (let i = 0; i < lanePoints.length - 1; i++) {
-      const div = createDashedDividerGeometry(lanePoints[i], lanePoints[i + 1]);
+      const div = createDashedDividerGeometry(lanePoints[i], lanePoints[i + 1], 3.0, 3.0, 0.30);
       if (div.attributes?.position?.count > 0) {
         dividerGeoms.push(div);
       }
     }
 
-    // Concrete pillars for elevated flyover structures (> 2.5m elevation)
+    // Solid outer shoulder / curb boundary markings along road edges
+    const borders = createRoadBorderGeometries(lanePoints, edge.lanes, 0.35);
+    for (const b of borders) {
+      if (b.attributes?.position?.count > 0) {
+        borderGeoms.push(b);
+      }
+    }
+
+    // 3D Parapet barriers and pillars for elevated flyovers (> 2.5m elevation)
     if (edge.isFlyover && (edge.assumedElevation || 0) > 2.5 && lanePoints.length > 0) {
+      const firstLanePts = lanePoints[0];
+      const lastLanePts = lanePoints[lanePoints.length - 1];
+      const firstWidth = edge.lanes[0]?.width || 3.20;
+      const lastWidth = edge.lanes[lanePoints.length - 1]?.width || 3.20;
+
+      if (firstLanePts.length >= 2) {
+        const normFirst = computePolylineNormals(firstLanePts);
+        const leftOuter = firstLanePts.map((p, idx) => {
+          const norm = normFirst[idx];
+          return new THREE.Vector3(p.x - norm.x * (firstWidth / 2.0), p.y, p.z - norm.z * (firstWidth / 2.0));
+        });
+        const b1 = createBarrierGeometry(leftOuter, 1.1, 0.35);
+        if (b1.attributes?.position?.count > 0) barrierGeoms.push(b1);
+      }
+
+      if (lastLanePts.length >= 2) {
+        const normLast = computePolylineNormals(lastLanePts);
+        const rightOuter = lastLanePts.map((p, idx) => {
+          const norm = normLast[idx];
+          return new THREE.Vector3(p.x + norm.x * (lastWidth / 2.0), p.y, p.z + norm.z * (lastWidth / 2.0));
+        });
+        const b2 = createBarrierGeometry(rightOuter, 1.1, 0.35);
+        if (b2.attributes?.position?.count > 0) barrierGeoms.push(b2);
+      }
+
+      // Concrete pillars beneath elevated flyover deck
       const centerLaneIdx = Math.floor(lanePoints.length / 2);
-      const pil = createPillarsGeometry(lanePoints[centerLaneIdx], 30.0, 0.65);
+      const pil = createPillarsGeometry(lanePoints[centerLaneIdx], 25.0, 0.85);
       if (pil.attributes?.position?.count > 0) {
         pillarGeoms.push(pil);
       }
@@ -472,6 +640,8 @@ export function buildCorridorSceneGeometries(networkData, anchor = DEFAULT_SCENE
     underpassRoads: mergeBufferGeometries(underpassRibbons),
     junctions: mergeBufferGeometries(junctionGeoms),
     laneDividers: mergeBufferGeometries(dividerGeoms),
+    roadBorders: mergeBufferGeometries(borderGeoms),
+    barriers: mergeBufferGeometries(barrierGeoms),
     pillars: mergeBufferGeometries(pillarGeoms),
   };
 }

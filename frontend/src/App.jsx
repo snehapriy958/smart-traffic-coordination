@@ -40,6 +40,7 @@ export default function App() {
   const [signals, setSignals] = useState({});
   const [emergencies, setEmergencies] = useState(null);
   const [riskData, setRiskData] = useState(null);
+  const [vehicles, setVehicles] = useState([]);
   const [compareData, setCompareData] = useState(null);
   const [compareLoading, setCompareLoading] = useState(true);
   const [compareError, setCompareError] = useState(null);
@@ -59,7 +60,7 @@ export default function App() {
   const loadInitialData = useCallback(async () => {
     setCompareLoading(true);
     try {
-      const [h, s, m, j, sig, em, r, comp] = await Promise.allSettled([
+      const [h, s, m, j, sig, em, r, comp, v] = await Promise.allSettled([
         api.getHealth(),
         api.getSimulationStatus(),
         api.getTrafficMetrics(),
@@ -68,6 +69,7 @@ export default function App() {
         api.getEmergencies(),
         api.getRisks(),
         api.getExperimentsCompare(),
+        api.getTrafficVehicles(),
       ]);
 
       if (h.status === 'fulfilled') setHealth(h.value);
@@ -83,6 +85,7 @@ export default function App() {
       if (sig.status === 'fulfilled' && sig.value?.signals) setSignals(sig.value.signals);
       if (em.status === 'fulfilled') setEmergencies(em.value);
       if (r.status === 'fulfilled') setRiskData(r.value);
+      if (v.status === 'fulfilled' && Array.isArray(v.value?.vehicles)) setVehicles(v.value.vehicles);
       if (comp.status === 'fulfilled') {
         setCompareData(comp.value);
         setCompareError(null);
@@ -154,6 +157,7 @@ export default function App() {
 
       if (data.junctions) setJunctions(data.junctions);
       if (data.signals) setSignals(data.signals);
+      if (Array.isArray(data.vehicles)) setVehicles(data.vehicles);
       if (data.metrics) {
         setMetrics(data.metrics);
         setEmissionHistory((prev) => appendEmissionHistory(prev, data.metrics, sessionChanged));
@@ -377,7 +381,29 @@ export default function App() {
         {activeTab === '3d' && (
           <div className="space-y-6">
             <Suspense fallback={<div className="min-h-[600px] flex items-center justify-center text-slate-500 font-medium">Loading 3D Visualizer...</div>}>
-              <ThreeCorridorView onReturnTo2D={() => setActiveTab('live')} />
+              <ThreeCorridorView
+                onReturnTo2D={() => setActiveTab('live')}
+                vehicles={vehicles}
+                simStatus={simStatus}
+                signals={signals}
+                emergencies={emergencies}
+                metrics={metrics}
+                junctions={junctions}
+                compareData={compareData}
+                onModeChange={async (newMode) => {
+                  try {
+                    await api.startSimulation({
+                      mode: newMode,
+                      duration: simStatus.duration || 600,
+                      seed: simStatus.seed || 42,
+                      enable_emergency: true,
+                    });
+                    refreshStatus();
+                  } catch (err) {
+                    console.warn('Mode switch error:', err);
+                  }
+                }}
+              />
             </Suspense>
           </div>
         )}

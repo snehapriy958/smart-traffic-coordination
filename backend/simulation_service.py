@@ -58,6 +58,17 @@ APPROVED_MARL_CHECKPOINTS = {
     "marl_dqn": ("checkpoints/p6/dqn_stage_a_best.json", "dqn"),
 }
 
+FLYOVER_EDGE_IDS = {
+    "40696222", "133759694", "160511376", "519734960", "886153772",
+    "1208112303", "1299917512", "1299917514", "1299917517", "1299932382",
+    "1301808818", "1301808820", "1303740767", "1351994264", "1351994264-AddedOffRampEdge",
+}
+
+UNDERPASS_EDGE_IDS = {
+    "133763758", "133763760", "148210028", "148210029", "148210030", "239438609",
+}
+
+
 
 def resolve_checkpoint_path(mode: str, checkpoint_path: Optional[str]) -> Optional[Path]:
     """Validate an explicit checkpoint against the small API allowlist."""
@@ -390,6 +401,7 @@ class SimulationService:
         self._decisions_log: List[DecisionItemSchema] = []
         self._emergency_events: List[EmergencyEventItemSchema] = []
         self._cached_metrics: Dict[str, Any] = {}
+        self._latest_vehicles: List[Dict[str, Any]] = []
 
         # Loop reference for async websocket broadcasting
         self.loop: Optional[asyncio.AbstractEventLoop] = None
@@ -464,6 +476,8 @@ class SimulationService:
 
             self._paused = False
             self._stop_requested = False
+        with self._lock:
+            self._latest_vehicles = []
             self._error_message = None
             self._current_sim_time = 0.0
             self._latest_states = {}
@@ -770,6 +784,7 @@ class SimulationService:
             self._current_sim_time = 0.0
             self._latest_states = {}
             self._cached_metrics = {}
+            self._latest_vehicles = []
             self._error_message = None
             self._active_sumo_process = None
             self._active_sumo_pid = None
@@ -936,10 +951,35 @@ class SimulationService:
                 )
                 sim.metrics_collector.record_step(sim_time, states, emergency_duration=emergency_duration)
 
+                # Extract active vehicle positions for 3D digital twin
+                active_vehicles: List[Dict[str, Any]] = []
+                try:
+                    veh_ids = traci.vehicle.getIDList()
+                    for vid in veh_ids:
+                        vpos = traci.vehicle.getPosition(vid)
+                        vangle = traci.vehicle.getAngle(vid)
+                        vspeed = traci.vehicle.getSpeed(vid)
+                        vtype = traci.vehicle.getTypeID(vid)
+                        vedge = traci.vehicle.getRoadID(vid)
+                        velev = 8.0 if vedge in FLYOVER_EDGE_IDS else (-4.5 if vedge in UNDERPASS_EDGE_IDS else 0.0)
+                        active_vehicles.append({
+                            "id": vid,
+                            "type": vtype,
+                            "x": round(float(vpos[0]), 2),
+                            "y": round(float(vpos[1]), 2),
+                            "z": velev,
+                            "angle": round(float(vangle), 1),
+                            "speed": round(float(vspeed), 2),
+                            "edge": vedge,
+                        })
+                except Exception as veh_exc:
+                    logger.debug(f"Vehicle telemetry extraction notice: {veh_exc}")
+
                 # Update in-memory telemetry
                 with self._lock:
                     self._current_sim_time = sim_time
                     self._latest_states = states
+                    self._latest_vehicles = active_vehicles
                     self._cached_metrics = self._extract_metrics_summary(sim, states, sim_time)
 
                 # Periodic DB write (every 5 seconds)
@@ -1006,6 +1046,8 @@ class SimulationService:
         self._running = False
         self._paused = False
         self._stop_requested = False
+        with self._lock:
+            self._latest_vehicles = []
         if not self._watchdog_escalated:
             self._startup_status = final_status
         else:
@@ -1360,6 +1402,7 @@ class SimulationService:
             "signals": self.get_signals(),
             "emergencies": self.get_emergencies(),
             "decisions": [d.model_dump() for d in self._decisions_log[-5:]],
+            "vehicles": self.get_live_vehicles(),
         }
 
         try:
@@ -1813,6 +1856,11 @@ class SimulationService:
         """Returns the current monotonic sequence number for the active simulation session."""
         with self._lock:
             return self._sequence_number
+
+    def get_live_vehicles(self) -> List[Dict[str, Any]]:
+        """Returns latest extracted SUMO vehicle positions and headings for 3D visualization."""
+        with self._lock:
+            return list(self._latest_vehicles)
 
     def get_live_junctions(self) -> Dict[str, Any]:
         """Returns latest extracted junction states."""

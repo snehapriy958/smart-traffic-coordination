@@ -6,11 +6,24 @@ Real-time traffic state and corridor metrics endpoints.
 
 from __future__ import annotations
 
+from typing import Any, Dict
 from fastapi import APIRouter
 from backend.schemas import TrafficLiveResponse, TrafficMetricsResponse
 from backend.simulation_service import sim_service
 
 router = APIRouter(prefix="/api/traffic", tags=["Traffic"])
+
+
+@router.get("/vehicles")
+def get_live_vehicles() -> Dict[str, Any]:
+    """Returns active SUMO vehicle telemetry for the 3D digital twin."""
+    status_obj = sim_service.get_status()
+    st_str = "RUNNING" if status_obj.running and not status_obj.paused else ("PAUSED" if status_obj.paused else "STOPPED")
+    return {
+        "simulation_time": status_obj.simulation_time,
+        "status": st_str,
+        "vehicles": sim_service.get_live_vehicles(),
+    }
 
 
 @router.get("/live", response_model=TrafficLiveResponse)

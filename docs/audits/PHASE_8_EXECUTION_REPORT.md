@@ -98,7 +98,7 @@ For each candidate controller, paired differences were evaluated seed-for-seed a
 | | Cumulative Delay | **$-4348.8$** | **$-35.13\%$** | 359.4 | 113.7 | **$-38.26$** | **$2.83 \times 10^{-11}$** | 0.0 | **$0.00195$** | 12.10 | **Statistically Significant** |
 | | $\text{CO}_2$ Emissions | **$-8.43$** | **$-15.17\%$** | 0.74 | 0.23 | **$-36.18$** | **$4.66 \times 10^{-11}$** | 0.0 | **$0.00195$** | 11.44 | **Statistically Significant** |
 | | Fuel Consumption | **$-3.64$** | **$-15.17\%$** | 0.32 | 0.10 | **$-36.17$** | **$4.68 \times 10^{-11}$** | 0.0 | **$0.00195$** | 11.44 | **Statistically Significant** |
-| **MARL PPO** | Travel Time (s) | **$-4.52$** | **$-5.01\%$** | 5.90 | 1.87 | **$-2.42$** | **$0.03842$** | 2.0 | **$0.00586$** | 0.77 | **Marginally Significant** |
+| **MARL PPO** | Travel Time (s) | **$-4.52$** | **$-5.01\%$** | 5.90 | 1.87 | **$-2.42$** | **$0.03842$** | 2.0 | **$0.00586$** | 0.77 | **Not Significant after Bonferroni ($p_{\text{adj}} = 0.115$)** |
 | | Speed (km/h) | **$-2.64$** | **$-9.34\%$** | 1.07 | 0.34 | **$-7.83$** | **$2.63 \times 10^{-5}$** | 0.0 | **$0.00195$** | 2.48 | **Significant Penalty** |
 | | Cumulative Delay | **$-209.6$** | **$-1.66\%$** | 950.8 | 300.7 | **$-0.70$** | **$0.50331$** | 25.0 | **$0.84570$** | 0.22 | **Not Significant** |
 | | $\text{CO}_2$ Emissions | **$-0.55$** | **$-0.98\%$** | 1.78 | 0.56 | **$-0.97$** | **$0.35522$** | 23.0 | **$0.69531$** | 0.31 | **Not Significant** |
