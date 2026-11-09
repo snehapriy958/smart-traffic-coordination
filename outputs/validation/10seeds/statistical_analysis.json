@@ -1,0 +1,927 @@
+{
+  "metadata": {
+    "sample_size": 10,
+    "degrees_of_freedom": 9,
+    "t_critical_95pct": 2.26216,
+    "seeds": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10
+    ]
+  },
+  "descriptive_statistics": {
+    "baseline": {
+      "avg_corridor_travel_time_s": {
+        "name": "Corridor Travel Time (s)",
+        "values": [
+          88.37,
+          90.53,
+          90.72,
+          88.15,
+          89.99,
+          92.04,
+          89.79,
+          91.29,
+          88.86,
+          90.47
+        ],
+        "mean": 90.021,
+        "std": 1.259,
+        "se": 0.3981,
+        "ci_95": [
+          89.1204,
+          90.9216
+        ]
+      },
+      "avg_speed_kmh": {
+        "name": "Corridor Speed (km/h)",
+        "values": [
+          28.74,
+          28.13,
+          27.96,
+          28.69,
+          28.18,
+          27.49,
+          28.15,
+          27.94,
+          28.47,
+          28.3
+        ],
+        "mean": 28.205,
+        "std": 0.3729,
+        "se": 0.1179,
+        "ci_95": [
+          27.9382,
+          28.4718
+        ]
+      },
+      "cumulative_delay_veh_s": {
+        "name": "Cumulative Delay (veh-s)",
+        "values": [
+          12221.0,
+          12340.0,
+          12512.0,
+          12069.0,
+          12443.0,
+          12419.0,
+          12424.0,
+          12497.0,
+          12430.0,
+          12377.0
+        ],
+        "mean": 12373.2,
+        "std": 135.0669,
+        "se": 42.7119,
+        "ci_95": [
+          12276.579,
+          12469.821
+        ]
+      },
+      "co2_kg": {
+        "name": "CO2 Emissions (kg)",
+        "values": [
+          55.3005,
+          55.638,
+          55.7498,
+          55.2506,
+          55.7757,
+          55.5632,
+          55.5449,
+          55.659,
+          55.4654,
+          55.8348
+        ],
+        "mean": 55.5782,
+        "std": 0.1952,
+        "se": 0.0617,
+        "ci_95": [
+          55.4386,
+          55.7178
+        ]
+      },
+      "fuel_liters": {
+        "name": "Fuel Consumption (L)",
+        "values": [
+          23.8731,
+          24.0188,
+          24.0674,
+          23.8509,
+          24.0783,
+          23.987,
+          23.9783,
+          24.0283,
+          23.9445,
+          24.1036
+        ],
+        "mean": 23.993,
+        "std": 0.0844,
+        "se": 0.0267,
+        "ci_95": [
+          23.9326,
+          24.0534
+        ]
+      }
+    },
+    "coordinated": {
+      "avg_corridor_travel_time_s": {
+        "name": "Corridor Travel Time (s)",
+        "values": [
+          48.01,
+          48.84,
+          49.79,
+          48.96,
+          47.14,
+          55.02,
+          53.55,
+          49.18,
+          48.96,
+          49.27
+        ],
+        "mean": 49.872,
+        "std": 2.4616,
+        "se": 0.7784,
+        "ci_95": [
+          48.1111,
+          51.6329
+        ]
+      },
+      "avg_speed_kmh": {
+        "name": "Corridor Speed (km/h)",
+        "values": [
+          38.35,
+          38.1,
+          38.16,
+          37.98,
+          38.05,
+          37.55,
+          38.05,
+          38.1,
+          37.5,
+          37.97
+        ],
+        "mean": 37.981,
+        "std": 0.2632,
+        "se": 0.0832,
+        "ci_95": [
+          37.7927,
+          38.1693
+        ]
+      },
+      "cumulative_delay_veh_s": {
+        "name": "Cumulative Delay (veh-s)",
+        "values": [
+          5641.0,
+          5842.0,
+          5726.0,
+          5813.0,
+          5535.0,
+          6497.0,
+          6213.0,
+          5616.0,
+          5693.0,
+          5792.0
+        ],
+        "mean": 5836.8,
+        "std": 296.483,
+        "se": 93.7562,
+        "ci_95": [
+          5624.7088,
+          6048.8912
+        ]
+      },
+      "co2_kg": {
+        "name": "CO2 Emissions (kg)",
+        "values": [
+          42.4605,
+          42.9155,
+          42.5813,
+          42.3863,
+          41.7261,
+          43.9386,
+          43.5537,
+          42.3249,
+          42.3867,
+          42.903
+        ],
+        "mean": 42.7177,
+        "std": 0.6416,
+        "se": 0.2029,
+        "ci_95": [
+          42.2587,
+          43.1766
+        ]
+      },
+      "fuel_liters": {
+        "name": "Fuel Consumption (L)",
+        "values": [
+          18.328,
+          18.5237,
+          18.3791,
+          18.2963,
+          18.0114,
+          18.9658,
+          18.7992,
+          18.2689,
+          18.2957,
+          18.5182
+        ],
+        "mean": 18.4386,
+        "std": 0.2767,
+        "se": 0.0875,
+        "ci_95": [
+          18.2407,
+          18.6366
+        ]
+      }
+    },
+    "marl_dqn": {
+      "avg_corridor_travel_time_s": {
+        "name": "Corridor Travel Time (s)",
+        "values": [
+          57.81,
+          59.58,
+          58.33,
+          57.68,
+          53.25,
+          59.2,
+          55.96,
+          54.96,
+          53.77,
+          55.83
+        ],
+        "mean": 56.637,
+        "std": 2.2154,
+        "se": 0.7006,
+        "ci_95": [
+          55.0522,
+          58.2218
+        ]
+      },
+      "avg_speed_kmh": {
+        "name": "Corridor Speed (km/h)",
+        "values": [
+          31.38,
+          31.24,
+          31.3,
+          31.12,
+          31.83,
+          30.71,
+          31.6,
+          31.71,
+          31.4,
+          32.34
+        ],
+        "mean": 31.463,
+        "std": 0.4416,
+        "se": 0.1397,
+        "ci_95": [
+          31.1471,
+          31.7789
+        ]
+      },
+      "cumulative_delay_veh_s": {
+        "name": "Cumulative Delay (veh-s)",
+        "values": [
+          8212.0,
+          8356.0,
+          7940.0,
+          8187.0,
+          7780.0,
+          8541.0,
+          7733.0,
+          7964.0,
+          7730.0,
+          7801.0
+        ],
+        "mean": 8024.4,
+        "std": 284.8903,
+        "se": 90.0902,
+        "ci_95": [
+          7820.6017,
+          8228.1983
+        ]
+      },
+      "co2_kg": {
+        "name": "CO2 Emissions (kg)",
+        "values": [
+          47.7937,
+          48.0034,
+          46.8471,
+          47.1722,
+          46.5116,
+          48.3002,
+          46.6116,
+          46.821,
+          46.6869,
+          46.73
+        ],
+        "mean": 47.1478,
+        "std": 0.6459,
+        "se": 0.2042,
+        "ci_95": [
+          46.6857,
+          47.6098
+        ]
+      },
+      "fuel_liters": {
+        "name": "Fuel Consumption (L)",
+        "values": [
+          20.6323,
+          20.7223,
+          20.2233,
+          20.3648,
+          20.0785,
+          20.8512,
+          20.1213,
+          20.2121,
+          20.1542,
+          20.173
+        ],
+        "mean": 20.3533,
+        "std": 0.279,
+        "se": 0.0882,
+        "ci_95": [
+          20.1537,
+          20.5529
+        ]
+      }
+    },
+    "marl_ppo": {
+      "avg_corridor_travel_time_s": {
+        "name": "Corridor Travel Time (s)",
+        "values": [
+          88.73,
+          89.97,
+          87.35,
+          87.9,
+          84.0,
+          87.02,
+          69.95,
+          89.3,
+          86.88,
+          83.91
+        ],
+        "mean": 85.501,
+        "std": 5.8198,
+        "se": 1.8404,
+        "ci_95": [
+          81.3378,
+          89.6642
+        ]
+      },
+      "avg_speed_kmh": {
+        "name": "Corridor Speed (km/h)",
+        "values": [
+          25.17,
+          24.77,
+          24.95,
+          25.11,
+          26.05,
+          26.2,
+          27.74,
+          24.88,
+          25.05,
+          25.71
+        ],
+        "mean": 25.563,
+        "std": 0.9127,
+        "se": 0.2886,
+        "ci_95": [
+          24.9101,
+          26.2159
+        ]
+      },
+      "cumulative_delay_veh_s": {
+        "name": "Cumulative Delay (veh-s)",
+        "values": [
+          12773.0,
+          13110.0,
+          12597.0,
+          12780.0,
+          10605.0,
+          11121.0,
+          11057.0,
+          12642.0,
+          12819.0,
+          12132.0
+        ],
+        "mean": 12163.6,
+        "std": 896.6018,
+        "se": 283.5304,
+        "ci_95": [
+          11522.2097,
+          12804.9903
+        ]
+      },
+      "co2_kg": {
+        "name": "CO2 Emissions (kg)",
+        "values": [
+          56.4295,
+          56.5755,
+          55.8115,
+          56.1354,
+          52.6423,
+          52.9545,
+          52.4434,
+          56.0055,
+          56.4966,
+          54.8115
+        ],
+        "mean": 55.0306,
+        "std": 1.7006,
+        "se": 0.5378,
+        "ci_95": [
+          53.814,
+          56.2471
+        ]
+      },
+      "fuel_liters": {
+        "name": "Fuel Consumption (L)",
+        "values": [
+          24.3618,
+          24.4257,
+          24.0946,
+          24.2351,
+          22.7249,
+          22.8605,
+          22.6397,
+          24.1777,
+          24.3905,
+          23.6634
+        ],
+        "mean": 23.7574,
+        "std": 0.7348,
+        "se": 0.2324,
+        "ci_95": [
+          23.2317,
+          24.2831
+        ]
+      }
+    }
+  },
+  "paired_comparisons": {
+    "coordinated": {
+      "avg_corridor_travel_time_s": {
+        "metric_name": "Corridor Travel Time (s)",
+        "paired_differences": [
+          -40.36,
+          -41.69,
+          -40.93,
+          -39.19,
+          -42.85,
+          -37.02,
+          -36.24,
+          -42.11,
+          -39.9,
+          -41.2
+        ],
+        "mean_difference": -40.149,
+        "mean_percentage_change": -44.61,
+        "std_difference": 2.1429,
+        "standard_error": 0.6776,
+        "t_statistic": -59.2485,
+        "p_value": 5.600461724539155e-13,
+        "ci_95": [
+          -41.6819,
+          -38.6161
+        ],
+        "wilcoxon_stat": 0.0,
+        "wilcoxon_p_value": 0.001953125,
+        "cohen_dz": 18.736,
+        "significant_at_alpha_0_05": true,
+        "improved": true
+      },
+      "avg_speed_kmh": {
+        "metric_name": "Corridor Speed (km/h)",
+        "paired_differences": [
+          9.61,
+          9.97,
+          10.2,
+          9.29,
+          9.87,
+          10.06,
+          9.9,
+          10.16,
+          9.03,
+          9.67
+        ],
+        "mean_difference": 9.776,
+        "mean_percentage_change": 34.68,
+        "std_difference": 0.3802,
+        "standard_error": 0.1202,
+        "t_statistic": 81.3025,
+        "p_value": 3.262268699246649e-14,
+        "ci_95": [
+          9.504,
+          10.048
+        ],
+        "wilcoxon_stat": 0.0,
+        "wilcoxon_p_value": 0.001953125,
+        "cohen_dz": 25.7101,
+        "significant_at_alpha_0_05": true,
+        "improved": true
+      },
+      "cumulative_delay_veh_s": {
+        "metric_name": "Cumulative Delay (veh-s)",
+        "paired_differences": [
+          -6580.0,
+          -6498.0,
+          -6786.0,
+          -6256.0,
+          -6908.0,
+          -5922.0,
+          -6211.0,
+          -6881.0,
+          -6737.0,
+          -6585.0
+        ],
+        "mean_difference": -6536.4,
+        "mean_percentage_change": -52.82,
+        "std_difference": 320.9552,
+        "standard_error": 101.495,
+        "t_statistic": -64.4012,
+        "p_value": 2.6483312295812726e-13,
+        "ci_95": [
+          -6765.9975,
+          -6306.8025
+        ],
+        "wilcoxon_stat": 0.0,
+        "wilcoxon_p_value": 0.001953125,
+        "cohen_dz": 20.3655,
+        "significant_at_alpha_0_05": true,
+        "improved": true
+      },
+      "co2_kg": {
+        "metric_name": "CO2 Emissions (kg)",
+        "paired_differences": [
+          -12.84,
+          -12.7225,
+          -13.1685,
+          -12.8643,
+          -14.0496,
+          -11.6246,
+          -11.9912,
+          -13.3341,
+          -13.0787,
+          -12.9318
+        ],
+        "mean_difference": -12.8605,
+        "mean_percentage_change": -23.14,
+        "std_difference": 0.674,
+        "standard_error": 0.2131,
+        "t_statistic": -60.3396,
+        "p_value": 4.754066895743318e-13,
+        "ci_95": [
+          -13.3427,
+          -12.3784
+        ],
+        "wilcoxon_stat": 0.0,
+        "wilcoxon_p_value": 0.001953125,
+        "cohen_dz": 19.081,
+        "significant_at_alpha_0_05": true,
+        "improved": true
+      },
+      "fuel_liters": {
+        "metric_name": "Fuel Consumption (L)",
+        "paired_differences": [
+          -5.5451,
+          -5.4951,
+          -5.6883,
+          -5.5546,
+          -6.0669,
+          -5.0212,
+          -5.1791,
+          -5.7594,
+          -5.6488,
+          -5.5854
+        ],
+        "mean_difference": -5.5544,
+        "mean_percentage_change": -23.15,
+        "std_difference": 0.2908,
+        "standard_error": 0.092,
+        "t_statistic": -60.3945,
+        "p_value": 4.715374811524121e-13,
+        "ci_95": [
+          -5.7624,
+          -5.3463
+        ],
+        "wilcoxon_stat": 0.0,
+        "wilcoxon_p_value": 0.001953125,
+        "cohen_dz": 19.0984,
+        "significant_at_alpha_0_05": true,
+        "improved": true
+      }
+    },
+    "marl_dqn": {
+      "avg_corridor_travel_time_s": {
+        "metric_name": "Corridor Travel Time (s)",
+        "paired_differences": [
+          -30.56,
+          -30.95,
+          -32.39,
+          -30.47,
+          -36.74,
+          -32.84,
+          -33.83,
+          -36.33,
+          -35.09,
+          -34.64
+        ],
+        "mean_difference": -33.384,
+        "mean_percentage_change": -37.08,
+        "std_difference": 2.3167,
+        "standard_error": 0.7326,
+        "t_statistic": -45.5692,
+        "p_value": 5.903961978823078e-12,
+        "ci_95": [
+          -35.0413,
+          -31.7267
+        ],
+        "wilcoxon_stat": 0.0,
+        "wilcoxon_p_value": 0.001953125,
+        "cohen_dz": 14.4102,
+        "significant_at_alpha_0_05": true,
+        "improved": true
+      },
+      "avg_speed_kmh": {
+        "metric_name": "Corridor Speed (km/h)",
+        "paired_differences": [
+          2.64,
+          3.11,
+          3.34,
+          2.43,
+          3.65,
+          3.22,
+          3.45,
+          3.77,
+          2.93,
+          4.04
+        ],
+        "mean_difference": 3.258,
+        "mean_percentage_change": 11.56,
+        "std_difference": 0.5021,
+        "standard_error": 0.1588,
+        "t_statistic": 20.5173,
+        "p_value": 7.247620865748464e-09,
+        "ci_95": [
+          2.8988,
+          3.6172
+        ],
+        "wilcoxon_stat": 0.0,
+        "wilcoxon_p_value": 0.001953125,
+        "cohen_dz": 6.4881,
+        "significant_at_alpha_0_05": true,
+        "improved": true
+      },
+      "cumulative_delay_veh_s": {
+        "metric_name": "Cumulative Delay (veh-s)",
+        "paired_differences": [
+          -4009.0,
+          -3984.0,
+          -4572.0,
+          -3882.0,
+          -4663.0,
+          -3878.0,
+          -4691.0,
+          -4533.0,
+          -4700.0,
+          -4576.0
+        ],
+        "mean_difference": -4348.8,
+        "mean_percentage_change": -35.13,
+        "std_difference": 359.4177,
+        "standard_error": 113.6578,
+        "t_statistic": -38.2622,
+        "p_value": 2.825216081411085e-11,
+        "ci_95": [
+          -4605.9119,
+          -4091.6881
+        ],
+        "wilcoxon_stat": 0.0,
+        "wilcoxon_p_value": 0.001953125,
+        "cohen_dz": 12.0996,
+        "significant_at_alpha_0_05": true,
+        "improved": true
+      },
+      "co2_kg": {
+        "metric_name": "CO2 Emissions (kg)",
+        "paired_differences": [
+          -7.5068,
+          -7.6346,
+          -8.9027,
+          -8.0784,
+          -9.2641,
+          -7.263,
+          -8.9333,
+          -8.838,
+          -8.7785,
+          -9.1048
+        ],
+        "mean_difference": -8.4304,
+        "mean_percentage_change": -15.17,
+        "std_difference": 0.7368,
+        "standard_error": 0.233,
+        "t_statistic": -36.1813,
+        "p_value": 4.6595248301559326e-11,
+        "ci_95": [
+          -8.9575,
+          -7.9033
+        ],
+        "wilcoxon_stat": 0.0,
+        "wilcoxon_p_value": 0.001953125,
+        "cohen_dz": 11.4415,
+        "significant_at_alpha_0_05": true,
+        "improved": true
+      },
+      "fuel_liters": {
+        "metric_name": "Fuel Consumption (L)",
+        "paired_differences": [
+          -3.2408,
+          -3.2965,
+          -3.8441,
+          -3.4861,
+          -3.9998,
+          -3.1358,
+          -3.857,
+          -3.8162,
+          -3.7903,
+          -3.9306
+        ],
+        "mean_difference": -3.6397,
+        "mean_percentage_change": -15.17,
+        "std_difference": 0.3182,
+        "standard_error": 0.1006,
+        "t_statistic": -36.166,
+        "p_value": 4.677120803359087e-11,
+        "ci_95": [
+          -3.8674,
+          -3.4121
+        ],
+        "wilcoxon_stat": 0.0,
+        "wilcoxon_p_value": 0.001953125,
+        "cohen_dz": 11.4367,
+        "significant_at_alpha_0_05": true,
+        "improved": true
+      }
+    },
+    "marl_ppo": {
+      "avg_corridor_travel_time_s": {
+        "metric_name": "Corridor Travel Time (s)",
+        "paired_differences": [
+          0.36,
+          -0.56,
+          -3.37,
+          -0.25,
+          -5.99,
+          -5.02,
+          -19.84,
+          -1.99,
+          -1.98,
+          -6.56
+        ],
+        "mean_difference": -4.52,
+        "mean_percentage_change": -5.01,
+        "std_difference": 5.899,
+        "standard_error": 1.8654,
+        "t_statistic": -2.4231,
+        "p_value": 0.03841758290579937,
+        "ci_95": [
+          -8.7399,
+          -0.3001
+        ],
+        "wilcoxon_stat": 2.0,
+        "wilcoxon_p_value": 0.005859375,
+        "cohen_dz": 0.7662,
+        "significant_at_alpha_0_05": true,
+        "improved": true
+      },
+      "avg_speed_kmh": {
+        "metric_name": "Corridor Speed (km/h)",
+        "paired_differences": [
+          -3.57,
+          -3.36,
+          -3.01,
+          -3.58,
+          -2.13,
+          -1.29,
+          -0.41,
+          -3.06,
+          -3.42,
+          -2.59
+        ],
+        "mean_difference": -2.642,
+        "mean_percentage_change": -9.34,
+        "std_difference": 1.067,
+        "standard_error": 0.3374,
+        "t_statistic": -7.8301,
+        "p_value": 2.6266179189546043e-05,
+        "ci_95": [
+          -3.4053,
+          -1.8787
+        ],
+        "wilcoxon_stat": 0.0,
+        "wilcoxon_p_value": 0.001953125,
+        "cohen_dz": 2.4761,
+        "significant_at_alpha_0_05": true,
+        "improved": false
+      },
+      "cumulative_delay_veh_s": {
+        "metric_name": "Cumulative Delay (veh-s)",
+        "paired_differences": [
+          552.0,
+          770.0,
+          85.0,
+          711.0,
+          -1838.0,
+          -1298.0,
+          -1367.0,
+          145.0,
+          389.0,
+          -245.0
+        ],
+        "mean_difference": -209.6,
+        "mean_percentage_change": -1.66,
+        "std_difference": 950.7387,
+        "standard_error": 300.65,
+        "t_statistic": -0.6972,
+        "p_value": 0.5033138903935606,
+        "ci_95": [
+          -889.7175,
+          470.5175
+        ],
+        "wilcoxon_stat": 25.0,
+        "wilcoxon_p_value": 0.845703125,
+        "cohen_dz": 0.2205,
+        "significant_at_alpha_0_05": false,
+        "improved": true
+      },
+      "co2_kg": {
+        "metric_name": "CO2 Emissions (kg)",
+        "paired_differences": [
+          1.129,
+          0.9375,
+          0.0617,
+          0.8848,
+          -3.1334,
+          -2.6087,
+          -3.1015,
+          0.3465,
+          1.0312,
+          -1.0233
+        ],
+        "mean_difference": -0.5476,
+        "mean_percentage_change": -0.98,
+        "std_difference": 1.7768,
+        "standard_error": 0.5619,
+        "t_statistic": -0.9746,
+        "p_value": 0.3552218721284136,
+        "ci_95": [
+          -1.8187,
+          0.7235
+        ],
+        "wilcoxon_stat": 23.0,
+        "wilcoxon_p_value": 0.6953125,
+        "cohen_dz": 0.3082,
+        "significant_at_alpha_0_05": false,
+        "improved": true
+      },
+      "fuel_liters": {
+        "metric_name": "Fuel Consumption (L)",
+        "paired_differences": [
+          0.4887,
+          0.4069,
+          0.0272,
+          0.3842,
+          -1.3534,
+          -1.1265,
+          -1.3386,
+          0.1494,
+          0.446,
+          -0.4402
+        ],
+        "mean_difference": -0.2356,
+        "mean_percentage_change": -0.98,
+        "std_difference": 0.7678,
+        "standard_error": 0.2428,
+        "t_statistic": -0.9705,
+        "p_value": 0.3571442416667362,
+        "ci_95": [
+          -0.7849,
+          0.3136
+        ],
+        "wilcoxon_stat": 23.0,
+        "wilcoxon_p_value": 0.6953125,
+        "cohen_dz": 0.3069,
+        "significant_at_alpha_0_05": false,
+        "improved": true
+      }
+    }
+  }
+}

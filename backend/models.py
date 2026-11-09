@@ -6,7 +6,7 @@ SQLAlchemy database models for Smart Traffic Coordination dashboard.
 
 from __future__ import annotations
 
-from datetime import datetime
+from datetime import datetime, timezone
 from sqlalchemy import (
     Boolean,
     Column,
@@ -33,7 +33,7 @@ class SimulationRun(Base):
     seed = Column(Integer, default=42)
     duration_requested = Column(Integer, default=600)
     duration_simulated = Column(Float, default=0.0)
-    started_at = Column(DateTime, default=datetime.utcnow)
+    started_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
     completed_at = Column(DateTime, nullable=True)
     summary_metrics_json = Column(Text, nullable=True)
     error_message = Column(Text, nullable=True)
@@ -50,7 +50,7 @@ class TrafficMetricRecord(Base):
     id = Column(Integer, primary_key=True, index=True)
     run_id = Column(Integer, ForeignKey("simulation_runs.id"), nullable=False, index=True)
     simulation_time = Column(Float, nullable=False, index=True)
-    timestamp = Column(DateTime, default=datetime.utcnow)
+    timestamp = Column(DateTime, default=lambda: datetime.now(timezone.utc))
     total_vehicles = Column(Integer, default=0)
     throughput_vehicles = Column(Integer, default=0)
     mean_speed_kmh = Column(Float, default=0.0)
@@ -71,7 +71,7 @@ class SignalDecisionRecord(Base):
     id = Column(Integer, primary_key=True, index=True)
     run_id = Column(Integer, ForeignKey("simulation_runs.id"), nullable=True, index=True)
     simulation_time = Column(Float, nullable=False)
-    timestamp = Column(DateTime, default=datetime.utcnow)
+    timestamp = Column(DateTime, default=lambda: datetime.now(timezone.utc))
     junction_id = Column(String(16), nullable=False, index=True)  # J1, J2, J3
     current_phase = Column(Integer, nullable=False)
     target_phase = Column(Integer, nullable=True)
@@ -89,7 +89,7 @@ class EmergencyEventRecord(Base):
     id = Column(Integer, primary_key=True, index=True)
     run_id = Column(Integer, ForeignKey("simulation_runs.id"), nullable=True, index=True)
     simulation_time = Column(Float, nullable=False)
-    timestamp = Column(DateTime, default=datetime.utcnow)
+    timestamp = Column(DateTime, default=lambda: datetime.now(timezone.utc))
     vehicle_id = Column(String(64), nullable=False)
     affected_corridor = Column(String(64), default="J1 -> J2 -> J3")
     preemption_active = Column(Boolean, default=False)

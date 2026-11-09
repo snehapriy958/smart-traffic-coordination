@@ -1,0 +1,173 @@
+{
+  "mode": "marl_ppo",
+  "seed": 7,
+  "duration_s": 900,
+  "wall_time_s": 40.13,
+  "status": "COMPLETED",
+  "phase_switches": {
+    "J1": 38,
+    "J2": 32,
+    "J3": 78
+  },
+  "action_counts": {
+    "J1": {
+      "total_decisions": 181,
+      "KEEP": 181,
+      "SWITCH": 0,
+      "EXTEND": 0
+    },
+    "J2": {
+      "total_decisions": 181,
+      "KEEP": 109,
+      "SWITCH": 0,
+      "EXTEND": 72
+    },
+    "J3": {
+      "total_decisions": 181,
+      "KEEP": 89,
+      "SWITCH": 39,
+      "EXTEND": 53
+    }
+  },
+  "starvation_events_count": 6,
+  "starvation_events": [
+    {
+      "timestamp": 121.0,
+      "junction_id": "J2",
+      "starved_approach": "corridor_hosur",
+      "red_duration_s": 60.0,
+      "queue_count": 19,
+      "current_phase": 2,
+      "target_phase": 0,
+      "action_enforced": "SWITCH"
+    },
+    {
+      "timestamp": 224.0,
+      "junction_id": "J2",
+      "starved_approach": "corridor_hosur",
+      "red_duration_s": 60.0,
+      "queue_count": 23,
+      "current_phase": 2,
+      "target_phase": 0,
+      "action_enforced": "SWITCH"
+    },
+    {
+      "timestamp": 284.0,
+      "junction_id": "J2",
+      "starved_approach": "madiwala",
+      "red_duration_s": 60.0,
+      "queue_count": 16,
+      "current_phase": 0,
+      "target_phase": 2,
+      "action_enforced": "SWITCH"
+    },
+    {
+      "timestamp": 387.0,
+      "junction_id": "J2",
+      "starved_approach": "madiwala",
+      "red_duration_s": 60.0,
+      "queue_count": 25,
+      "current_phase": 0,
+      "target_phase": 2,
+      "action_enforced": "SWITCH"
+    },
+    {
+      "timestamp": 578.0,
+      "junction_id": "J2",
+      "starved_approach": "madiwala",
+      "red_duration_s": 60.0,
+      "queue_count": 17,
+      "current_phase": 0,
+      "target_phase": 2,
+      "action_enforced": "SWITCH"
+    },
+    {
+      "timestamp": 681.0,
+      "junction_id": "J2",
+      "starved_approach": "madiwala",
+      "red_duration_s": 60.0,
+      "queue_count": 6,
+      "current_phase": 0,
+      "target_phase": 2,
+      "action_enforced": "SWITCH"
+    }
+  ],
+  "regimes": {
+    "peak": {
+      "interval": [
+        0,
+        300
+      ],
+      "departed": 208,
+      "arrived": 136,
+      "corridor_trips": 45,
+      "unfinished": 72,
+      "avg_corridor_travel_time_s": 71.93,
+      "avg_net_travel_time_s": 70.45,
+      "avg_speed_kmh": 30.76,
+      "avg_waiting_time_s": 455.72,
+      "cumulative_delay_veh_s": 4369.0,
+      "avg_queue_veh": 14.56,
+      "max_queue_veh": 34,
+      "co2_kg": 25.1388,
+      "fuel_liters": 10.8424
+    },
+    "shoulder": {
+      "interval": [
+        300,
+        600
+      ],
+      "departed": 170,
+      "arrived": 208,
+      "corridor_trips": 57,
+      "unfinished": 34,
+      "avg_corridor_travel_time_s": 67.07,
+      "avg_net_travel_time_s": 84.88,
+      "avg_speed_kmh": 26.15,
+      "avg_waiting_time_s": 889.14,
+      "cumulative_delay_veh_s": 6195.0,
+      "avg_queue_veh": 20.65,
+      "max_queue_veh": 45,
+      "co2_kg": 25.0367,
+      "fuel_liters": 10.8168
+    },
+    "off_peak": {
+      "interval": [
+        600,
+        900
+      ],
+      "departed": 0,
+      "arrived": 34,
+      "corridor_trips": 7,
+      "unfinished": 0,
+      "avg_corridor_travel_time_s": 80.71,
+      "avg_net_travel_time_s": 111.59,
+      "avg_speed_kmh": 23.6,
+      "avg_waiting_time_s": 84.51,
+      "cumulative_delay_veh_s": 493.0,
+      "avg_queue_veh": 1.64,
+      "max_queue_veh": 11,
+      "co2_kg": 2.268,
+      "fuel_liters": 0.9805
+    }
+  },
+  "full_900s": {
+    "interval": [
+      0,
+      900
+    ],
+    "departed": 378,
+    "arrived": 378,
+    "corridor_trips": 109,
+    "unfinished": 0,
+    "avg_corridor_travel_time_s": 69.95,
+    "avg_net_travel_time_s": 82.09,
+    "avg_speed_kmh": 27.74,
+    "avg_waiting_time_s": 476.46,
+    "cumulative_delay_veh_s": 11057.0,
+    "avg_queue_veh": 12.29,
+    "max_queue_veh": 45,
+    "co2_kg": 52.4434,
+    "fuel_liters": 22.6397
+  }
+}
