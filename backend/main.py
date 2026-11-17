@@ -2,7 +2,8 @@
 backend/main.py
 
 FastAPI Application Entry Point.
-Configures CORS, lifespan initialization, REST routers, and WebSocket telemetry stream.
+Configures CORS, lifespan initialization, structured logging, security headers,
+request timing middleware, REST routers, and WebSocket telemetry stream.
 """
 
 from __future__ import annotations
@@ -12,14 +13,22 @@ from contextlib import asynccontextmanager
 from datetime import datetime, timezone
 import json
 import logging
+import time
 from typing import AsyncGenerator
 
-from fastapi import FastAPI, WebSocket, WebSocketDisconnect
+from fastapi import FastAPI, Request, Response, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
-from backend.config import CORS_ORIGINS, DEBUG
+from backend.config import (
+    CORS_ORIGINS,
+    DEBUG,
+    ENABLE_SECURITY_HEADERS,
+    LOG_LEVEL,
+    STRUCTURED_LOGGING,
+)
 from backend.database import init_db
+from backend.logging_config import configure_logging
 from backend.routers import (
     decisions,
     emergencies,
@@ -33,12 +42,16 @@ from backend.routers import (
 from backend.simulation_service import sim_service
 from backend.websocket_manager import ws_manager
 
+# Configure structured logging
+configure_logging(level_name=LOG_LEVEL, structured=STRUCTURED_LOGGING)
 logger = logging.getLogger("main")
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     """Application lifespan context for startup initialization and graceful shutdown."""
+    logger.info("Starting Smart Traffic Coordination backend application...")
+
     # 1. Initialize Database schema and pre-seed risk zones
     init_db()
 
@@ -49,8 +62,10 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     yield
 
     # 3. Shutdown: gracefully disconnect WebSocket clients and ensure simulation is terminated
+    logger.info("Shutting down backend services...")
     await ws_manager.shutdown()
     sim_service.stop_simulation()
+    logger.info("Graceful shutdown complete.")
 
 
 app = FastAPI(
@@ -71,6 +86,27 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
+@app.middleware("http")
+async def security_and_timing_middleware(request: Request, call_next) -> Response:
+    """Adds process timing metrics and standard HTTP security hardening headers."""
+    start_time = time.perf_counter()
+    response = await call_next(request)
+    duration_ms = (time.perf_counter() - start_time) * 1000.0
+
+    # Timing header
+    response.headers["X-Process-Time"] = f"{duration_ms:.2f}ms"
+
+    # Security headers
+    if ENABLE_SECURITY_HEADERS:
+        response.headers["X-Content-Type-Options"] = "nosniff"
+        response.headers["X-Frame-Options"] = "DENY"
+        response.headers["X-XSS-Protection"] = "1; mode=block"
+        response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+
+    return response
+
+
 # Register REST Routers
 app.include_router(health.router)
 app.include_router(simulation.router)
@@ -89,6 +125,7 @@ def root():
         "corridor": "Bengaluru Silk Board (J1 -> J2 -> J3)",
         "docs": "/docs",
         "health": "/api/health",
+        "readiness": "/api/readiness",
         "websocket": "/ws/traffic",
     }
 

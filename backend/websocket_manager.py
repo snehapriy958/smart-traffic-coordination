@@ -11,6 +11,7 @@ from __future__ import annotations
 import asyncio
 import json
 import logging
+import os
 import threading
 import time
 import uuid
@@ -31,7 +32,7 @@ class ClientSession:
         websocket: WebSocket,
         client_id: str,
         queue_size: int = 32,
-        send_timeout_s: float = 2.0,
+        send_timeout_s: float = 5.0,
     ) -> None:
         self.websocket = websocket
         self.client_id = client_id
@@ -102,8 +103,14 @@ class WebSocketManager:
     def __init__(
         self,
         client_queue_size: int = 32,
-        send_timeout_s: float = 2.0,
+        send_timeout_s: float = 5.0,
     ) -> None:
+        env_timeout = os.getenv("WS_SEND_TIMEOUT_S")
+        if env_timeout:
+            try:
+                send_timeout_s = float(env_timeout)
+            except ValueError:
+                pass
         self.client_queue_size = client_queue_size
         self.send_timeout_s = send_timeout_s
         self._sessions: Dict[str, ClientSession] = {}

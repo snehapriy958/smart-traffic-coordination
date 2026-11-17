@@ -1,0 +1,44 @@
+# Git
+.git
+.gitignore
+
+# Python virtual environments & bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+.venv*
+.venv-demo/
+.venv-marl-audit/
+venv/
+env/
+.pytest_cache/
+.coverage
+htmlcov/
+scratch/
+docs/*.pptx
+
+# Node.js
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+
+# Scratch & temporary test directories
+scratch/
+tests/__pycache__/
+backend/__pycache__/
+traffic_service/__pycache__/
+common/__pycache__/
+
+# Databases & local runs
+*.db
+*.sqlite
+*.sqlite3
+demo_audit_disposable.db
+traffic_dashboard.db
+
+# Logs & temp files
+*.log
+sumo_run_*.xml
+*.tripinfo.xml
+.DS_Store
+Thumbs.db

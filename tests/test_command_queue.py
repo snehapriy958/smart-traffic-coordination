@@ -263,21 +263,23 @@ def test_command_raising_ordinary_exception_followed_by_valid_command():
 
     # Enqueue command 1 with an invalid target that raises an exception in controller
     ctrl = sim_service._sim.controllers["J1"]
-    original_get_phase = ctrl.get_phase
+    original_request_switch = ctrl.request_switch
+    original_min_green = ctrl.min_green
+    ctrl.min_green = 0.0
 
     call_count = {"j1": 0}
 
-    def failing_get_phase():
+    def failing_request_switch(*args, **kwargs):
         call_count["j1"] += 1
         if call_count["j1"] == 1:
             raise ValueError("Simulated unexpected controller logic failure")
-        return original_get_phase()
+        return original_request_switch(*args, **kwargs)
 
-    ctrl.get_phase = failing_get_phase
+    ctrl.request_switch = failing_request_switch
 
     try:
-        # Command 1 fails with ValueError
-        res1 = sim_service.request_manual_override("J1", target_phase=0, confirmed=True, timeout_s=3.0)
+        # Command 1 fails with ValueError (target_phase=2 to force a real switch from phase 0)
+        res1 = sim_service.request_manual_override("J1", target_phase=2, confirmed=True, timeout_s=3.0)
         assert res1.success is False
         assert res1.status == CommandStatus.REJECTED
         assert res1.rejection_reason == "COMMAND_EXECUTION_EXCEPTION"
@@ -293,7 +295,8 @@ def test_command_raising_ordinary_exception_followed_by_valid_command():
         assert res2.status == CommandStatus.EXECUTED
 
     finally:
-        ctrl.get_phase = original_get_phase
+        ctrl.request_switch = original_request_switch
+        ctrl.min_green = original_min_green
 
 
 # --------------------------------------------------------------------------

@@ -1,0 +1,41 @@
+controller_key,controller_name,seed,travel_time_s,speed_kmh,cumulative_delay_veh_s,fuel_liters,co2_kg,corridor_trips
+baseline,Fixed-Time Baseline,1,88.37,28.74,12221.0,23.8731,55.3005,109
+baseline,Fixed-Time Baseline,2,90.53,28.13,12340.0,24.0188,55.638,109
+baseline,Fixed-Time Baseline,3,90.72,27.96,12512.0,24.0674,55.7498,109
+baseline,Fixed-Time Baseline,4,88.15,28.69,12069.0,23.8509,55.2506,109
+baseline,Fixed-Time Baseline,5,89.99,28.18,12443.0,24.0783,55.7757,109
+baseline,Fixed-Time Baseline,6,92.04,27.49,12419.0,23.987,55.5632,109
+baseline,Fixed-Time Baseline,7,89.79,28.15,12424.0,23.9783,55.5449,109
+baseline,Fixed-Time Baseline,8,91.29,27.94,12497.0,24.0283,55.659,109
+baseline,Fixed-Time Baseline,9,88.86,28.47,12430.0,23.9445,55.4654,109
+baseline,Fixed-Time Baseline,10,90.47,28.3,12377.0,24.1036,55.8348,109
+coordinated,Coordinated Adaptive Controller,1,48.01,38.35,5641.0,18.328,42.4605,109
+coordinated,Coordinated Adaptive Controller,2,48.84,38.1,5842.0,18.5237,42.9155,109
+coordinated,Coordinated Adaptive Controller,3,49.79,38.16,5726.0,18.3791,42.5813,109
+coordinated,Coordinated Adaptive Controller,4,48.96,37.98,5813.0,18.2963,42.3863,109
+coordinated,Coordinated Adaptive Controller,5,47.14,38.05,5535.0,18.0114,41.7261,109
+coordinated,Coordinated Adaptive Controller,6,55.02,37.55,6497.0,18.9658,43.9386,109
+coordinated,Coordinated Adaptive Controller,7,53.55,38.05,6213.0,18.7992,43.5537,109
+coordinated,Coordinated Adaptive Controller,8,49.18,38.1,5616.0,18.2689,42.3249,109
+coordinated,Coordinated Adaptive Controller,9,48.96,37.5,5693.0,18.2957,42.3867,109
+coordinated,Coordinated Adaptive Controller,10,49.27,37.97,5792.0,18.5182,42.903,109
+marl_dqn,Double-DQN (Stage A),1,57.81,31.38,8212.0,20.6323,47.7937,109
+marl_dqn,Double-DQN (Stage A),2,59.58,31.24,8356.0,20.7223,48.0034,109
+marl_dqn,Double-DQN (Stage A),3,58.33,31.3,7940.0,20.2233,46.8471,109
+marl_dqn,Double-DQN (Stage A),4,57.68,31.12,8187.0,20.3648,47.1722,109
+marl_dqn,Double-DQN (Stage A),5,53.25,31.83,7780.0,20.0785,46.5116,109
+marl_dqn,Double-DQN (Stage A),6,59.2,30.71,8541.0,20.8512,48.3002,109
+marl_dqn,Double-DQN (Stage A),7,55.96,31.6,7733.0,20.1213,46.6116,109
+marl_dqn,Double-DQN (Stage A),8,54.96,31.71,7964.0,20.2121,46.821,109
+marl_dqn,Double-DQN (Stage A),9,53.77,31.4,7730.0,20.1542,46.6869,109
+marl_dqn,Double-DQN (Stage A),10,55.83,32.34,7801.0,20.173,46.73,109
+marl_ppo,PPO (Stage A),1,88.73,25.17,12773.0,24.3618,56.4295,109
+marl_ppo,PPO (Stage A),2,89.97,24.77,13110.0,24.4257,56.5755,109
+marl_ppo,PPO (Stage A),3,87.35,24.95,12597.0,24.0946,55.8115,109
+marl_ppo,PPO (Stage A),4,87.9,25.11,12780.0,24.2351,56.1354,109
+marl_ppo,PPO (Stage A),5,84.0,26.05,10605.0,22.7249,52.6423,109
+marl_ppo,PPO (Stage A),6,87.02,26.2,11121.0,22.8605,52.9545,109
+marl_ppo,PPO (Stage A),7,69.95,27.74,11057.0,22.6397,52.4434,109
+marl_ppo,PPO (Stage A),8,89.3,24.88,12642.0,24.1777,56.0055,109
+marl_ppo,PPO (Stage A),9,86.88,25.05,12819.0,24.3905,56.4966,109
+marl_ppo,PPO (Stage A),10,83.91,25.71,12132.0,23.6634,54.8115,109

@@ -290,14 +290,28 @@ export class TrafficWebSocket {
     }
 
     if (this.ws) {
-      this.ws.onopen = null;
-      this.ws.onclose = null;
-      this.ws.onerror = null;
-      this.ws.onmessage = null;
-      try {
-        this.ws.close();
-      } catch (_) {}
+      const socket = this.ws;
       this.ws = null;
+      socket.onopen = null;
+      socket.onclose = null;
+      socket.onerror = null;
+      socket.onmessage = null;
+      try {
+        const WS = this._getWebSocketClass();
+        if (socket.readyState === WS.OPEN) {
+          socket.close(1000, 'Normal disconnect');
+        } else if (socket.readyState === WS.CONNECTING) {
+          socket.onopen = () => {
+            try {
+              socket.close(1000, 'Normal disconnect');
+            } catch (_) {}
+          };
+          socket.onerror = () => {};
+          socket.onclose = () => {};
+        } else {
+          socket.close();
+        }
+      } catch (_) {}
     }
 
     if (this.pendingClosingSocket) {

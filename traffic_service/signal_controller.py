@@ -40,6 +40,28 @@ class SignalController:
         self.emergency_priority_phase: Optional[int] = None
         self._last_phase: Optional[int] = None
         self._phase_start_time: float = 0.0
+        self._tsp_hold_until: float = 0.0
+
+    def hold_transit_priority(self, duration_s: float, sim_time: float) -> bool:
+        """
+        Applies a temporary transit priority green extension hold.
+        Suppresses elective phase switching up to max_green ceiling.
+        Returns True if hold was activated, False if rejected.
+        """
+        if self.emergency_locked:
+            return False
+        if not self.is_green():
+            return False
+        elapsed = self.get_green_elapsed(sim_time)
+        if elapsed >= self.max_green:
+            return False
+        max_allowed_time = self._phase_start_time + self.max_green
+        self._tsp_hold_until = min(sim_time + duration_s, max_allowed_time)
+        return True
+
+    def cancel_transit_priority_hold(self) -> None:
+        """Cancels any active transit priority hold."""
+        self._tsp_hold_until = 0.0
 
     def get_phase(self) -> int:
         """Returns the current active phase."""
@@ -68,12 +90,22 @@ class SignalController:
         return max(0.0, sim_time - self._phase_start_time)
 
     def can_switch(self, sim_time: float) -> bool:
-        """Returns True if the current phase is green and has met min_green."""
+        """Returns True if the current phase is green, met min_green, and is not held by TSP."""
         if self.emergency_locked:
             return False
         if not self.is_green():
             return False
-        return self.get_green_elapsed(sim_time) >= self.min_green
+        elapsed = self.get_green_elapsed(sim_time)
+        if elapsed < self.min_green:
+            return False
+        # Maximum green forces switch and overrides TSP hold
+        if elapsed >= self.max_green:
+            self._tsp_hold_until = 0.0
+            return True
+        # Active TSP hold suppresses elective switching
+        if sim_time < self._tsp_hold_until:
+            return False
+        return True
 
     def request_switch(self, target_green_phase: int, sim_time: float, force: bool = False) -> bool:
         """
@@ -98,6 +130,7 @@ class SignalController:
                 traci.trafficlight.setPhaseDuration(self.tls_id, self.yellow_duration)
                 self._last_phase = yellow_phase
                 self._phase_start_time = sim_time
+                self._tsp_hold_until = 0.0
                 return True
 
         # If already in yellow, let SUMO complete the natural yellow transition
@@ -132,6 +165,7 @@ class SignalController:
         Safely sequences yellow if currently serving a conflicting phase.
         Returns the action taken ('ALREADY_GREEN', 'SWITCHING_YELLOW', 'HELD_PRIORITY').
         """
+        self._tsp_hold_until = 0.0
         current_phase = self.get_phase()
 
         if current_phase == corridor_green_phase:

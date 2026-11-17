@@ -1235,16 +1235,18 @@ class SimulationService:
                 f"TargetPhase={dec.get('target_phase')} | ExecutedOp={op_str} | "
                 f"Fallback={dec.get('is_fallback')}"
             )
-            if dec.get("action") != 0 or dec.get("is_emergency") or dec.get("is_fallback"):
-                action_name = dec.get("action_name", "ACT")
-                self._record_decision(
-                    sim_time=sim_time,
-                    junction_id=j_id,
-                    current_phase=dec.get("current_phase", 0),
-                    target_phase=dec.get("target_phase"),
-                    action=action_name,
-                    reason=dec.get("reason", "MARL policy decision executed."),
-                )
+            action_name = dec.get("action_name", "ACT")
+            obs_q = states[j_id].total_queue if j_id in states else None
+            self._record_decision(
+                sim_time=sim_time,
+                junction_id=j_id,
+                current_phase=dec.get("current_phase", 0),
+                target_phase=dec.get("target_phase"),
+                action=action_name,
+                reason=dec.get("reason", "MARL policy decision executed."),
+                controller=sim.mode,
+                observed_queue=obs_q,
+            )
 
     def _run_coordinated_with_logging(
         self,
@@ -1263,29 +1265,56 @@ class SimulationService:
             upstream_inflow_bonus = int(sim.hub.get_expected_inflow("J2") * 5)
             effective_hosur_q = hosur_q + upstream_inflow_bonus
             elapsed = j2_ctrl.get_green_elapsed(sim_time)
+            j2_q = j2_state.total_queue
 
             if curr_phase == 0:  # Hosur Green
                 if elapsed >= j2_ctrl.min_green and madiwala_q > effective_hosur_q + 2:
                     j2_ctrl.request_switch(target_green_phase=2, sim_time=sim_time)
                     self._record_decision(
                         sim_time, "J2", 0, 2, "SWITCH",
-                        f"Cross-traffic demand (Madiwala: {madiwala_q} veh) exceeded Hosur pressure ({effective_hosur_q} veh)."
+                        f"Cross-traffic demand (Madiwala: {madiwala_q} veh) exceeded Hosur pressure ({effective_hosur_q} veh).",
+                        controller="coordinated",
+                        observed_queue=j2_q,
                     )
                 elif effective_hosur_q > 0 and effective_hosur_q >= madiwala_q:
                     j2_ctrl.extend_current_green(sim_time)
                     self._record_decision(
                         sim_time, "J2", 0, 0, "EXTEND",
-                        f"Extended Hosur Road green phase. Inflow bonus: +{upstream_inflow_bonus} vehicles from J1."
+                        f"Extended Hosur Road green phase. Inflow bonus: +{upstream_inflow_bonus} vehicles from J1.",
+                        controller="coordinated",
+                        observed_queue=j2_q,
+                    )
+                else:
+                    self._record_decision(
+                        sim_time, "J2", 0, 0, "KEEP",
+                        f"Maintaining Hosur Road green phase ({elapsed:.1f}s elapsed, min: {j2_ctrl.min_green:.0f}s).",
+                        controller="coordinated",
+                        observed_queue=j2_q,
                     )
             elif curr_phase == 2:  # Madiwala Green
                 if elapsed >= j2_ctrl.min_green and effective_hosur_q > madiwala_q + 2:
                     j2_ctrl.request_switch(target_green_phase=0, sim_time=sim_time)
                     self._record_decision(
                         sim_time, "J2", 2, 0, "SWITCH",
-                        f"Corridor arterial queue ({effective_hosur_q} veh) reclaimed green from Madiwala ({madiwala_q} veh)."
+                        f"Corridor arterial queue ({effective_hosur_q} veh) reclaimed green from Madiwala ({madiwala_q} veh).",
+                        controller="coordinated",
+                        observed_queue=j2_q,
                     )
                 elif madiwala_q > 0 and madiwala_q >= effective_hosur_q:
                     j2_ctrl.extend_current_green(sim_time)
+                    self._record_decision(
+                        sim_time, "J2", 2, 2, "EXTEND",
+                        f"Extended Madiwala Road green phase. Cross-traffic demand: {madiwala_q} veh.",
+                        controller="coordinated",
+                        observed_queue=j2_q,
+                    )
+                else:
+                    self._record_decision(
+                        sim_time, "J2", 2, 2, "KEEP",
+                        f"Maintaining Madiwala Road green phase ({elapsed:.1f}s elapsed, min: {j2_ctrl.min_green:.0f}s).",
+                        controller="coordinated",
+                        observed_queue=j2_q,
+                    )
 
         # J1 & J3 Progression Alignment
         for j_id, target_corridor_phase in [("J1", 2), ("J3", 2)]:
@@ -1295,22 +1324,47 @@ class SimulationService:
                 q_cross = states[j_id].approach_queues.get("side_cross", 0)
                 curr_p = ctrl.get_phase()
                 elapsed = ctrl.get_green_elapsed(sim_time)
+                j_q = states[j_id].total_queue
 
                 if curr_p == target_corridor_phase:
                     if q_corridor > 0 and elapsed < ctrl.max_green:
                         ctrl.extend_current_green(sim_time)
+                        self._record_decision(
+                            sim_time, j_id, curr_p, curr_p, "EXTEND",
+                            f"Holding corridor green for platoon progression ({q_corridor} veh queued).",
+                            controller="coordinated",
+                            observed_queue=j_q,
+                        )
                     elif elapsed >= ctrl.min_green and q_cross > q_corridor + 2:
                         ctrl.request_switch(target_green_phase=0, sim_time=sim_time)
                         self._record_decision(
                             sim_time, j_id, curr_p, 0, "SWITCH",
-                            f"Side-cross queue ({q_cross} veh) exceeded corridor queue ({q_corridor} veh)."
+                            f"Side-cross queue ({q_cross} veh) exceeded corridor queue ({q_corridor} veh).",
+                            controller="coordinated",
+                            observed_queue=j_q,
+                        )
+                    else:
+                        self._record_decision(
+                            sim_time, j_id, curr_p, curr_p, "KEEP",
+                            f"Maintaining corridor green ({elapsed:.1f}s elapsed).",
+                            controller="coordinated",
+                            observed_queue=j_q,
                         )
                 else:
                     if elapsed >= ctrl.min_green and q_corridor > q_cross:
                         ctrl.request_switch(target_green_phase=target_corridor_phase, sim_time=sim_time)
                         self._record_decision(
                             sim_time, j_id, curr_p, target_corridor_phase, "SWITCH",
-                            f"Corridor progression aligned green phase {target_corridor_phase}."
+                            f"Corridor progression aligned green phase {target_corridor_phase}.",
+                            controller="coordinated",
+                            observed_queue=j_q,
+                        )
+                    else:
+                        self._record_decision(
+                            sim_time, j_id, curr_p, curr_p, "KEEP",
+                            f"Serving side cross street ({elapsed:.1f}s elapsed).",
+                            controller="coordinated",
+                            observed_queue=j_q,
                         )
 
     def _record_decision(
@@ -1322,8 +1376,19 @@ class SimulationService:
         action: str,
         reason: str,
         is_override: bool = False,
+        controller: Optional[str] = None,
+        observed_queue: Optional[int] = None,
+        queue_after: Optional[int] = None,
     ) -> None:
         """Appends decision to in-memory history and database."""
+        # Update queue_after on the most recent prior decision for this junction if valid
+        if observed_queue is not None:
+            for past_dec in reversed(self._decisions_log):
+                if past_dec.junction_id == junction_id and past_dec.observed_queue is not None:
+                    if past_dec.queue_after is None:
+                        past_dec.queue_after = observed_queue
+                    break
+
         item = DecisionItemSchema(
             id=len(self._decisions_log) + 1,
             simulation_time=sim_time,
@@ -1334,6 +1399,9 @@ class SimulationService:
             reason=reason,
             is_override=is_override,
             timestamp=datetime.now(timezone.utc).isoformat(),
+            controller=controller or getattr(self, "_mode", "coordinated"),
+            observed_queue=observed_queue,
+            queue_after=queue_after,
         )
         self._decisions_log.append(item)
         if len(self._decisions_log) > 200:

@@ -26,12 +26,20 @@ htmlcov/
 
 # Environments
 .env
+.env.local
+.env.*.local
 .venv
 .venv-demo/
 venv/
 ENV/
 env.bak/
 venv.bak/
+
+# Security, Certificates, & Keys
+*.pem
+*.key
+*.crt
+*.cert
 
 # SQLite & Databases
 *.db
@@ -62,3 +70,7 @@ sumo_run_*.xml
 Thumbs.db
 
 .venv-marl-audit/
+
+# Scratch & ephemeral files
+scratch/
+outputs/temp_chrome_profile/

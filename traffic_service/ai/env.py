@@ -46,6 +46,7 @@ class RewardWeights:
     weight_starvation: float = 0.50     # Global penalty when any approach exceeds max red threshold
     weight_flow_integrity: float = 0.30 # Penalty if upstream arterial holds queue without releasing trips
     max_red_threshold_s: float = 60.0   # Maximum tolerable red duration per queued approach
+    passenger_weighted: bool = False    # When True, scales queue/delay penalties by vehicle occupancy (bus=35.0, car=1.2)
 
 
 @dataclass
@@ -84,6 +85,7 @@ class CorridorObservationSpace:
         min_green: float = 15.0,
         max_co2_mg_s: float = 10000.0,
         max_inflow_rate: float = 10.0,
+        dim: int = 14,
     ) -> None:
         self.junctions = junctions or list(DEFAULT_JUNCTIONS)
         self.max_queue = max_queue
@@ -93,6 +95,7 @@ class CorridorObservationSpace:
         self.min_green = min_green
         self.max_co2_mg_s = max_co2_mg_s
         self.max_inflow_rate = max_inflow_rate
+        self.dim = dim
 
     def vectorize_junction(self, j_id: str, raw_obs: Dict[str, Any]) -> np.ndarray:
         """
@@ -114,6 +117,10 @@ class CorridorObservationSpace:
         """
         vec = np.zeros(OBSERVATION_DIM_PER_JUNCTION, dtype=np.float32)
         if not raw_obs:
+            if self.dim == 8:
+                return np.zeros(8, dtype=np.float32)
+            elif self.dim == 4:
+                return np.zeros(4, dtype=np.float32)
             return vec
 
         try:
@@ -157,6 +164,10 @@ class CorridorObservationSpace:
 
         # Replace any residual NaNs / Infs
         np.nan_to_num(vec, copy=False, nan=0.0, posinf=1.0, neginf=0.0)
+        if self.dim == 8:
+            return vec[[0, 1, 2, 3, 4, 5, 6, 13]].astype(np.float32)
+        elif self.dim == 4:
+            return vec[[0, 1, 4, 5]].astype(np.float32)
         return vec
 
     def vectorize_corridor(self, raw_observations: Dict[str, Dict[str, Any]]) -> np.ndarray:
@@ -215,6 +226,13 @@ class MultiIntersectionReward:
         wait = float(state.get("total_waiting_time", 0.0))
         speed = float(state.get("average_speed_kmh", 0.0))
         co2_g = float(state.get("co2_mg_s", 0.0)) / 1000.0  # mg -> g
+
+        # Multi-objective passenger weighting adjustment (Series 4E)
+        if self.weights.passenger_weighted:
+            bus_count = float(state.get("bus_queue", state.get("approaching_buses_count", 0)))
+            pax_multiplier = 1.0 + (bus_count * 28.0 / max(q, 1.0))
+            q *= pax_multiplier
+            wait *= pax_multiplier
 
         # Normalized component penalties
         r_queue = -self.weights.weight_queue * (q / 30.0)

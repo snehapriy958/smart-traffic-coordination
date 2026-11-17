@@ -1,0 +1,35 @@
+{
+  "interrupted_task_id": "task-7465",
+  "termination_reason": "RAM_SAFETY_THRESHOLD_GB (1.11 GB < 1.20 GB during Vite bundling)",
+  "total_completed_episodes": 77,
+  "recorded_checkpoints": [
+    {
+      "episode": 1,
+      "mean_reward": -32.34,
+      "trips_completed": 109,
+      "travel_time_mean_s": 82.5,
+      "cumulative_delay_veh_s": 14434.0
+    },
+    {
+      "episode": 25,
+      "mean_reward": -27.53,
+      "trips_completed": 109,
+      "travel_time_mean_s": 74.9,
+      "cumulative_delay_veh_s": 10586.0
+    },
+    {
+      "episode": 50,
+      "mean_reward": -33.3,
+      "trips_completed": 109,
+      "travel_time_mean_s": 93.8,
+      "cumulative_delay_veh_s": 12911.0
+    },
+    {
+      "episode": 75,
+      "mean_reward": -31.62,
+      "trips_completed": 109,
+      "travel_time_mean_s": 96.8,
+      "cumulative_delay_veh_s": 13223.0
+    }
+  ]
+}

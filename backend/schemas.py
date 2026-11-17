@@ -22,6 +22,15 @@ class HealthResponse(BaseModel):
     message: str = "Backend operational"
 
 
+class ReadinessResponse(BaseModel):
+    status: str = "ready"
+    sumo_ready: bool = True
+    config_ready: bool = True
+    database_ready: bool = True
+    checkpoints_ready: bool = True
+    details: Dict[str, Any] = Field(default_factory=dict)
+
+
 class SimulationStartRequest(BaseModel):
     mode: str = Field("coordinated", description="Simulation mode: 'baseline', 'coordinated', 'marl_ppo', or 'marl_dqn'")
     duration: int = Field(600, ge=10, le=7200, description="Simulation duration in seconds")
@@ -251,6 +260,9 @@ class DecisionItemSchema(BaseModel):
     reason: str
     is_override: bool = False
     timestamp: Optional[str] = None
+    controller: Optional[str] = None
+    observed_queue: Optional[int] = None
+    queue_after: Optional[int] = None
 
 
 class DecisionsResponse(BaseModel):
@@ -266,6 +278,9 @@ class ControllerMetricComparison(BaseModel):
     controller_name: str
     status: str  # "Implemented", "Not implemented", "Historical Artifact", etc.
     description: str
+    is_implemented: bool = True
+    available_for_inference: bool = True
+    has_trained_checkpoint: bool = False
     mean_travel_time_s: Optional[float] = None
     mean_speed_kmh: Optional[float] = None
     total_waiting_time_s: Optional[float] = None
@@ -286,8 +301,11 @@ class ControllerMetricComparison(BaseModel):
 
 class ExperimentCompareResponse(BaseModel):
     network: str = "Silk Board Corridor (J1 -> J2 -> J3)"
-    benchmark_duration_s: int = 600
+    benchmark_name: str = "Authoritative 10-Seed Master Benchmark"
+    benchmark_duration_s: int = 900
+    seeds_count: int = 10
     controllers: List[ControllerMetricComparison]
+    historical_5seed_controllers: Optional[List[ControllerMetricComparison]] = None
 
 
 class MARLSummaryRow(BaseModel):
@@ -356,3 +374,105 @@ class ExperimentHistoryItem(BaseModel):
     started_at: str
     completed_at: Optional[str] = None
     summary_metrics: Optional[Dict[str, Any]] = None
+
+
+# =====================================================================
+# RESEARCH & EXPERIMENTS MODULE SCHEMAS (PHASE 4 ABLATIONS & BENCHMARKS)
+# =====================================================================
+
+class ResearchSeriesMeta(BaseModel):
+    series_id: str
+    name: str
+    hypothesis: str
+    status: str
+    algorithm: str
+    runs_total: int
+    evals_total: int
+    key_findings: Optional[str] = None
+
+
+class ResearchOverviewResponse(BaseModel):
+    title: str
+    phase: str
+    corridor: str
+    description: str
+    framework: str
+    series_list: List[ResearchSeriesMeta]
+    overall_progress: Dict[str, Any]
+
+
+class Series4BResponse(BaseModel):
+    series: str
+    status: str
+    verdict: str
+    protocol: Dict[str, Any]
+    total_training_runs: int
+    total_evaluation_records: int
+    configurations: Dict[str, Any]
+    hierarchical_inference: Optional[Dict[str, Any]] = None
+    pairwise_comparisons: Optional[List[Dict[str, Any]]] = None
+
+
+class Series4CRunSummary(BaseModel):
+    run_key: str
+    beta: float
+    train_seed: int
+    training_status: str
+    training_wall_time_s: float
+    has_checkpoint: bool
+    checkpoint_sha256: Optional[str] = None
+    evaluations_completed: int
+    evaluations_target: int
+
+
+class Series4CLiveStatusResponse(BaseModel):
+    series: str
+    status: str
+    algorithm: str
+    observation_dim: int
+    betas: List[float]
+    train_seeds: List[int]
+    total_planned_runs: int
+    completed_training_runs: int
+    total_planned_evaluations: int
+    completed_evaluations: int
+    current_run: Optional[Dict[str, Any]] = None
+    runs_summary: List[Series4CRunSummary]
+    last_updated: str
+    recent_events: List[str]
+
+
+class Series4CEpisodeRecord(BaseModel):
+    episode: int
+    mean_reward: float
+    trips_completed: int
+    travel_time_mean_s: float
+    cumulative_delay_veh_s: float
+    policy_loss: Optional[float] = 0.0
+    critic_loss: Optional[float] = 0.0
+
+
+class Series4CHistoryResponse(BaseModel):
+    run_key: str
+    beta: float
+    train_seed: int
+    total_episodes: int
+    is_live: bool
+    episodes: List[Series4CEpisodeRecord]
+
+
+class Series4EResponse(BaseModel):
+    series: str
+    status: str
+    metadata: Dict[str, Any]
+    per_formulation: Dict[str, Any]
+    matched_pairs: Optional[List[Dict[str, Any]]] = None
+
+
+class MasterBenchmarkResponse(BaseModel):
+    benchmark_name: str
+    benchmark_duration_s: int
+    seeds_count: int
+    corridor_demand_trips: Optional[float] = 109.0
+    provenance_path: str
+    controllers: List[ControllerMetricComparison]

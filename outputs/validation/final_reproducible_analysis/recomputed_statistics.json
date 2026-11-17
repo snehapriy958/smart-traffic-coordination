@@ -1,0 +1,392 @@
+{
+  "metadata": {
+    "generated_at_utc": "2026-11-17T10:35:49.519007+00:00",
+    "experiment": "Authoritative 10-Seed Master Benchmark Recomputation",
+    "sample_size_n": 10,
+    "degrees_of_freedom": 9,
+    "t_critical_95pct": 2.26216,
+    "multiple_comparison_method": "Bonferroni (m=3, alpha=0.01667)",
+    "script_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\validation\\final_reproducible_analysis\\reproduce_benchmark_analysis.py",
+    "python_version": "3.13.14",
+    "scipy_version": "C:\\Users\\Sneha Singh\\AppData\\Roaming\\Python\\Python313\\site-packages\\scipy\\stats\\__init__.py"
+  },
+  "descriptive_statistics": {
+    "baseline": {
+      "name": "Fixed-Time Baseline",
+      "travel_time_s": {
+        "mean": 90.021,
+        "sample_std_ddof1": 1.259,
+        "population_std_ddof0": 1.1943,
+        "standard_error": 0.3981,
+        "ci95_low": 89.1204,
+        "ci95_high": 90.9216,
+        "median": 90.23,
+        "p90": 91.365,
+        "p95": 91.7025
+      },
+      "speed_kmh": {
+        "mean": 28.205,
+        "sample_std_ddof1": 0.3729,
+        "population_std_ddof0": 0.3538,
+        "standard_error": 0.1179,
+        "ci95_low": 27.9382,
+        "ci95_high": 28.4718,
+        "median": 28.165,
+        "p90": 28.695,
+        "p95": 28.7175
+      },
+      "delay_veh_s": {
+        "mean": 12373.2,
+        "sample_std_ddof1": 135.0669,
+        "population_std_ddof0": 128.1357,
+        "standard_error": 42.7119,
+        "ci95_low": 12276.579,
+        "ci95_high": 12469.821,
+        "median": 12421.5,
+        "p90": 12498.5,
+        "p95": 12505.25
+      },
+      "fuel_l": {
+        "mean": 23.993,
+        "sample_std_ddof1": 0.0844,
+        "population_std_ddof0": 0.0801,
+        "standard_error": 0.0267,
+        "ci95_low": 23.9326,
+        "ci95_high": 24.0534,
+        "median": 24.0029,
+        "p90": 24.0808,
+        "p95": 24.0922
+      },
+      "co2_kg": {
+        "mean": 55.5782,
+        "sample_std_ddof1": 0.1952,
+        "population_std_ddof0": 0.1852,
+        "standard_error": 0.0617,
+        "ci95_low": 55.4386,
+        "ci95_high": 55.7178,
+        "median": 55.6006,
+        "p90": 55.7816,
+        "p95": 55.8082
+      },
+      "trips": {
+        "mean": 109.0,
+        "sample_std_ddof1": 0.0,
+        "population_std_ddof0": 0.0,
+        "standard_error": 0.0,
+        "ci95_low": NaN,
+        "ci95_high": NaN,
+        "median": 109.0,
+        "p90": 109.0,
+        "p95": 109.0
+      }
+    },
+    "coordinated": {
+      "name": "Coordinated Adaptive Controller",
+      "travel_time_s": {
+        "mean": 49.872,
+        "sample_std_ddof1": 2.4616,
+        "population_std_ddof0": 2.3353,
+        "standard_error": 0.7784,
+        "ci95_low": 48.1111,
+        "ci95_high": 51.6329,
+        "median": 49.07,
+        "p90": 53.697,
+        "p95": 54.3585
+      },
+      "speed_kmh": {
+        "mean": 37.981,
+        "sample_std_ddof1": 0.2632,
+        "population_std_ddof0": 0.2497,
+        "standard_error": 0.0832,
+        "ci95_low": 37.7927,
+        "ci95_high": 38.1693,
+        "median": 38.05,
+        "p90": 38.179,
+        "p95": 38.2645
+      },
+      "delay_veh_s": {
+        "mean": 5836.8,
+        "sample_std_ddof1": 296.483,
+        "population_std_ddof0": 281.2685,
+        "standard_error": 93.7562,
+        "ci95_low": 5624.7088,
+        "ci95_high": 6048.8912,
+        "median": 5759.0,
+        "p90": 6241.4,
+        "p95": 6369.2
+      },
+      "fuel_l": {
+        "mean": 18.4386,
+        "sample_std_ddof1": 0.2767,
+        "population_std_ddof0": 0.2625,
+        "standard_error": 0.0875,
+        "ci95_low": 18.2407,
+        "ci95_high": 18.6366,
+        "median": 18.3535,
+        "p90": 18.8159,
+        "p95": 18.8908
+      },
+      "co2_kg": {
+        "mean": 42.7177,
+        "sample_std_ddof1": 0.6416,
+        "population_std_ddof0": 0.6087,
+        "standard_error": 0.2029,
+        "ci95_low": 42.2587,
+        "ci95_high": 43.1766,
+        "median": 42.5209,
+        "p90": 43.5922,
+        "p95": 43.7654
+      },
+      "trips": {
+        "mean": 109.0,
+        "sample_std_ddof1": 0.0,
+        "population_std_ddof0": 0.0,
+        "standard_error": 0.0,
+        "ci95_low": NaN,
+        "ci95_high": NaN,
+        "median": 109.0,
+        "p90": 109.0,
+        "p95": 109.0
+      }
+    },
+    "marl_dqn": {
+      "name": "Double-DQN (Stage A)",
+      "travel_time_s": {
+        "mean": 56.637,
+        "sample_std_ddof1": 2.2154,
+        "population_std_ddof0": 2.1018,
+        "standard_error": 0.7006,
+        "ci95_low": 55.0522,
+        "ci95_high": 58.2218,
+        "median": 56.82,
+        "p90": 59.238,
+        "p95": 59.409
+      },
+      "speed_kmh": {
+        "mean": 31.463,
+        "sample_std_ddof1": 0.4416,
+        "population_std_ddof0": 0.419,
+        "standard_error": 0.1397,
+        "ci95_low": 31.1471,
+        "ci95_high": 31.7789,
+        "median": 31.39,
+        "p90": 31.881,
+        "p95": 32.1105
+      },
+      "delay_veh_s": {
+        "mean": 8024.4,
+        "sample_std_ddof1": 284.8903,
+        "population_std_ddof0": 270.2707,
+        "standard_error": 90.0902,
+        "ci95_low": 7820.6017,
+        "ci95_high": 8228.1983,
+        "median": 7952.0,
+        "p90": 8374.5,
+        "p95": 8457.75
+      },
+      "fuel_l": {
+        "mean": 20.3533,
+        "sample_std_ddof1": 0.279,
+        "population_std_ddof0": 0.2646,
+        "standard_error": 0.0882,
+        "ci95_low": 20.1537,
+        "ci95_high": 20.5529,
+        "median": 20.2177,
+        "p90": 20.7352,
+        "p95": 20.7932
+      },
+      "co2_kg": {
+        "mean": 47.1478,
+        "sample_std_ddof1": 0.6459,
+        "population_std_ddof0": 0.6127,
+        "standard_error": 0.2042,
+        "ci95_low": 46.6857,
+        "ci95_high": 47.6098,
+        "median": 46.834,
+        "p90": 48.0331,
+        "p95": 48.1666
+      },
+      "trips": {
+        "mean": 109.0,
+        "sample_std_ddof1": 0.0,
+        "population_std_ddof0": 0.0,
+        "standard_error": 0.0,
+        "ci95_low": NaN,
+        "ci95_high": NaN,
+        "median": 109.0,
+        "p90": 109.0,
+        "p95": 109.0
+      }
+    },
+    "marl_ppo": {
+      "name": "PPO (Stage A)",
+      "travel_time_s": {
+        "mean": 85.501,
+        "sample_std_ddof1": 5.8198,
+        "population_std_ddof0": 5.5212,
+        "standard_error": 1.8404,
+        "ci95_low": 81.3378,
+        "ci95_high": 89.6642,
+        "median": 87.185,
+        "p90": 89.367,
+        "p95": 89.6685
+      },
+      "speed_kmh": {
+        "mean": 25.563,
+        "sample_std_ddof1": 0.9127,
+        "population_std_ddof0": 0.8659,
+        "standard_error": 0.2886,
+        "ci95_low": 24.9101,
+        "ci95_high": 26.2159,
+        "median": 25.14,
+        "p90": 26.354,
+        "p95": 27.047
+      },
+      "delay_veh_s": {
+        "mean": 12163.6,
+        "sample_std_ddof1": 896.6018,
+        "population_std_ddof0": 850.5911,
+        "standard_error": 283.5304,
+        "ci95_low": 11522.2097,
+        "ci95_high": 12804.9903,
+        "median": 12619.5,
+        "p90": 12848.1,
+        "p95": 12979.05
+      },
+      "fuel_l": {
+        "mean": 23.7574,
+        "sample_std_ddof1": 0.7348,
+        "population_std_ddof0": 0.6971,
+        "standard_error": 0.2324,
+        "ci95_low": 23.2317,
+        "ci95_high": 24.2831,
+        "median": 24.1362,
+        "p90": 24.394,
+        "p95": 24.4099
+      },
+      "co2_kg": {
+        "mean": 55.0306,
+        "sample_std_ddof1": 1.7006,
+        "population_std_ddof0": 1.6134,
+        "standard_error": 0.5378,
+        "ci95_low": 53.814,
+        "ci95_high": 56.2471,
+        "median": 55.9085,
+        "p90": 56.5045,
+        "p95": 56.54
+      },
+      "trips": {
+        "mean": 109.0,
+        "sample_std_ddof1": 0.0,
+        "population_std_ddof0": 0.0,
+        "standard_error": 0.0,
+        "ci95_low": NaN,
+        "ci95_high": NaN,
+        "median": 109.0,
+        "p90": 109.0,
+        "p95": 109.0
+      }
+    }
+  },
+  "paired_comparisons": {
+    "coordinated": {
+      "controller_name": "Coordinated Adaptive Controller",
+      "travel_time": {
+        "mean_diff_s": -40.149,
+        "percent_change": -44.6,
+        "std_diff_s": 2.1429,
+        "t_statistic": -59.2485,
+        "raw_p_value": 5.600461724539155e-13,
+        "wilcoxon_stat": 0.0,
+        "wilcoxon_p_value": 0.001953125,
+        "cohen_dz": 18.736,
+        "bonferroni_adjusted_p": 1.6801385173617465e-12,
+        "significant_bonferroni": true
+      },
+      "cumulative_delay": {
+        "mean_diff_veh_s": -6536.4,
+        "percent_change": -52.83,
+        "t_statistic": -64.4012,
+        "raw_p_value": 2.6483312295812726e-13
+      },
+      "corridor_speed": {
+        "mean_diff_kmh": 9.776,
+        "percent_change": 34.66,
+        "t_statistic": 81.3025,
+        "raw_p_value": 3.262268699246649e-14
+      },
+      "fuel_consumption": {
+        "mean_diff_l": -5.554,
+        "percent_change": -23.15,
+        "t_statistic": -60.3945,
+        "raw_p_value": 4.715374811524121e-13
+      }
+    },
+    "marl_dqn": {
+      "controller_name": "Double-DQN (Stage A)",
+      "travel_time": {
+        "mean_diff_s": -33.384,
+        "percent_change": -37.08,
+        "std_diff_s": 2.3167,
+        "t_statistic": -45.5692,
+        "raw_p_value": 5.903961978823078e-12,
+        "wilcoxon_stat": 0.0,
+        "wilcoxon_p_value": 0.001953125,
+        "cohen_dz": 14.4102,
+        "bonferroni_adjusted_p": 1.7711885936469236e-11,
+        "significant_bonferroni": true
+      },
+      "cumulative_delay": {
+        "mean_diff_veh_s": -4348.8,
+        "percent_change": -35.15,
+        "t_statistic": -38.2622,
+        "raw_p_value": 2.825216081411085e-11
+      },
+      "corridor_speed": {
+        "mean_diff_kmh": 3.258,
+        "percent_change": 11.55,
+        "t_statistic": 20.5173,
+        "raw_p_value": 7.247620865748464e-09
+      },
+      "fuel_consumption": {
+        "mean_diff_l": -3.64,
+        "percent_change": -15.17,
+        "t_statistic": -36.166,
+        "raw_p_value": 4.677120803359087e-11
+      }
+    },
+    "marl_ppo": {
+      "controller_name": "PPO (Stage A)",
+      "travel_time": {
+        "mean_diff_s": -4.52,
+        "percent_change": -5.02,
+        "std_diff_s": 5.899,
+        "t_statistic": -2.4231,
+        "raw_p_value": 0.03841758290579937,
+        "wilcoxon_stat": 2.0,
+        "wilcoxon_p_value": 0.005859375,
+        "cohen_dz": 0.7662,
+        "bonferroni_adjusted_p": 0.11525274871739812,
+        "significant_bonferroni": false
+      },
+      "cumulative_delay": {
+        "mean_diff_veh_s": -209.6,
+        "percent_change": -1.69,
+        "t_statistic": -0.6972,
+        "raw_p_value": 0.5033138903935606
+      },
+      "corridor_speed": {
+        "mean_diff_kmh": -2.642,
+        "percent_change": -9.37,
+        "t_statistic": -7.8301,
+        "raw_p_value": 2.6266179189546043e-05
+      },
+      "fuel_consumption": {
+        "mean_diff_l": -0.236,
+        "percent_change": -0.98,
+        "t_statistic": -0.9705,
+        "raw_p_value": 0.3571442416667362
+      }
+    }
+  }
+}

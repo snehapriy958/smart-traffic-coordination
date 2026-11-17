@@ -1,0 +1,182 @@
+{
+  "metadata": {
+    "experiment": "Series 4A: Safety Shield Ablation",
+    "duration_s": 900.0,
+    "controllers": [
+      "marl_mappo",
+      "marl_dqn"
+    ],
+    "conditions": [
+      "shielded",
+      "unshielded"
+    ],
+    "seeds": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10
+    ],
+    "total_runs": 40,
+    "completed_runs": 40
+  },
+  "per_condition": {
+    "marl_mappo": {
+      "shielded": {
+        "runs_completed": 10,
+        "travel_time_mean_s": 64.41,
+        "travel_time_std_s": 2.69,
+        "cumulative_delay_veh_s": 9723.5,
+        "total_corridor_trips_completed": 109.0,
+        "starvation_violations_mean": 0.0,
+        "starvation_violations_total": 0,
+        "min_green_violations_mean": 0.8,
+        "min_green_violations_total": 8,
+        "phase_switches_mean": 193.6,
+        "max_queued_red_mean_s": 33.1,
+        "raw_starvations": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "raw_travel_times": [
+          63.62,
+          68.33,
+          62.9,
+          63.29,
+          63.36,
+          60.94,
+          63.25,
+          69.95,
+          63.93,
+          64.5
+        ]
+      },
+      "unshielded": {
+        "runs_completed": 10,
+        "travel_time_mean_s": 180.82,
+        "travel_time_std_s": 12.24,
+        "cumulative_delay_veh_s": 45133.7,
+        "total_corridor_trips_completed": 109.0,
+        "starvation_violations_mean": 0.0,
+        "starvation_violations_total": 0,
+        "min_green_violations_mean": 99.4,
+        "min_green_violations_total": 994,
+        "phase_switches_mean": 371.9,
+        "max_queued_red_mean_s": 51.8,
+        "raw_starvations": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "raw_travel_times": [
+          185.79,
+          165.83,
+          181.4,
+          197.33,
+          197.81,
+          165.46,
+          190.72,
+          181.42,
+          168.18,
+          174.28
+        ]
+      }
+    },
+    "marl_dqn": {
+      "shielded": {
+        "runs_completed": 10,
+        "travel_time_mean_s": 62.66,
+        "travel_time_std_s": 3.86,
+        "cumulative_delay_veh_s": 9649.0,
+        "total_corridor_trips_completed": 109.0,
+        "starvation_violations_mean": 0.0,
+        "starvation_violations_total": 0,
+        "min_green_violations_mean": 1.3,
+        "min_green_violations_total": 13,
+        "phase_switches_mean": 201.6,
+        "max_queued_red_mean_s": 43.1,
+        "raw_starvations": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "raw_travel_times": [
+          60.53,
+          59.87,
+          68.28,
+          60.88,
+          63.73,
+          61.04,
+          60.72,
+          70.7,
+          58.83,
+          61.97
+        ]
+      },
+      "unshielded": {
+        "runs_completed": 10,
+        "travel_time_mean_s": 113.61,
+        "travel_time_std_s": 13.71,
+        "cumulative_delay_veh_s": 22925.0,
+        "total_corridor_trips_completed": 109.0,
+        "starvation_violations_mean": 3.0,
+        "starvation_violations_total": 30,
+        "min_green_violations_mean": 68.7,
+        "min_green_violations_total": 687,
+        "phase_switches_mean": 376.0,
+        "max_queued_red_mean_s": 60.6,
+        "raw_starvations": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          30,
+          0,
+          0,
+          0
+        ],
+        "raw_travel_times": [
+          145.61,
+          114.61,
+          108.16,
+          122.81,
+          112.47,
+          106.22,
+          98.85,
+          117.66,
+          112.17,
+          97.52
+        ]
+      }
+    }
+  }
+}

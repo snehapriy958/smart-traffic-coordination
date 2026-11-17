@@ -13,7 +13,8 @@ import { api } from './services/api';
 import { trafficWS } from './services/websocket';
 import { snapshotRecoveryManager } from './services/snapshotRecovery';
 import { appendEmissionHistory } from './utils/emissionHistory';
-import { AlertTriangle, X, CheckCircle, ShieldAlert, RefreshCw, Box } from 'lucide-react';
+import { AlertTriangle, X, CheckCircle, ShieldAlert, RefreshCw, Box, FlaskConical } from 'lucide-react';
+import { ResearchSection } from './components/Research/ResearchSection';
 
 // Lazy-load 3D Corridor chunk on demand
 const ThreeCorridorView = React.lazy(() => import('./components/ThreeCorridorView'));
@@ -41,6 +42,7 @@ export default function App() {
   const [emergencies, setEmergencies] = useState(null);
   const [riskData, setRiskData] = useState(null);
   const [vehicles, setVehicles] = useState([]);
+  const [decisions, setDecisions] = useState([]);
   const [compareData, setCompareData] = useState(null);
   const [compareLoading, setCompareLoading] = useState(true);
   const [compareError, setCompareError] = useState(null);
@@ -60,7 +62,7 @@ export default function App() {
   const loadInitialData = useCallback(async () => {
     setCompareLoading(true);
     try {
-      const [h, s, m, j, sig, em, r, comp, v] = await Promise.allSettled([
+      const [h, s, m, j, sig, em, r, comp, v, dec] = await Promise.allSettled([
         api.getHealth(),
         api.getSimulationStatus(),
         api.getTrafficMetrics(),
@@ -70,6 +72,7 @@ export default function App() {
         api.getRisks(),
         api.getExperimentsCompare(),
         api.getTrafficVehicles(),
+        api.getDecisions(),
       ]);
 
       if (h.status === 'fulfilled') setHealth(h.value);
@@ -86,6 +89,7 @@ export default function App() {
       if (em.status === 'fulfilled') setEmergencies(em.value);
       if (r.status === 'fulfilled') setRiskData(r.value);
       if (v.status === 'fulfilled' && Array.isArray(v.value?.vehicles)) setVehicles(v.value.vehicles);
+      if (dec.status === 'fulfilled' && Array.isArray(dec.value?.decisions)) setDecisions(dec.value.decisions);
       if (comp.status === 'fulfilled') {
         setCompareData(comp.value);
         setCompareError(null);
@@ -165,6 +169,7 @@ export default function App() {
         setEmissionHistory([]);
       }
       if (data.emergencies) setEmergencies(data.emergencies);
+      if (Array.isArray(data.decisions)) setDecisions(data.decisions);
       if (data.risks) setRiskData(data.risks);
       if (data.health) setHealth(data.health);
       if (data.compare) {
@@ -322,6 +327,20 @@ export default function App() {
             What-If Sandbox & History
           </button>
           <button
+            onClick={() => setActiveTab('research')}
+            className={`px-4 py-2.5 text-xs font-semibold uppercase tracking-wider transition border-b-2 flex items-center gap-1.5 ${
+              activeTab === 'research'
+                ? 'border-teal-600 text-teal-700 bg-teal-50/60 font-bold'
+                : 'border-transparent text-slate-500 hover:text-slate-800 hover:border-slate-300'
+            }`}
+          >
+            <FlaskConical className="h-3.5 w-3.5 text-teal-600" />
+            <span>Research & Experiments</span>
+            <span className="text-[9px] px-1.5 py-0.5 rounded bg-amber-100 text-amber-800 font-mono border border-amber-300 animate-pulse">
+              Series 4C Live
+            </span>
+          </button>
+          <button
             onClick={() => setActiveTab('3d')}
             className={`px-4 py-2.5 text-xs font-semibold uppercase tracking-wider transition border-b-2 flex items-center gap-1.5 ${
               activeTab === '3d'
@@ -345,7 +364,12 @@ export default function App() {
               isStale={wsStatus === 'DISCONNECTED'}
             />
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <SignalStatusPanel signals={signals} junctions={junctions} />
+              <SignalStatusPanel
+                signals={signals}
+                junctions={junctions}
+                decisions={decisions}
+                simStatus={simStatus}
+              />
               <EmergencyPanel emergencies={emergencies} />
             </div>
           </div>
@@ -377,7 +401,18 @@ export default function App() {
           </div>
         )}
 
-        {/* Tab 5: 3D Corridor Digital Twin (Lazy-loaded) */}
+        {/* Tab 5: Research & Experiments Module */}
+        {activeTab === 'research' && (
+          <div className="space-y-6">
+            <ResearchSection
+              compareData={compareData}
+              compareLoading={compareLoading}
+              compareError={compareError}
+            />
+          </div>
+        )}
+
+        {/* Tab 6: 3D Corridor Digital Twin (Lazy-loaded) */}
         {activeTab === '3d' && (
           <div className="space-y-6">
             <Suspense fallback={<div className="min-h-[600px] flex items-center justify-center text-slate-500 font-medium">Loading 3D Visualizer...</div>}>

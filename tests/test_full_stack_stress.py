@@ -20,8 +20,13 @@ import subprocess
 import time
 from typing import Any, Dict, List, Optional
 import pytest
-import win32process
-import win32api
+
+try:
+    import win32process
+    import win32api
+except ImportError:
+    win32process = None
+    win32api = None
 
 from backend.main import app
 from backend.simulation_service import sim_service
@@ -63,10 +68,16 @@ class ControlledStressWebSocket:
 
 
 def get_current_rss_mb() -> float:
-    """Retrieves current process Working Set Size (RSS) in MB using Win32 API."""
+    """Retrieves current process Working Set Size (RSS) in MB using Win32 API or POSIX resource."""
+    if win32process and win32api:
+        try:
+            mem_info = win32process.GetProcessMemoryInfo(win32api.GetCurrentProcess())
+            return mem_info["WorkingSetSize"] / (1024 * 1024)
+        except Exception:
+            return 0.0
     try:
-        mem_info = win32process.GetProcessMemoryInfo(win32api.GetCurrentProcess())
-        return mem_info["WorkingSetSize"] / (1024 * 1024)
+        import resource
+        return resource.getrusage(resource.RUSAGE_SELF).ru_maxrss / 1024.0
     except Exception:
         return 0.0
 
@@ -74,16 +85,20 @@ def get_current_rss_mb() -> float:
 def get_active_sumo_process_count() -> int:
     """Inspects OS process table for active sumo.exe / sumo instances."""
     try:
-        output = subprocess.check_output(
-            'tasklist /FI "IMAGENAME eq sumo.exe" /FO CSV /NH',
-            shell=True,
-            stderr=subprocess.DEVNULL,
-        ).decode("utf-8", errors="ignore")
-        if "sumo.exe" in output.lower():
-            # Count occurrences of sumo.exe lines
+        if os.name == "nt":
+            output = subprocess.check_output(
+                'tasklist /FI "IMAGENAME eq sumo.exe" /FO CSV /NH',
+                shell=True,
+                stderr=subprocess.DEVNULL,
+            ).decode("utf-8", errors="ignore")
             lines = [l for l in output.strip().split("\n") if "sumo.exe" in l.lower()]
             return len(lines)
-        return 0
+        else:
+            output = subprocess.check_output(
+                ["pgrep", "-c", "-x", "sumo"],
+                stderr=subprocess.DEVNULL,
+            ).decode("utf-8", errors="ignore").strip()
+            return int(output) if output.isdigit() else 0
     except Exception:
         return 0
 

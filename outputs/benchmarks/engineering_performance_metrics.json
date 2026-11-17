@@ -1,0 +1,95 @@
+{
+  "timestamp_utc": "2026-11-09T15:42:32Z",
+  "environment": {
+    "python": "3.13.14 (tags/v3.13.14:fd17997, Jun 10 2026, 13:03:48) [MSC v.1944 64 bit (AMD64)]",
+    "platform": "win32"
+  },
+  "sumo_traci_lifecycle": {
+    "startup_latency_ms": {
+      "mean": 1025.53,
+      "min": 1014.47,
+      "max": 1043.32,
+      "samples": 3
+    },
+    "stepping_latency_ms": {
+      "mean": 12.474,
+      "median": 12.31,
+      "p95": 14.857,
+      "min": 9.866,
+      "max": 15.956,
+      "throughput_steps_per_sec": 80.2,
+      "samples": 90
+    },
+    "shutdown_latency_ms": {
+      "mean": 129.49,
+      "min": 123.23,
+      "max": 136.29,
+      "samples": 3
+    }
+  },
+  "rest_api_latencies": {
+    "GET /api/health": {
+      "mean_ms": 136.48,
+      "median_ms": 126.913,
+      "p95_ms": 234.676,
+      "min_ms": 119.001,
+      "max_ms": 239.233,
+      "requests_per_sec": 7.3,
+      "samples": 50
+    },
+    "GET /api/readiness": {
+      "mean_ms": 150.809,
+      "median_ms": 139.282,
+      "p95_ms": 255.53,
+      "min_ms": 123.263,
+      "max_ms": 292.897,
+      "requests_per_sec": 6.6,
+      "samples": 50
+    },
+    "GET /api/simulation/status": {
+      "mean_ms": 3.521,
+      "median_ms": 3.5,
+      "p95_ms": 4.33,
+      "min_ms": 2.834,
+      "max_ms": 4.447,
+      "requests_per_sec": 284.0,
+      "samples": 50
+    },
+    "GET /api/signals": {
+      "mean_ms": 3.769,
+      "median_ms": 3.767,
+      "p95_ms": 4.484,
+      "min_ms": 2.876,
+      "max_ms": 6.836,
+      "requests_per_sec": 265.3,
+      "samples": 50
+    },
+    "GET /api/traffic/live": {
+      "mean_ms": 4.153,
+      "median_ms": 4.189,
+      "p95_ms": 4.982,
+      "min_ms": 3.18,
+      "max_ms": 5.456,
+      "requests_per_sec": 240.8,
+      "samples": 50
+    },
+    "GET /api/traffic/metrics": {
+      "mean_ms": 3.858,
+      "median_ms": 3.839,
+      "p95_ms": 4.682,
+      "min_ms": 3.046,
+      "max_ms": 5.025,
+      "requests_per_sec": 259.2,
+      "samples": 50
+    },
+    "GET /api/risks": {
+      "mean_ms": 4.898,
+      "median_ms": 4.977,
+      "p95_ms": 5.902,
+      "min_ms": 3.652,
+      "max_ms": 6.465,
+      "requests_per_sec": 204.2,
+      "samples": 50
+    }
+  }
+}

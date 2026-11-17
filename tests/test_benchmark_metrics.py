@@ -254,8 +254,8 @@ def test_api_experiments_compare_response():
     ctrls = {c["controller_name"]: c for c in data["controllers"]}
     assert "Fixed-Time Baseline" in ctrls
     assert "Coordinated Adaptive Controller" in ctrls
-    assert "PPO (Proximal Policy Optimization)" in ctrls
-    assert "DQN (Deep Q-Network)" in ctrls
+    assert "PPO (Stage A)" in ctrls or "PPO (Proximal Policy Optimization)" in ctrls
+    assert "Double-DQN (Stage A)" in ctrls or "DQN (Deep Q-Network)" in ctrls
 
     # Confirm fuel in Litres across all controllers and assumptions exposed
     for c in data["controllers"]:
@@ -265,11 +265,11 @@ def test_api_experiments_compare_response():
         assert "HBEFA4" in c["fuel_model"]
         assert c["data_provenance"] is not None
 
-    # Check true delay fields
+    # Check true delay fields against authoritative 10-seed master benchmark
     base = ctrls["Fixed-Time Baseline"]
     coord = ctrls["Coordinated Adaptive Controller"]
-    assert pytest.approx(base["cumulative_delay_veh_s"], 1.0) == 12001.2
-    assert pytest.approx(coord["cumulative_delay_veh_s"], 1.0) == 6388.8
+    assert pytest.approx(base["cumulative_delay_veh_s"], 1.0) == 12373.2
+    assert pytest.approx(coord["cumulative_delay_veh_s"], 1.0) == 5836.8
 
 
 def test_reproducibility_provenance_distinction():

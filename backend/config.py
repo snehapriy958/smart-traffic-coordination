@@ -31,3 +31,8 @@ SUMO_STEP_LENGTH: float = float(os.getenv("SUMO_STEP_LENGTH", "1.0"))
 # CORS
 cors_raw = os.getenv("CORS_ORIGINS", "http://localhost:5173,http://127.0.0.1:5173,http://localhost:3000")
 CORS_ORIGINS: list[str] = [origin.strip() for origin in cors_raw.split(",") if origin.strip()]
+
+# Observability & Security Settings
+LOG_LEVEL: str = os.getenv("LOG_LEVEL", "INFO").upper()
+STRUCTURED_LOGGING: bool = os.getenv("STRUCTURED_LOGGING", "true").lower() in ("true", "1", "yes")
+ENABLE_SECURITY_HEADERS: bool = os.getenv("ENABLE_SECURITY_HEADERS", "true").lower() in ("true", "1", "yes")

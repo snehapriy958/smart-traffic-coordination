@@ -1,0 +1,2413 @@
+{
+  "series": "Series 4C: Cooperative Reward Coupling Mechanism Ablation",
+  "regime": "FINAL_CONFIRMATORY_150EP",
+  "algorithm": "mappo",
+  "observation_dim": 14,
+  "betas": [
+    0.0,
+    0.25,
+    0.5,
+    0.75,
+    1.0
+  ],
+  "train_seeds": [
+    101,
+    102,
+    103,
+    104,
+    105
+  ],
+  "eval_seeds": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10
+  ],
+  "total_training_runs": 25,
+  "total_evaluations_target": 250,
+  "runs": {
+    "beta_000_seed101": {
+      "beta": 0.0,
+      "beta_tag": "beta_000",
+      "train_seed": 101,
+      "algorithm": "mappo",
+      "observation_dim": 14,
+      "num_episodes": 150,
+      "checkpoint_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\checkpoints\\phase4\\final_150ep\\series_4c_mappo_beta_000_seed101.json",
+      "history_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\checkpoints\\phase4\\final_150ep\\series_4c_mappo_beta_000_seed101.history.json",
+      "training_status": "PENDING",
+      "training_wall_time_s": 0.0,
+      "checkpoint_sha256": null,
+      "evaluations": {
+        "eval_seed_1": {
+          "eval_seed": 1,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_000_train101_eval1.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_2": {
+          "eval_seed": 2,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_000_train101_eval2.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_3": {
+          "eval_seed": 3,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_000_train101_eval3.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_4": {
+          "eval_seed": 4,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_000_train101_eval4.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_5": {
+          "eval_seed": 5,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_000_train101_eval5.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_6": {
+          "eval_seed": 6,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_000_train101_eval6.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_7": {
+          "eval_seed": 7,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_000_train101_eval7.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_8": {
+          "eval_seed": 8,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_000_train101_eval8.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_9": {
+          "eval_seed": 9,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_000_train101_eval9.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_10": {
+          "eval_seed": 10,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_000_train101_eval10.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        }
+      }
+    },
+    "beta_000_seed102": {
+      "beta": 0.0,
+      "beta_tag": "beta_000",
+      "train_seed": 102,
+      "algorithm": "mappo",
+      "observation_dim": 14,
+      "num_episodes": 150,
+      "checkpoint_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\checkpoints\\phase4\\final_150ep\\series_4c_mappo_beta_000_seed102.json",
+      "history_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\checkpoints\\phase4\\final_150ep\\series_4c_mappo_beta_000_seed102.history.json",
+      "training_status": "PENDING",
+      "training_wall_time_s": 0.0,
+      "checkpoint_sha256": null,
+      "evaluations": {
+        "eval_seed_1": {
+          "eval_seed": 1,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_000_train102_eval1.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_2": {
+          "eval_seed": 2,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_000_train102_eval2.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_3": {
+          "eval_seed": 3,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_000_train102_eval3.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_4": {
+          "eval_seed": 4,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_000_train102_eval4.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_5": {
+          "eval_seed": 5,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_000_train102_eval5.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_6": {
+          "eval_seed": 6,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_000_train102_eval6.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_7": {
+          "eval_seed": 7,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_000_train102_eval7.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_8": {
+          "eval_seed": 8,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_000_train102_eval8.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_9": {
+          "eval_seed": 9,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_000_train102_eval9.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_10": {
+          "eval_seed": 10,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_000_train102_eval10.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        }
+      }
+    },
+    "beta_000_seed103": {
+      "beta": 0.0,
+      "beta_tag": "beta_000",
+      "train_seed": 103,
+      "algorithm": "mappo",
+      "observation_dim": 14,
+      "num_episodes": 150,
+      "checkpoint_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\checkpoints\\phase4\\final_150ep\\series_4c_mappo_beta_000_seed103.json",
+      "history_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\checkpoints\\phase4\\final_150ep\\series_4c_mappo_beta_000_seed103.history.json",
+      "training_status": "PENDING",
+      "training_wall_time_s": 0.0,
+      "checkpoint_sha256": null,
+      "evaluations": {
+        "eval_seed_1": {
+          "eval_seed": 1,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_000_train103_eval1.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_2": {
+          "eval_seed": 2,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_000_train103_eval2.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_3": {
+          "eval_seed": 3,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_000_train103_eval3.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_4": {
+          "eval_seed": 4,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_000_train103_eval4.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_5": {
+          "eval_seed": 5,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_000_train103_eval5.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_6": {
+          "eval_seed": 6,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_000_train103_eval6.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_7": {
+          "eval_seed": 7,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_000_train103_eval7.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_8": {
+          "eval_seed": 8,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_000_train103_eval8.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_9": {
+          "eval_seed": 9,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_000_train103_eval9.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_10": {
+          "eval_seed": 10,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_000_train103_eval10.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        }
+      }
+    },
+    "beta_000_seed104": {
+      "beta": 0.0,
+      "beta_tag": "beta_000",
+      "train_seed": 104,
+      "algorithm": "mappo",
+      "observation_dim": 14,
+      "num_episodes": 150,
+      "checkpoint_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\checkpoints\\phase4\\final_150ep\\series_4c_mappo_beta_000_seed104.json",
+      "history_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\checkpoints\\phase4\\final_150ep\\series_4c_mappo_beta_000_seed104.history.json",
+      "training_status": "PENDING",
+      "training_wall_time_s": 0.0,
+      "checkpoint_sha256": null,
+      "evaluations": {
+        "eval_seed_1": {
+          "eval_seed": 1,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_000_train104_eval1.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_2": {
+          "eval_seed": 2,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_000_train104_eval2.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_3": {
+          "eval_seed": 3,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_000_train104_eval3.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_4": {
+          "eval_seed": 4,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_000_train104_eval4.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_5": {
+          "eval_seed": 5,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_000_train104_eval5.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_6": {
+          "eval_seed": 6,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_000_train104_eval6.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_7": {
+          "eval_seed": 7,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_000_train104_eval7.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_8": {
+          "eval_seed": 8,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_000_train104_eval8.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_9": {
+          "eval_seed": 9,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_000_train104_eval9.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_10": {
+          "eval_seed": 10,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_000_train104_eval10.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        }
+      }
+    },
+    "beta_000_seed105": {
+      "beta": 0.0,
+      "beta_tag": "beta_000",
+      "train_seed": 105,
+      "algorithm": "mappo",
+      "observation_dim": 14,
+      "num_episodes": 150,
+      "checkpoint_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\checkpoints\\phase4\\final_150ep\\series_4c_mappo_beta_000_seed105.json",
+      "history_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\checkpoints\\phase4\\final_150ep\\series_4c_mappo_beta_000_seed105.history.json",
+      "training_status": "PENDING",
+      "training_wall_time_s": 0.0,
+      "checkpoint_sha256": null,
+      "evaluations": {
+        "eval_seed_1": {
+          "eval_seed": 1,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_000_train105_eval1.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_2": {
+          "eval_seed": 2,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_000_train105_eval2.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_3": {
+          "eval_seed": 3,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_000_train105_eval3.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_4": {
+          "eval_seed": 4,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_000_train105_eval4.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_5": {
+          "eval_seed": 5,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_000_train105_eval5.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_6": {
+          "eval_seed": 6,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_000_train105_eval6.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_7": {
+          "eval_seed": 7,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_000_train105_eval7.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_8": {
+          "eval_seed": 8,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_000_train105_eval8.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_9": {
+          "eval_seed": 9,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_000_train105_eval9.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_10": {
+          "eval_seed": 10,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_000_train105_eval10.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        }
+      }
+    },
+    "beta_025_seed101": {
+      "beta": 0.25,
+      "beta_tag": "beta_025",
+      "train_seed": 101,
+      "algorithm": "mappo",
+      "observation_dim": 14,
+      "num_episodes": 150,
+      "checkpoint_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\checkpoints\\phase4\\final_150ep\\series_4c_mappo_beta_025_seed101.json",
+      "history_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\checkpoints\\phase4\\final_150ep\\series_4c_mappo_beta_025_seed101.history.json",
+      "training_status": "PENDING",
+      "training_wall_time_s": 0.0,
+      "checkpoint_sha256": null,
+      "evaluations": {
+        "eval_seed_1": {
+          "eval_seed": 1,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_025_train101_eval1.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_2": {
+          "eval_seed": 2,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_025_train101_eval2.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_3": {
+          "eval_seed": 3,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_025_train101_eval3.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_4": {
+          "eval_seed": 4,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_025_train101_eval4.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_5": {
+          "eval_seed": 5,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_025_train101_eval5.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_6": {
+          "eval_seed": 6,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_025_train101_eval6.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_7": {
+          "eval_seed": 7,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_025_train101_eval7.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_8": {
+          "eval_seed": 8,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_025_train101_eval8.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_9": {
+          "eval_seed": 9,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_025_train101_eval9.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_10": {
+          "eval_seed": 10,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_025_train101_eval10.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        }
+      }
+    },
+    "beta_025_seed102": {
+      "beta": 0.25,
+      "beta_tag": "beta_025",
+      "train_seed": 102,
+      "algorithm": "mappo",
+      "observation_dim": 14,
+      "num_episodes": 150,
+      "checkpoint_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\checkpoints\\phase4\\final_150ep\\series_4c_mappo_beta_025_seed102.json",
+      "history_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\checkpoints\\phase4\\final_150ep\\series_4c_mappo_beta_025_seed102.history.json",
+      "training_status": "PENDING",
+      "training_wall_time_s": 0.0,
+      "checkpoint_sha256": null,
+      "evaluations": {
+        "eval_seed_1": {
+          "eval_seed": 1,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_025_train102_eval1.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_2": {
+          "eval_seed": 2,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_025_train102_eval2.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_3": {
+          "eval_seed": 3,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_025_train102_eval3.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_4": {
+          "eval_seed": 4,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_025_train102_eval4.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_5": {
+          "eval_seed": 5,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_025_train102_eval5.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_6": {
+          "eval_seed": 6,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_025_train102_eval6.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_7": {
+          "eval_seed": 7,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_025_train102_eval7.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_8": {
+          "eval_seed": 8,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_025_train102_eval8.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_9": {
+          "eval_seed": 9,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_025_train102_eval9.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_10": {
+          "eval_seed": 10,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_025_train102_eval10.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        }
+      }
+    },
+    "beta_025_seed103": {
+      "beta": 0.25,
+      "beta_tag": "beta_025",
+      "train_seed": 103,
+      "algorithm": "mappo",
+      "observation_dim": 14,
+      "num_episodes": 150,
+      "checkpoint_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\checkpoints\\phase4\\final_150ep\\series_4c_mappo_beta_025_seed103.json",
+      "history_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\checkpoints\\phase4\\final_150ep\\series_4c_mappo_beta_025_seed103.history.json",
+      "training_status": "PENDING",
+      "training_wall_time_s": 0.0,
+      "checkpoint_sha256": null,
+      "evaluations": {
+        "eval_seed_1": {
+          "eval_seed": 1,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_025_train103_eval1.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_2": {
+          "eval_seed": 2,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_025_train103_eval2.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_3": {
+          "eval_seed": 3,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_025_train103_eval3.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_4": {
+          "eval_seed": 4,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_025_train103_eval4.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_5": {
+          "eval_seed": 5,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_025_train103_eval5.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_6": {
+          "eval_seed": 6,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_025_train103_eval6.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_7": {
+          "eval_seed": 7,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_025_train103_eval7.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_8": {
+          "eval_seed": 8,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_025_train103_eval8.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_9": {
+          "eval_seed": 9,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_025_train103_eval9.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_10": {
+          "eval_seed": 10,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_025_train103_eval10.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        }
+      }
+    },
+    "beta_025_seed104": {
+      "beta": 0.25,
+      "beta_tag": "beta_025",
+      "train_seed": 104,
+      "algorithm": "mappo",
+      "observation_dim": 14,
+      "num_episodes": 150,
+      "checkpoint_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\checkpoints\\phase4\\final_150ep\\series_4c_mappo_beta_025_seed104.json",
+      "history_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\checkpoints\\phase4\\final_150ep\\series_4c_mappo_beta_025_seed104.history.json",
+      "training_status": "PENDING",
+      "training_wall_time_s": 0.0,
+      "checkpoint_sha256": null,
+      "evaluations": {
+        "eval_seed_1": {
+          "eval_seed": 1,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_025_train104_eval1.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_2": {
+          "eval_seed": 2,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_025_train104_eval2.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_3": {
+          "eval_seed": 3,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_025_train104_eval3.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_4": {
+          "eval_seed": 4,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_025_train104_eval4.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_5": {
+          "eval_seed": 5,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_025_train104_eval5.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_6": {
+          "eval_seed": 6,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_025_train104_eval6.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_7": {
+          "eval_seed": 7,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_025_train104_eval7.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_8": {
+          "eval_seed": 8,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_025_train104_eval8.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_9": {
+          "eval_seed": 9,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_025_train104_eval9.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_10": {
+          "eval_seed": 10,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_025_train104_eval10.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        }
+      }
+    },
+    "beta_025_seed105": {
+      "beta": 0.25,
+      "beta_tag": "beta_025",
+      "train_seed": 105,
+      "algorithm": "mappo",
+      "observation_dim": 14,
+      "num_episodes": 150,
+      "checkpoint_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\checkpoints\\phase4\\final_150ep\\series_4c_mappo_beta_025_seed105.json",
+      "history_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\checkpoints\\phase4\\final_150ep\\series_4c_mappo_beta_025_seed105.history.json",
+      "training_status": "PENDING",
+      "training_wall_time_s": 0.0,
+      "checkpoint_sha256": null,
+      "evaluations": {
+        "eval_seed_1": {
+          "eval_seed": 1,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_025_train105_eval1.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_2": {
+          "eval_seed": 2,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_025_train105_eval2.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_3": {
+          "eval_seed": 3,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_025_train105_eval3.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_4": {
+          "eval_seed": 4,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_025_train105_eval4.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_5": {
+          "eval_seed": 5,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_025_train105_eval5.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_6": {
+          "eval_seed": 6,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_025_train105_eval6.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_7": {
+          "eval_seed": 7,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_025_train105_eval7.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_8": {
+          "eval_seed": 8,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_025_train105_eval8.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_9": {
+          "eval_seed": 9,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_025_train105_eval9.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_10": {
+          "eval_seed": 10,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_025_train105_eval10.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        }
+      }
+    },
+    "beta_050_seed101": {
+      "beta": 0.5,
+      "beta_tag": "beta_050",
+      "train_seed": 101,
+      "algorithm": "mappo",
+      "observation_dim": 14,
+      "num_episodes": 150,
+      "checkpoint_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\checkpoints\\phase4\\final_150ep\\series_4c_mappo_beta_050_seed101.json",
+      "history_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\checkpoints\\phase4\\final_150ep\\series_4c_mappo_beta_050_seed101.history.json",
+      "training_status": "PENDING",
+      "training_wall_time_s": 0.0,
+      "checkpoint_sha256": null,
+      "evaluations": {
+        "eval_seed_1": {
+          "eval_seed": 1,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_050_train101_eval1.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_2": {
+          "eval_seed": 2,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_050_train101_eval2.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_3": {
+          "eval_seed": 3,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_050_train101_eval3.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_4": {
+          "eval_seed": 4,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_050_train101_eval4.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_5": {
+          "eval_seed": 5,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_050_train101_eval5.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_6": {
+          "eval_seed": 6,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_050_train101_eval6.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_7": {
+          "eval_seed": 7,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_050_train101_eval7.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_8": {
+          "eval_seed": 8,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_050_train101_eval8.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_9": {
+          "eval_seed": 9,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_050_train101_eval9.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_10": {
+          "eval_seed": 10,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_050_train101_eval10.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        }
+      }
+    },
+    "beta_050_seed102": {
+      "beta": 0.5,
+      "beta_tag": "beta_050",
+      "train_seed": 102,
+      "algorithm": "mappo",
+      "observation_dim": 14,
+      "num_episodes": 150,
+      "checkpoint_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\checkpoints\\phase4\\final_150ep\\series_4c_mappo_beta_050_seed102.json",
+      "history_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\checkpoints\\phase4\\final_150ep\\series_4c_mappo_beta_050_seed102.history.json",
+      "training_status": "PENDING",
+      "training_wall_time_s": 0.0,
+      "checkpoint_sha256": null,
+      "evaluations": {
+        "eval_seed_1": {
+          "eval_seed": 1,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_050_train102_eval1.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_2": {
+          "eval_seed": 2,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_050_train102_eval2.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_3": {
+          "eval_seed": 3,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_050_train102_eval3.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_4": {
+          "eval_seed": 4,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_050_train102_eval4.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_5": {
+          "eval_seed": 5,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_050_train102_eval5.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_6": {
+          "eval_seed": 6,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_050_train102_eval6.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_7": {
+          "eval_seed": 7,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_050_train102_eval7.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_8": {
+          "eval_seed": 8,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_050_train102_eval8.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_9": {
+          "eval_seed": 9,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_050_train102_eval9.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_10": {
+          "eval_seed": 10,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_050_train102_eval10.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        }
+      }
+    },
+    "beta_050_seed103": {
+      "beta": 0.5,
+      "beta_tag": "beta_050",
+      "train_seed": 103,
+      "algorithm": "mappo",
+      "observation_dim": 14,
+      "num_episodes": 150,
+      "checkpoint_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\checkpoints\\phase4\\final_150ep\\series_4c_mappo_beta_050_seed103.json",
+      "history_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\checkpoints\\phase4\\final_150ep\\series_4c_mappo_beta_050_seed103.history.json",
+      "training_status": "PENDING",
+      "training_wall_time_s": 0.0,
+      "checkpoint_sha256": null,
+      "evaluations": {
+        "eval_seed_1": {
+          "eval_seed": 1,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_050_train103_eval1.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_2": {
+          "eval_seed": 2,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_050_train103_eval2.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_3": {
+          "eval_seed": 3,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_050_train103_eval3.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_4": {
+          "eval_seed": 4,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_050_train103_eval4.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_5": {
+          "eval_seed": 5,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_050_train103_eval5.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_6": {
+          "eval_seed": 6,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_050_train103_eval6.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_7": {
+          "eval_seed": 7,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_050_train103_eval7.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_8": {
+          "eval_seed": 8,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_050_train103_eval8.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_9": {
+          "eval_seed": 9,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_050_train103_eval9.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_10": {
+          "eval_seed": 10,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_050_train103_eval10.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        }
+      }
+    },
+    "beta_050_seed104": {
+      "beta": 0.5,
+      "beta_tag": "beta_050",
+      "train_seed": 104,
+      "algorithm": "mappo",
+      "observation_dim": 14,
+      "num_episodes": 150,
+      "checkpoint_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\checkpoints\\phase4\\final_150ep\\series_4c_mappo_beta_050_seed104.json",
+      "history_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\checkpoints\\phase4\\final_150ep\\series_4c_mappo_beta_050_seed104.history.json",
+      "training_status": "PENDING",
+      "training_wall_time_s": 0.0,
+      "checkpoint_sha256": null,
+      "evaluations": {
+        "eval_seed_1": {
+          "eval_seed": 1,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_050_train104_eval1.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_2": {
+          "eval_seed": 2,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_050_train104_eval2.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_3": {
+          "eval_seed": 3,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_050_train104_eval3.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_4": {
+          "eval_seed": 4,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_050_train104_eval4.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_5": {
+          "eval_seed": 5,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_050_train104_eval5.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_6": {
+          "eval_seed": 6,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_050_train104_eval6.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_7": {
+          "eval_seed": 7,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_050_train104_eval7.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_8": {
+          "eval_seed": 8,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_050_train104_eval8.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_9": {
+          "eval_seed": 9,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_050_train104_eval9.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_10": {
+          "eval_seed": 10,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_050_train104_eval10.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        }
+      }
+    },
+    "beta_050_seed105": {
+      "beta": 0.5,
+      "beta_tag": "beta_050",
+      "train_seed": 105,
+      "algorithm": "mappo",
+      "observation_dim": 14,
+      "num_episodes": 150,
+      "checkpoint_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\checkpoints\\phase4\\final_150ep\\series_4c_mappo_beta_050_seed105.json",
+      "history_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\checkpoints\\phase4\\final_150ep\\series_4c_mappo_beta_050_seed105.history.json",
+      "training_status": "PENDING",
+      "training_wall_time_s": 0.0,
+      "checkpoint_sha256": null,
+      "evaluations": {
+        "eval_seed_1": {
+          "eval_seed": 1,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_050_train105_eval1.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_2": {
+          "eval_seed": 2,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_050_train105_eval2.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_3": {
+          "eval_seed": 3,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_050_train105_eval3.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_4": {
+          "eval_seed": 4,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_050_train105_eval4.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_5": {
+          "eval_seed": 5,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_050_train105_eval5.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_6": {
+          "eval_seed": 6,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_050_train105_eval6.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_7": {
+          "eval_seed": 7,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_050_train105_eval7.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_8": {
+          "eval_seed": 8,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_050_train105_eval8.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_9": {
+          "eval_seed": 9,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_050_train105_eval9.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_10": {
+          "eval_seed": 10,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_050_train105_eval10.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        }
+      }
+    },
+    "beta_075_seed101": {
+      "beta": 0.75,
+      "beta_tag": "beta_075",
+      "train_seed": 101,
+      "algorithm": "mappo",
+      "observation_dim": 14,
+      "num_episodes": 150,
+      "checkpoint_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\checkpoints\\phase4\\final_150ep\\series_4c_mappo_beta_075_seed101.json",
+      "history_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\checkpoints\\phase4\\final_150ep\\series_4c_mappo_beta_075_seed101.history.json",
+      "training_status": "PENDING",
+      "training_wall_time_s": 0.0,
+      "checkpoint_sha256": null,
+      "evaluations": {
+        "eval_seed_1": {
+          "eval_seed": 1,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_075_train101_eval1.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_2": {
+          "eval_seed": 2,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_075_train101_eval2.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_3": {
+          "eval_seed": 3,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_075_train101_eval3.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_4": {
+          "eval_seed": 4,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_075_train101_eval4.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_5": {
+          "eval_seed": 5,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_075_train101_eval5.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_6": {
+          "eval_seed": 6,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_075_train101_eval6.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_7": {
+          "eval_seed": 7,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_075_train101_eval7.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_8": {
+          "eval_seed": 8,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_075_train101_eval8.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_9": {
+          "eval_seed": 9,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_075_train101_eval9.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_10": {
+          "eval_seed": 10,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_075_train101_eval10.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        }
+      }
+    },
+    "beta_075_seed102": {
+      "beta": 0.75,
+      "beta_tag": "beta_075",
+      "train_seed": 102,
+      "algorithm": "mappo",
+      "observation_dim": 14,
+      "num_episodes": 150,
+      "checkpoint_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\checkpoints\\phase4\\final_150ep\\series_4c_mappo_beta_075_seed102.json",
+      "history_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\checkpoints\\phase4\\final_150ep\\series_4c_mappo_beta_075_seed102.history.json",
+      "training_status": "PENDING",
+      "training_wall_time_s": 0.0,
+      "checkpoint_sha256": null,
+      "evaluations": {
+        "eval_seed_1": {
+          "eval_seed": 1,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_075_train102_eval1.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_2": {
+          "eval_seed": 2,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_075_train102_eval2.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_3": {
+          "eval_seed": 3,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_075_train102_eval3.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_4": {
+          "eval_seed": 4,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_075_train102_eval4.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_5": {
+          "eval_seed": 5,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_075_train102_eval5.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_6": {
+          "eval_seed": 6,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_075_train102_eval6.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_7": {
+          "eval_seed": 7,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_075_train102_eval7.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_8": {
+          "eval_seed": 8,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_075_train102_eval8.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_9": {
+          "eval_seed": 9,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_075_train102_eval9.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_10": {
+          "eval_seed": 10,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_075_train102_eval10.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        }
+      }
+    },
+    "beta_075_seed103": {
+      "beta": 0.75,
+      "beta_tag": "beta_075",
+      "train_seed": 103,
+      "algorithm": "mappo",
+      "observation_dim": 14,
+      "num_episodes": 150,
+      "checkpoint_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\checkpoints\\phase4\\final_150ep\\series_4c_mappo_beta_075_seed103.json",
+      "history_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\checkpoints\\phase4\\final_150ep\\series_4c_mappo_beta_075_seed103.history.json",
+      "training_status": "PENDING",
+      "training_wall_time_s": 0.0,
+      "checkpoint_sha256": null,
+      "evaluations": {
+        "eval_seed_1": {
+          "eval_seed": 1,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_075_train103_eval1.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_2": {
+          "eval_seed": 2,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_075_train103_eval2.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_3": {
+          "eval_seed": 3,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_075_train103_eval3.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_4": {
+          "eval_seed": 4,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_075_train103_eval4.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_5": {
+          "eval_seed": 5,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_075_train103_eval5.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_6": {
+          "eval_seed": 6,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_075_train103_eval6.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_7": {
+          "eval_seed": 7,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_075_train103_eval7.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_8": {
+          "eval_seed": 8,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_075_train103_eval8.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_9": {
+          "eval_seed": 9,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_075_train103_eval9.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_10": {
+          "eval_seed": 10,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_075_train103_eval10.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        }
+      }
+    },
+    "beta_075_seed104": {
+      "beta": 0.75,
+      "beta_tag": "beta_075",
+      "train_seed": 104,
+      "algorithm": "mappo",
+      "observation_dim": 14,
+      "num_episodes": 150,
+      "checkpoint_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\checkpoints\\phase4\\final_150ep\\series_4c_mappo_beta_075_seed104.json",
+      "history_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\checkpoints\\phase4\\final_150ep\\series_4c_mappo_beta_075_seed104.history.json",
+      "training_status": "PENDING",
+      "training_wall_time_s": 0.0,
+      "checkpoint_sha256": null,
+      "evaluations": {
+        "eval_seed_1": {
+          "eval_seed": 1,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_075_train104_eval1.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_2": {
+          "eval_seed": 2,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_075_train104_eval2.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_3": {
+          "eval_seed": 3,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_075_train104_eval3.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_4": {
+          "eval_seed": 4,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_075_train104_eval4.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_5": {
+          "eval_seed": 5,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_075_train104_eval5.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_6": {
+          "eval_seed": 6,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_075_train104_eval6.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_7": {
+          "eval_seed": 7,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_075_train104_eval7.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_8": {
+          "eval_seed": 8,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_075_train104_eval8.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_9": {
+          "eval_seed": 9,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_075_train104_eval9.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_10": {
+          "eval_seed": 10,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_075_train104_eval10.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        }
+      }
+    },
+    "beta_075_seed105": {
+      "beta": 0.75,
+      "beta_tag": "beta_075",
+      "train_seed": 105,
+      "algorithm": "mappo",
+      "observation_dim": 14,
+      "num_episodes": 150,
+      "checkpoint_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\checkpoints\\phase4\\final_150ep\\series_4c_mappo_beta_075_seed105.json",
+      "history_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\checkpoints\\phase4\\final_150ep\\series_4c_mappo_beta_075_seed105.history.json",
+      "training_status": "PENDING",
+      "training_wall_time_s": 0.0,
+      "checkpoint_sha256": null,
+      "evaluations": {
+        "eval_seed_1": {
+          "eval_seed": 1,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_075_train105_eval1.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_2": {
+          "eval_seed": 2,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_075_train105_eval2.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_3": {
+          "eval_seed": 3,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_075_train105_eval3.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_4": {
+          "eval_seed": 4,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_075_train105_eval4.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_5": {
+          "eval_seed": 5,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_075_train105_eval5.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_6": {
+          "eval_seed": 6,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_075_train105_eval6.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_7": {
+          "eval_seed": 7,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_075_train105_eval7.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_8": {
+          "eval_seed": 8,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_075_train105_eval8.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_9": {
+          "eval_seed": 9,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_075_train105_eval9.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_10": {
+          "eval_seed": 10,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_075_train105_eval10.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        }
+      }
+    },
+    "beta_100_seed101": {
+      "beta": 1.0,
+      "beta_tag": "beta_100",
+      "train_seed": 101,
+      "algorithm": "mappo",
+      "observation_dim": 14,
+      "num_episodes": 150,
+      "checkpoint_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\checkpoints\\phase4\\final_150ep\\series_4c_mappo_beta_100_seed101.json",
+      "history_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\checkpoints\\phase4\\final_150ep\\series_4c_mappo_beta_100_seed101.history.json",
+      "training_status": "PENDING",
+      "training_wall_time_s": 0.0,
+      "checkpoint_sha256": null,
+      "evaluations": {
+        "eval_seed_1": {
+          "eval_seed": 1,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_100_train101_eval1.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_2": {
+          "eval_seed": 2,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_100_train101_eval2.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_3": {
+          "eval_seed": 3,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_100_train101_eval3.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_4": {
+          "eval_seed": 4,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_100_train101_eval4.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_5": {
+          "eval_seed": 5,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_100_train101_eval5.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_6": {
+          "eval_seed": 6,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_100_train101_eval6.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_7": {
+          "eval_seed": 7,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_100_train101_eval7.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_8": {
+          "eval_seed": 8,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_100_train101_eval8.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_9": {
+          "eval_seed": 9,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_100_train101_eval9.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_10": {
+          "eval_seed": 10,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_100_train101_eval10.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        }
+      }
+    },
+    "beta_100_seed102": {
+      "beta": 1.0,
+      "beta_tag": "beta_100",
+      "train_seed": 102,
+      "algorithm": "mappo",
+      "observation_dim": 14,
+      "num_episodes": 150,
+      "checkpoint_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\checkpoints\\phase4\\final_150ep\\series_4c_mappo_beta_100_seed102.json",
+      "history_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\checkpoints\\phase4\\final_150ep\\series_4c_mappo_beta_100_seed102.history.json",
+      "training_status": "PENDING",
+      "training_wall_time_s": 0.0,
+      "checkpoint_sha256": null,
+      "evaluations": {
+        "eval_seed_1": {
+          "eval_seed": 1,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_100_train102_eval1.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_2": {
+          "eval_seed": 2,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_100_train102_eval2.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_3": {
+          "eval_seed": 3,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_100_train102_eval3.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_4": {
+          "eval_seed": 4,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_100_train102_eval4.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_5": {
+          "eval_seed": 5,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_100_train102_eval5.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_6": {
+          "eval_seed": 6,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_100_train102_eval6.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_7": {
+          "eval_seed": 7,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_100_train102_eval7.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_8": {
+          "eval_seed": 8,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_100_train102_eval8.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_9": {
+          "eval_seed": 9,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_100_train102_eval9.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_10": {
+          "eval_seed": 10,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_100_train102_eval10.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        }
+      }
+    },
+    "beta_100_seed103": {
+      "beta": 1.0,
+      "beta_tag": "beta_100",
+      "train_seed": 103,
+      "algorithm": "mappo",
+      "observation_dim": 14,
+      "num_episodes": 150,
+      "checkpoint_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\checkpoints\\phase4\\final_150ep\\series_4c_mappo_beta_100_seed103.json",
+      "history_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\checkpoints\\phase4\\final_150ep\\series_4c_mappo_beta_100_seed103.history.json",
+      "training_status": "PENDING",
+      "training_wall_time_s": 0.0,
+      "checkpoint_sha256": null,
+      "evaluations": {
+        "eval_seed_1": {
+          "eval_seed": 1,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_100_train103_eval1.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_2": {
+          "eval_seed": 2,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_100_train103_eval2.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_3": {
+          "eval_seed": 3,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_100_train103_eval3.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_4": {
+          "eval_seed": 4,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_100_train103_eval4.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_5": {
+          "eval_seed": 5,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_100_train103_eval5.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_6": {
+          "eval_seed": 6,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_100_train103_eval6.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_7": {
+          "eval_seed": 7,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_100_train103_eval7.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_8": {
+          "eval_seed": 8,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_100_train103_eval8.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_9": {
+          "eval_seed": 9,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_100_train103_eval9.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_10": {
+          "eval_seed": 10,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_100_train103_eval10.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        }
+      }
+    },
+    "beta_100_seed104": {
+      "beta": 1.0,
+      "beta_tag": "beta_100",
+      "train_seed": 104,
+      "algorithm": "mappo",
+      "observation_dim": 14,
+      "num_episodes": 150,
+      "checkpoint_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\checkpoints\\phase4\\final_150ep\\series_4c_mappo_beta_100_seed104.json",
+      "history_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\checkpoints\\phase4\\final_150ep\\series_4c_mappo_beta_100_seed104.history.json",
+      "training_status": "PENDING",
+      "training_wall_time_s": 0.0,
+      "checkpoint_sha256": null,
+      "evaluations": {
+        "eval_seed_1": {
+          "eval_seed": 1,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_100_train104_eval1.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_2": {
+          "eval_seed": 2,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_100_train104_eval2.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_3": {
+          "eval_seed": 3,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_100_train104_eval3.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_4": {
+          "eval_seed": 4,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_100_train104_eval4.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_5": {
+          "eval_seed": 5,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_100_train104_eval5.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_6": {
+          "eval_seed": 6,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_100_train104_eval6.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_7": {
+          "eval_seed": 7,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_100_train104_eval7.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_8": {
+          "eval_seed": 8,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_100_train104_eval8.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_9": {
+          "eval_seed": 9,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_100_train104_eval9.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_10": {
+          "eval_seed": 10,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_100_train104_eval10.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        }
+      }
+    },
+    "beta_100_seed105": {
+      "beta": 1.0,
+      "beta_tag": "beta_100",
+      "train_seed": 105,
+      "algorithm": "mappo",
+      "observation_dim": 14,
+      "num_episodes": 150,
+      "checkpoint_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\checkpoints\\phase4\\final_150ep\\series_4c_mappo_beta_100_seed105.json",
+      "history_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\checkpoints\\phase4\\final_150ep\\series_4c_mappo_beta_100_seed105.history.json",
+      "training_status": "PENDING",
+      "training_wall_time_s": 0.0,
+      "checkpoint_sha256": null,
+      "evaluations": {
+        "eval_seed_1": {
+          "eval_seed": 1,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_100_train105_eval1.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_2": {
+          "eval_seed": 2,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_100_train105_eval2.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_3": {
+          "eval_seed": 3,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_100_train105_eval3.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_4": {
+          "eval_seed": 4,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_100_train105_eval4.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_5": {
+          "eval_seed": 5,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_100_train105_eval5.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_6": {
+          "eval_seed": 6,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_100_train105_eval6.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_7": {
+          "eval_seed": 7,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_100_train105_eval7.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_8": {
+          "eval_seed": 8,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_100_train105_eval8.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_9": {
+          "eval_seed": 9,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_100_train105_eval9.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        },
+        "eval_seed_10": {
+          "eval_seed": 10,
+          "status": "PENDING",
+          "output_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\outputs\\experiments\\phase4\\final_150ep\\series_4c_reward_coupling\\eval_mappo_beta_100_train105_eval10.json",
+          "travel_time_s": null,
+          "trips_completed": null,
+          "delay_gini": null
+        }
+      }
+    }
+  },
+  "created_at": "2026-11-13T16:29:36+05:30",
+  "last_updated": "2026-11-13T19:12:45+05:30"
+}

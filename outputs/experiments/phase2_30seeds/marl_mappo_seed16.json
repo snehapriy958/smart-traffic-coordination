@@ -1,0 +1,23 @@
+{
+  "controller": "marl_mappo",
+  "seed": 16,
+  "completed": true,
+  "execution_wall_time_s": 39.33,
+  "simulation_duration_s": 900.0,
+  "total_vehicles_inserted": 109,
+  "total_corridor_trips_completed": 109,
+  "mean_corridor_travel_time_s": 64.81651376146789,
+  "mean_corridor_speed_kmh": 24.09412589810745,
+  "cumulative_delay_veh_s": 10608.0,
+  "cumulative_waiting_time_s": 10608.0,
+  "mean_corridor_queue": 11.786666666666667,
+  "max_corridor_queue": 42,
+  "total_co2_kg": 51.64570727381129,
+  "total_nox_g": 40.31784685669714,
+  "total_fuel_liters": 22.2945,
+  "emergency_traversal_duration_s": 50.0,
+  "emergency_cleared": true,
+  "j1_mean_queue": 0.5611111111111111,
+  "j2_mean_queue": 10.301111111111112,
+  "j3_mean_queue": 0.9244444444444444
+}

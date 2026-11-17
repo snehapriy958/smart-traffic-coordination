@@ -1,0 +1,172 @@
+{
+  "model_specifications": {
+    "model_1_audit": {
+      "formula": "travel_time ~ Configuration",
+      "grouping": "train_seed (5 levels, shared numeric seed across models)",
+      "log_likelihood": -1192.97,
+      "aic": NaN,
+      "bic": NaN,
+      "group_var": 26.9535,
+      "residual_var": 175.2337,
+      "critique": "Mathematically inappropriate. Treats independent training runs as repeated measures on the same subject simply because they share a pseudo-random seed integer."
+    },
+    "model_2_nested": {
+      "formula": "travel_time ~ Configuration",
+      "grouping": "model_id (30 levels, unique trained checkpoint)",
+      "log_likelihood": -924.96,
+      "aic": NaN,
+      "bic": NaN,
+      "group_var": 217.1824,
+      "residual_var": 19.9,
+      "critique": "Correct hierarchical nesting of evaluation runs within trained checkpoints. Correctly reflects that between-model variance is large while evaluation variance is small."
+    },
+    "model_3_crossed": {
+      "formula": "travel_time ~ Configuration + (1 | model_id) + (1 | eval_seed)",
+      "grouping": "eval_seed (10 crossed groups) with variance component for model_id (30 levels)",
+      "log_likelihood": -1205.71,
+      "aic": NaN,
+      "bic": NaN,
+      "converged": true,
+      "hessian_positive_definite": false,
+      "residual_var": 98.6182,
+      "estimates": {
+        "Intercept": {
+          "coef": 92.746,
+          "std_err": 1.3913,
+          "z": 66.6595,
+          "p_value": 0.0
+        },
+        "C(config, Treatment('DQN_14D'))[T.DQN_4D]": {
+          "coef": -4.9584,
+          "std_err": 2.4864,
+          "z": -1.9942,
+          "p_value": 0.046129
+        },
+        "C(config, Treatment('DQN_14D'))[T.DQN_8D]": {
+          "coef": -11.6444,
+          "std_err": 2.7395,
+          "z": -4.2505,
+          "p_value": 2.1e-05
+        },
+        "C(config, Treatment('DQN_14D'))[T.MAPPO_14D]": {
+          "coef": -5.2648,
+          "std_err": 2.3849,
+          "z": -2.2075,
+          "p_value": 0.027276
+        },
+        "C(config, Treatment('DQN_14D'))[T.MAPPO_4D]": {
+          "coef": -0.3646,
+          "std_err": 2.794,
+          "z": -0.1305,
+          "p_value": 0.896177
+        },
+        "C(config, Treatment('DQN_14D'))[T.MAPPO_8D]": {
+          "coef": -7.094,
+          "std_err": 2.371,
+          "z": -2.992,
+          "p_value": 0.002772
+        },
+        "model Var": {
+          "coef": 1.0,
+          "std_err": null,
+          "z": null,
+          "p_value": null
+        }
+      },
+      "diagnostics": {
+        "shapiro_wilk_residuals": {
+          "W": 0.908,
+          "p_value": 1.4325227376859674e-12
+        },
+        "levene_residuals_by_config": {
+          "W": 4.914,
+          "p_value": 0.00024610575434210266
+        },
+        "convergence_warning": "The Hessian matrix at estimated parameter values is not positive definite due to near-zero variance across evaluation seeds."
+      }
+    }
+  },
+  "cluster_bootstrap_10k": {
+    "DQN 8D vs DQN 14D": {
+      "mean_boot_diff": -11.75,
+      "std_boot_diff": 8.52,
+      "ci95_boot": [
+        -24.11,
+        7.25
+      ],
+      "empirical_p_value": 0.133
+    },
+    "DQN 8D vs DQN 4D": {
+      "mean_boot_diff": -6.69,
+      "std_boot_diff": 4.9,
+      "ci95_boot": [
+        -17.44,
+        1.57
+      ],
+      "empirical_p_value": 0.1448
+    },
+    "14D: MAPPO vs DQN": {
+      "mean_boot_diff": -5.33,
+      "std_boot_diff": 4.51,
+      "ci95_boot": [
+        -12.84,
+        4.51
+      ],
+      "empirical_p_value": 0.2758
+    },
+    "8D: MAPPO vs DQN": {
+      "mean_boot_diff": 4.57,
+      "std_boot_diff": 12.01,
+      "ci95_boot": [
+        -23.27,
+        23.55
+      ],
+      "empirical_p_value": 0.5914
+    },
+    "4D: MAPPO vs DQN": {
+      "mean_boot_diff": 4.6,
+      "std_boot_diff": 3.66,
+      "ci95_boot": [
+        -2.47,
+        11.58
+      ],
+      "empirical_p_value": 0.2122
+    },
+    "MAPPO 14D vs 8D": {
+      "mean_boot_diff": 1.91,
+      "std_boot_diff": 5.88,
+      "ci95_boot": [
+        -10.18,
+        12.11
+      ],
+      "empirical_p_value": 0.747
+    },
+    "MAPPO 14D vs 4D": {
+      "mean_boot_diff": -4.82,
+      "std_boot_diff": 7.73,
+      "ci95_boot": [
+        -22.7,
+        6.96
+      ],
+      "empirical_p_value": 0.5936
+    },
+    "MAPPO 8D vs 4D": {
+      "mean_boot_diff": -6.69,
+      "std_boot_diff": 10.94,
+      "ci95_boot": [
+        -30.52,
+        9.63
+      ],
+      "empirical_p_value": 0.625
+    },
+    "DQN 14D vs 4D": {
+      "mean_boot_diff": 5.1,
+      "std_boot_diff": 11.31,
+      "ci95_boot": [
+        -19.03,
+        25.8
+      ],
+      "empirical_p_value": 0.6358
+    }
+  }
+}

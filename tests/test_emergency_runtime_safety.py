@@ -102,60 +102,59 @@ def test_live_sumo_emergency_records_actual_signal_state_each_step(monkeypatch):
                 sim_time = sim.sumo_manager.get_time()
                 coordinator = sim.emergency_coordinator
                 metrics = coordinator.metrics
-                if metrics.vehicle_id and sim_time >= metrics.start_time:
-                    vehicle_id = metrics.vehicle_id
-                    try:
-                        vehicle_exists = vehicle_id in traci.vehicle.getIDList()
-                        position = {
-                            "edge": traci.vehicle.getRoadID(vehicle_id),
-                            "lane": traci.vehicle.getLaneID(vehicle_id),
-                            "lane_position_m": traci.vehicle.getLanePosition(vehicle_id),
-                            "speed_mps": traci.vehicle.getSpeed(vehicle_id),
-                        } if vehicle_exists else None
-                    except traci.TraCIException:
-                        position = None
+                vehicle_id = metrics.vehicle_id or ""
+                try:
+                    vehicle_exists = bool(vehicle_id and vehicle_id in traci.vehicle.getIDList())
+                    position = {
+                        "edge": traci.vehicle.getRoadID(vehicle_id),
+                        "lane": traci.vehicle.getLaneID(vehicle_id),
+                        "lane_position_m": traci.vehicle.getLanePosition(vehicle_id),
+                        "speed_mps": traci.vehicle.getSpeed(vehicle_id),
+                    } if vehicle_exists else None
+                except traci.TraCIException:
+                    position = None
 
-                    for junction_id, tls_id in sim.tls_ids.items():
-                        controller = sim.controllers[junction_id]
-                        phase = traci.trafficlight.getPhase(tls_id)
-                        state = traci.trafficlight.getRedYellowGreenState(tls_id)
-                        controlled_links = traci.trafficlight.getControlledLinks(tls_id)
-                        green_approaches = set()
-                        yellow_approaches = set()
-                        lane_groups = sim.approach_lanes[junction_id]
-                        for signal_index, color in enumerate(state):
-                            links = controlled_links[signal_index] if signal_index < len(controlled_links) else ()
-                            target = green_approaches if color in "gG" else yellow_approaches if color in "yY" else None
-                            if target is None:
-                                continue
-                            for link in links or ():
-                                incoming_lane = link[0]
-                                for approach, lanes in lane_groups.items():
-                                    if incoming_lane in lanes:
-                                        target.add(approach)
+                for junction_id, tls_id in sim.tls_ids.items():
+                    controller = sim.controllers[junction_id]
+                    phase = traci.trafficlight.getPhase(tls_id)
+                    state = traci.trafficlight.getRedYellowGreenState(tls_id)
+                    controlled_links = traci.trafficlight.getControlledLinks(tls_id)
+                    green_approaches = set()
+                    yellow_approaches = set()
+                    lane_groups = sim.approach_lanes[junction_id]
+                    for signal_index, color in enumerate(state):
+                        links = controlled_links[signal_index] if signal_index < len(controlled_links) else ()
+                        target = green_approaches if color in "gG" else yellow_approaches if color in "yY" else None
+                        if target is None:
+                            continue
+                        for link in links or ():
+                            incoming_lane = link[0]
+                            for approach, lanes in lane_groups.items():
+                                if incoming_lane in lanes:
+                                    target.add(approach)
 
-                        records.append({
-                            "simulation_time": sim_time,
-                            "junction_id": junction_id,
-                            "tls_id": tls_id,
-                            "phase": phase,
-                            "next_switch_time": traci.trafficlight.getNextSwitch(tls_id),
-                            "raw_signal_state": state,
-                            "green_approaches": sorted(green_approaches),
-                            "yellow_approaches": sorted(yellow_approaches),
-                            "emergency_locked": controller.emergency_locked,
-                            "priority_phase": controller.emergency_priority_phase,
-                            "expected_priority_phase": sim.corridor_priority_phases[junction_id],
-                            "green_phases": sorted(sim.green_phases[junction_id]),
-                            "yellow_phases": sorted(sim.yellow_transitions[junction_id].values()),
-                            "emergency_stage": coordinator.current_stage,
-                            "emergency_active": coordinator.active_emergency_id is not None,
-                            "emergency_completed": metrics.completed,
-                            "emergency_vehicle_id": vehicle_id,
-                            "emergency_position": position,
-                            "controller_phase_start_time": controller._phase_start_time,
-                            "controller_last_phase": controller._last_phase,
-                        })
+                    records.append({
+                        "simulation_time": sim_time,
+                        "junction_id": junction_id,
+                        "tls_id": tls_id,
+                        "phase": phase,
+                        "next_switch_time": traci.trafficlight.getNextSwitch(tls_id),
+                        "raw_signal_state": state,
+                        "green_approaches": sorted(green_approaches),
+                        "yellow_approaches": sorted(yellow_approaches),
+                        "emergency_locked": controller.emergency_locked,
+                        "priority_phase": controller.emergency_priority_phase,
+                        "expected_priority_phase": sim.corridor_priority_phases[junction_id],
+                        "green_phases": sorted(sim.green_phases[junction_id]),
+                        "yellow_phases": sorted(sim.yellow_transitions[junction_id].values()),
+                        "emergency_stage": coordinator.current_stage,
+                        "emergency_active": coordinator.active_emergency_id is not None,
+                        "emergency_completed": metrics.completed,
+                        "emergency_vehicle_id": vehicle_id,
+                        "emergency_position": position,
+                        "controller_phase_start_time": controller._phase_start_time,
+                        "controller_last_phase": controller._last_phase,
+                    })
             except Exception as exc:  # Preserve the simulation; surface observer failures below.
                 instrumentation_errors.append(f"{service._current_sim_time}: {exc!r}")
         return original_broadcast(service)
@@ -241,23 +240,28 @@ def test_live_sumo_emergency_records_actual_signal_state_each_step(monkeypatch):
     observed_yellow_clearance = set()
     yellow_clearance_details = []
     for junction_id in ("J1", "J2", "J3"):
-        junction_sequence = sorted(
-            (row for row in interval_rows if row["junction_id"] == junction_id),
+        expected_yellow = 6.0 if junction_id == "J2" else 4.0
+        full_sequence = sorted(
+            (row for row in records if row["junction_id"] == junction_id),
             key=lambda row: row["simulation_time"],
         )
         index = 0
-        while index < len(junction_sequence):
-            row = junction_sequence[index]
+        while index < len(full_sequence):
+            row = full_sequence[index]
             if row["phase"] not in row["yellow_phases"]:
                 index += 1
                 continue
             start = index
             yellow_phase = row["phase"]
-            while index < len(junction_sequence) and junction_sequence[index]["phase"] == yellow_phase:
+            while index < len(full_sequence) and full_sequence[index]["phase"] == yellow_phase:
                 index += 1
-            next_row = junction_sequence[index] if index < len(junction_sequence) else None
-            if next_row and next_row["phase"] == row["expected_priority_phase"]:
-                first_yellow = junction_sequence[start]
+            next_row = full_sequence[index] if index < len(full_sequence) else None
+            if (
+                next_row
+                and next_row["phase"] == row["expected_priority_phase"]
+                and event.arrival_time <= next_row["simulation_time"] <= clearance_time
+            ):
+                first_yellow = full_sequence[start]
                 conflicting = "madiwala" if junction_id == "J2" else "side_cross"
                 assert conflicting not in first_yellow["green_approaches"], (
                     f"{first_yellow['simulation_time']}s {junction_id}: conflicting approach "
@@ -266,16 +270,16 @@ def test_live_sumo_emergency_records_actual_signal_state_each_step(monkeypatch):
                 )
                 yellow_elapsed_s = next_row["simulation_time"] - first_yellow["simulation_time"]
                 scheduled_yellow_s = first_yellow["next_switch_time"] - first_yellow["simulation_time"]
-                assert yellow_elapsed_s >= 4.0, (
+                assert yellow_elapsed_s >= expected_yellow, (
                     f"{first_yellow['simulation_time']}s {junction_id}: observed yellow-to-green "
                     f"elapsed only {yellow_elapsed_s}s; state={first_yellow['raw_signal_state']} "
                     f"nextSwitch={first_yellow['next_switch_time']}"
                 )
-                assert yellow_elapsed_s <= 5.0, (
+                assert yellow_elapsed_s <= expected_yellow + 1.0, (
                     f"{first_yellow['simulation_time']}s {junction_id}: yellow clearance lasted "
                     f"{yellow_elapsed_s}s; phase={yellow_phase}, next={next_row['phase']}"
                 )
-                assert scheduled_yellow_s == pytest.approx(4.0), (
+                assert scheduled_yellow_s == pytest.approx(expected_yellow), (
                     f"{first_yellow['simulation_time']}s {junction_id}: SUMO scheduled "
                     f"{scheduled_yellow_s}s yellow before the priority phase"
                 )
@@ -283,7 +287,7 @@ def test_live_sumo_emergency_records_actual_signal_state_each_step(monkeypatch):
                     f"{junction_id}: priority phase observation fell outside SUMO's one-step "
                     f"sampling boundary after nextSwitch={first_yellow['next_switch_time']}"
                 )
-                for yellow_row in junction_sequence[start:index]:
+                for yellow_row in full_sequence[start:index]:
                     assert conflicting not in yellow_row["green_approaches"], (
                         f"{yellow_row['simulation_time']}s {junction_id}: conflicting approach "
                         f"green during yellow clearance; state={yellow_row['raw_signal_state']} "
@@ -294,15 +298,15 @@ def test_live_sumo_emergency_records_actual_signal_state_each_step(monkeypatch):
                     "junction_id": junction_id,
                     "yellow_phase": yellow_phase,
                     "first_yellow_sample_s": first_yellow["simulation_time"],
-                    "last_yellow_sample_s": junction_sequence[index - 1]["simulation_time"],
+                    "last_yellow_sample_s": full_sequence[index - 1]["simulation_time"],
                     "priority_green_sample_s": next_row["simulation_time"],
                     "first_sample_next_switch_s": first_yellow["next_switch_time"],
                     "elapsed_to_priority_green_s": yellow_elapsed_s,
                     "yellow_samples": index - start,
                 })
         # Each captured yellow step must be visible in actual SUMO RYG output.
-        for row in junction_sequence:
-            if row["phase"] in row["yellow_phases"]:
+        for row in full_sequence:
+            if event.arrival_time <= row["simulation_time"] <= clearance_time and row["phase"] in row["yellow_phases"]:
                 assert any(color in "yY" for color in row["raw_signal_state"]), (
                     f"{row['simulation_time']}s {junction_id}: yellow phase has no actual "
                     f"yellow in {row['raw_signal_state']}"

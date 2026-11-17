@@ -1,0 +1,4 @@
+comparison,mean_tt_diff_s,tt_percent_change,t_stat_tt,p_value_tt_raw,bonferroni_adj_p,cohen_dz,wilcoxon_stat,wilcoxon_p,delay_percent_change,speed_percent_change,fuel_percent_change,significance_verdict
+Coordinated Adaptive Controller vs Fixed-Time Baseline,-40.149,-44.6%,-59.2485,5.6005e-13,1.6801e-12,18.736,0.0,1.9531e-03,-52.83%,34.66%,-23.15%,Significant (p_adj < 0.05)
+Double-DQN (Stage A) vs Fixed-Time Baseline,-33.384,-37.08%,-45.5692,5.9040e-12,1.7712e-11,14.41,0.0,1.9531e-03,-35.15%,11.55%,-15.17%,Significant (p_adj < 0.05)
+PPO (Stage A) vs Fixed-Time Baseline,-4.52,-5.02%,-2.4231,3.8418e-02,1.1525e-01,0.766,2.0,5.8594e-03,-1.69%,-9.37%,-0.98%,Not Significant (p_adj >= 0.05)

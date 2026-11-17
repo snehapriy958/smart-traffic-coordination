@@ -1,0 +1,22 @@
+{
+  "ablation": "no_emergency",
+  "controller": "coordinated",
+  "seed": 8,
+  "enable_emergency": false,
+  "completed": true,
+  "execution_wall_time_s": 30.9,
+  "simulation_duration_s": 900.0,
+  "total_vehicles_inserted": 109,
+  "total_corridor_trips_completed": 109,
+  "mean_corridor_travel_time_s": 58.81651376146789,
+  "mean_corridor_speed_kmh": 27.038125722800988,
+  "cumulative_delay_veh_s": 7864.0,
+  "cumulative_waiting_time_s": 7864.0,
+  "mean_corridor_queue": 8.737777777777778,
+  "max_corridor_queue": 31,
+  "total_co2_kg": 46.17935961660907,
+  "total_nox_g": 38.2827550889799,
+  "total_fuel_liters": 19.9342,
+  "emergency_traversal_duration_s": null,
+  "emergency_cleared": false
+}

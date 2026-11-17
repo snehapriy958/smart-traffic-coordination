@@ -1,0 +1,23 @@
+{
+  "controller": "webster",
+  "seed": 23,
+  "completed": true,
+  "execution_wall_time_s": 33.69,
+  "simulation_duration_s": 900.0,
+  "total_vehicles_inserted": 109,
+  "total_corridor_trips_completed": 109,
+  "mean_corridor_travel_time_s": 59.74311926605505,
+  "mean_corridor_speed_kmh": 23.123213963459776,
+  "cumulative_delay_veh_s": 9503.0,
+  "cumulative_waiting_time_s": 9503.0,
+  "mean_corridor_queue": 10.55888888888889,
+  "max_corridor_queue": 40,
+  "total_co2_kg": 49.68335016228624,
+  "total_nox_g": 39.56331597001753,
+  "total_fuel_liters": 21.4481,
+  "emergency_traversal_duration_s": 32.0,
+  "emergency_cleared": true,
+  "j1_mean_queue": 0.7577777777777778,
+  "j2_mean_queue": 8.704444444444444,
+  "j3_mean_queue": 1.0966666666666667
+}

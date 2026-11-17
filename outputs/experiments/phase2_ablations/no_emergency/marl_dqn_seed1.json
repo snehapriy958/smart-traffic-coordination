@@ -1,0 +1,22 @@
+{
+  "ablation": "no_emergency",
+  "controller": "marl_dqn",
+  "seed": 1,
+  "enable_emergency": false,
+  "completed": true,
+  "execution_wall_time_s": 36.63,
+  "simulation_duration_s": 900.0,
+  "total_vehicles_inserted": 109,
+  "total_corridor_trips_completed": 109,
+  "mean_corridor_travel_time_s": 73.44036697247707,
+  "mean_corridor_speed_kmh": 23.8308661554159,
+  "cumulative_delay_veh_s": 9161.0,
+  "cumulative_waiting_time_s": 9161.0,
+  "mean_corridor_queue": 10.178888888888888,
+  "max_corridor_queue": 34,
+  "total_co2_kg": 49.83762489096637,
+  "total_nox_g": 40.241789277626474,
+  "total_fuel_liters": 21.5131,
+  "emergency_traversal_duration_s": null,
+  "emergency_cleared": false
+}

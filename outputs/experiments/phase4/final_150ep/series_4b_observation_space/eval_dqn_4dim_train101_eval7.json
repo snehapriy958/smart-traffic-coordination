@@ -1,0 +1,96 @@
+{
+  "regime": "FINAL_CONFIRMATORY_150EP",
+  "series": "4b_observation_space",
+  "algorithm": "dqn",
+  "formulation": null,
+  "beta": null,
+  "train_seed": 101,
+  "eval_seed": 7,
+  "observation_dim": 4,
+  "checkpoint_path": "C:\\Developers\\Sneha\\Projects\\hybrid-traffic-control\\checkpoints\\phase4\\final_150ep\\series_4b_dqn_4dim_seed101.json",
+  "completed": true,
+  "execution_wall_time_s": 26.51,
+  "total_corridor_trips_completed": 109,
+  "mean_corridor_travel_time_s": 127.94,
+  "mean_corridor_speed_kmh": 17.29,
+  "cumulative_delay_veh_s": 20107.0,
+  "mean_corridor_queue": 22.34,
+  "max_corridor_queue": 73,
+  "total_co2_kg": 68.2965,
+  "total_fuel_liters": 29.4885,
+  "reliability": {
+    "travel_time_mean_s": 127.94,
+    "travel_time_std_s": 41.13,
+    "travel_time_median_s": 131.0,
+    "travel_time_p90_s": 179.6,
+    "travel_time_p95_s": 194.4,
+    "travel_time_p99_s": 210.92,
+    "free_flow_reference_s": 27.5,
+    "planning_time_index_pti": 7.0691,
+    "buffer_index_bi_percent": 51.94,
+    "completed_trip_count": 109
+  },
+  "multi_modal": {
+    "vehicle_hours_of_delay_vhd": 3.0531,
+    "passenger_hours_of_delay_phd": 6.6616,
+    "passenger_delay_by_class_hours": {
+      "motorcycle": 2.4073,
+      "passenger": 1.325,
+      "bus": 2.8,
+      "truck": 0.0898,
+      "emergency": 0.0394
+    },
+    "average_occupancy_per_completed_vehicle": 2.09
+  },
+  "equity": {
+    "cross_street_delay_gini": 0.504576,
+    "approach_delay_gini_coefficient": 0.504576,
+    "total_arterial_delay_veh_s": 14910.0,
+    "total_side_street_delay_veh_s": 5197.0,
+    "side_to_arterial_delay_ratio": 0.3486,
+    "approaches": {
+      "J1": {
+        "corridor_hosur": {
+          "cumulative_delay_veh_s": 1694.0,
+          "mean_queue": 1.88,
+          "max_queue": 14,
+          "p95_queue": 9.0
+        },
+        "side_cross": {
+          "cumulative_delay_veh_s": 0.0,
+          "mean_queue": 0.0,
+          "max_queue": 0,
+          "p95_queue": 0.0
+        }
+      },
+      "J2": {
+        "corridor_hosur": {
+          "cumulative_delay_veh_s": 4776.0,
+          "mean_queue": 5.31,
+          "max_queue": 32,
+          "p95_queue": 25.0
+        },
+        "madiwala": {
+          "cumulative_delay_veh_s": 5197.0,
+          "mean_queue": 5.77,
+          "max_queue": 25,
+          "p95_queue": 19.05
+        }
+      },
+      "J3": {
+        "corridor_hosur": {
+          "cumulative_delay_veh_s": 8440.0,
+          "mean_queue": 9.38,
+          "max_queue": 43,
+          "p95_queue": 34.0
+        },
+        "side_cross": {
+          "cumulative_delay_veh_s": 0.0,
+          "mean_queue": 0.0,
+          "max_queue": 0,
+          "p95_queue": 0.0
+        }
+      }
+    }
+  }
+}

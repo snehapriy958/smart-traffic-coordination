@@ -78,4 +78,11 @@ export const api = {
   // Experiments & Benchmarks
   getExperimentsCompare: () => fetchJson('/experiments/compare'),
   getExperimentsHistory: () => fetchJson('/experiments/history'),
+  getResearchOverview: () => fetchJson('/experiments/research-overview'),
+  getSeries4BResults: () => fetchJson('/experiments/series-4b'),
+  getSeries4CLiveStatus: () => fetchJson('/experiments/series-4c/status'),
+  getSeries4CHistory: (runKey) => fetchJson(`/experiments/series-4c/history${runKey ? `?run_key=${encodeURIComponent(runKey)}` : ''}`),
+  getSeries4EResults: () => fetchJson('/experiments/series-4e'),
+  getMasterBenchmark: () => fetchJson('/experiments/benchmark/master'),
+  getHistoricalBenchmark: () => fetchJson('/experiments/benchmark/historical'),
 };

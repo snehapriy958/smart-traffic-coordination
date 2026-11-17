@@ -1,0 +1,229 @@
+{
+  "metadata": {
+    "experiment": "Series 4G: Inter-Junction Communication Ablation",
+    "duration_s": 900.0,
+    "controllers": [
+      "coordinated",
+      "marl_mappo",
+      "marl_dqn"
+    ],
+    "conditions": [
+      "comm_enabled",
+      "comm_disabled"
+    ],
+    "seeds": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10
+    ],
+    "total_runs": 60,
+    "completed_runs": 60
+  },
+  "per_controller": {
+    "coordinated": {
+      "comm_enabled": {
+        "runs_completed": 10,
+        "travel_time_mean_s": 57.75,
+        "travel_time_std_s": 1.59,
+        "cumulative_delay_veh_s": 8513.8,
+        "total_corridor_trips_completed": 109.0,
+        "mean_corridor_speed_kmh": 26.5,
+        "raw_travel_times": [
+          58.78,
+          55.17,
+          57.49,
+          56.17,
+          58.32,
+          56.52,
+          60.73,
+          57.5,
+          59.0,
+          57.85
+        ],
+        "raw_delays": [
+          9324.0,
+          8262.0,
+          8636.0,
+          8223.0,
+          8876.0,
+          8560.0,
+          8710.0,
+          8057.0,
+          8082.0,
+          8408.0
+        ]
+      },
+      "comm_disabled": {
+        "runs_completed": 10,
+        "travel_time_mean_s": 59.02,
+        "travel_time_std_s": 2.47,
+        "cumulative_delay_veh_s": 8021.7,
+        "total_corridor_trips_completed": 109.0,
+        "mean_corridor_speed_kmh": 26.37,
+        "raw_travel_times": [
+          59.2,
+          57.72,
+          57.93,
+          58.33,
+          62.2,
+          60.2,
+          63.35,
+          57.67,
+          59.04,
+          54.6
+        ],
+        "raw_delays": [
+          8649.0,
+          7799.0,
+          7534.0,
+          8104.0,
+          8185.0,
+          8338.0,
+          8583.0,
+          7537.0,
+          7764.0,
+          7724.0
+        ]
+      }
+    },
+    "marl_mappo": {
+      "comm_enabled": {
+        "runs_completed": 10,
+        "travel_time_mean_s": 64.41,
+        "travel_time_std_s": 2.69,
+        "cumulative_delay_veh_s": 9723.5,
+        "total_corridor_trips_completed": 109.0,
+        "mean_corridor_speed_kmh": 24.37,
+        "raw_travel_times": [
+          63.62,
+          68.33,
+          62.9,
+          63.29,
+          63.36,
+          60.94,
+          63.25,
+          69.95,
+          63.93,
+          64.5
+        ],
+        "raw_delays": [
+          10145.0,
+          10067.0,
+          8727.0,
+          9823.0,
+          9489.0,
+          9176.0,
+          9996.0,
+          10675.0,
+          9829.0,
+          9308.0
+        ]
+      },
+      "comm_disabled": {
+        "runs_completed": 10,
+        "travel_time_mean_s": 64.36,
+        "travel_time_std_s": 2.7,
+        "cumulative_delay_veh_s": 9723.1,
+        "total_corridor_trips_completed": 109.0,
+        "mean_corridor_speed_kmh": 24.32,
+        "raw_travel_times": [
+          63.62,
+          68.33,
+          62.9,
+          63.29,
+          63.36,
+          60.94,
+          63.25,
+          69.95,
+          63.43,
+          64.5
+        ],
+        "raw_delays": [
+          10145.0,
+          10067.0,
+          8727.0,
+          9823.0,
+          9489.0,
+          9176.0,
+          9996.0,
+          10675.0,
+          9825.0,
+          9308.0
+        ]
+      }
+    },
+    "marl_dqn": {
+      "comm_enabled": {
+        "runs_completed": 10,
+        "travel_time_mean_s": 62.66,
+        "travel_time_std_s": 3.86,
+        "cumulative_delay_veh_s": 9649.0,
+        "total_corridor_trips_completed": 109.0,
+        "mean_corridor_speed_kmh": 23.7,
+        "raw_travel_times": [
+          60.53,
+          59.87,
+          68.28,
+          60.88,
+          63.73,
+          61.04,
+          60.72,
+          70.7,
+          58.83,
+          61.97
+        ],
+        "raw_delays": [
+          9798.0,
+          9021.0,
+          10430.0,
+          9525.0,
+          10381.0,
+          9688.0,
+          9191.0,
+          10294.0,
+          9167.0,
+          8995.0
+        ]
+      },
+      "comm_disabled": {
+        "runs_completed": 10,
+        "travel_time_mean_s": 64.42,
+        "travel_time_std_s": 2.02,
+        "cumulative_delay_veh_s": 9972.8,
+        "total_corridor_trips_completed": 109.0,
+        "mean_corridor_speed_kmh": 22.95,
+        "raw_travel_times": [
+          60.68,
+          64.35,
+          64.84,
+          68.87,
+          63.94,
+          63.61,
+          65.23,
+          64.93,
+          64.27,
+          63.5
+        ],
+        "raw_delays": [
+          9431.0,
+          10760.0,
+          9594.0,
+          10716.0,
+          10652.0,
+          9374.0,
+          9501.0,
+          10189.0,
+          9868.0,
+          9643.0
+        ]
+      }
+    }
+  }
+}

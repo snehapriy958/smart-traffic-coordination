@@ -1,0 +1,121 @@
+{
+  "metadata": {
+    "experiment": "Series 3: Physical Incident Stress Testing",
+    "duration_s": 900.0,
+    "incident_window_s": [
+      300.0,
+      600.0
+    ],
+    "connector_edge": "172853382#3",
+    "controllers": [
+      "baseline",
+      "coordinated",
+      "webster",
+      "nema",
+      "max_pressure",
+      "marl_dqn",
+      "marl_ppo",
+      "marl_mappo"
+    ],
+    "total_runs": 40,
+    "completed_runs": 40
+  },
+  "per_controller": {
+    "baseline": {
+      "runs": 5,
+      "pre_incident_mean_queue": 16.44,
+      "during_incident_mean_queue": 27.47,
+      "post_incident_mean_queue": 3.96,
+      "peak_queue_mean": 42.6,
+      "queue_increase_ratio_mean": 1.67,
+      "recovery_time_mean_s": 3.8,
+      "recovery_success_rate": 1.0,
+      "spillback_rate_at_j1": 0.0,
+      "cumulative_delay_veh_s": 15369.0
+    },
+    "coordinated": {
+      "runs": 5,
+      "pre_incident_mean_queue": 9.88,
+      "during_incident_mean_queue": 32.44,
+      "post_incident_mean_queue": 6.92,
+      "peak_queue_mean": 43.0,
+      "queue_increase_ratio_mean": 3.28,
+      "recovery_time_mean_s": 84.8,
+      "recovery_success_rate": 1.0,
+      "spillback_rate_at_j1": 0.0,
+      "cumulative_delay_veh_s": 14400.2
+    },
+    "webster": {
+      "runs": 5,
+      "pre_incident_mean_queue": 9.74,
+      "during_incident_mean_queue": 30.27,
+      "post_incident_mean_queue": 5.37,
+      "peak_queue_mean": 42.6,
+      "queue_increase_ratio_mean": 3.11,
+      "recovery_time_mean_s": 64.6,
+      "recovery_success_rate": 1.0,
+      "spillback_rate_at_j1": 0.0,
+      "cumulative_delay_veh_s": 14105.6
+    },
+    "nema": {
+      "runs": 5,
+      "pre_incident_mean_queue": 10.93,
+      "during_incident_mean_queue": 31.11,
+      "post_incident_mean_queue": 5.0,
+      "peak_queue_mean": 41.0,
+      "queue_increase_ratio_mean": 2.85,
+      "recovery_time_mean_s": 56.6,
+      "recovery_success_rate": 1.0,
+      "spillback_rate_at_j1": 0.0,
+      "cumulative_delay_veh_s": 13884.4
+    },
+    "max_pressure": {
+      "runs": 5,
+      "pre_incident_mean_queue": 13.27,
+      "during_incident_mean_queue": 33.52,
+      "post_incident_mean_queue": 6.06,
+      "peak_queue_mean": 42.6,
+      "queue_increase_ratio_mean": 2.53,
+      "recovery_time_mean_s": 26.4,
+      "recovery_success_rate": 1.0,
+      "spillback_rate_at_j1": 0.0,
+      "cumulative_delay_veh_s": 15326.4
+    },
+    "marl_dqn": {
+      "runs": 5,
+      "pre_incident_mean_queue": 10.86,
+      "during_incident_mean_queue": 34.51,
+      "post_incident_mean_queue": 9.2,
+      "peak_queue_mean": 44.4,
+      "queue_increase_ratio_mean": 3.18,
+      "recovery_time_mean_s": 104.2,
+      "recovery_success_rate": 1.0,
+      "spillback_rate_at_j1": 0.0,
+      "cumulative_delay_veh_s": 16902.0
+    },
+    "marl_ppo": {
+      "runs": 5,
+      "pre_incident_mean_queue": 16.92,
+      "during_incident_mean_queue": 27.15,
+      "post_incident_mean_queue": 3.48,
+      "peak_queue_mean": 39.4,
+      "queue_increase_ratio_mean": 1.6,
+      "recovery_time_mean_s": 0.2,
+      "recovery_success_rate": 1.0,
+      "spillback_rate_at_j1": 0.0,
+      "cumulative_delay_veh_s": 14394.8
+    },
+    "marl_mappo": {
+      "runs": 5,
+      "pre_incident_mean_queue": 11.8,
+      "during_incident_mean_queue": 29.56,
+      "post_incident_mean_queue": 7.36,
+      "peak_queue_mean": 44.0,
+      "queue_increase_ratio_mean": 2.51,
+      "recovery_time_mean_s": 89.4,
+      "recovery_success_rate": 1.0,
+      "spillback_rate_at_j1": 0.0,
+      "cumulative_delay_veh_s": 14617.8
+    }
+  }
+}

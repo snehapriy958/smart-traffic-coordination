@@ -57,6 +57,9 @@ class MARLCorridorController:
         starvation_tracker: Optional[StarvationTracker] = None,
         max_red_threshold_s: float = 60.0,
         seed: int = 42,
+        enable_safety_shield: bool = True,
+        enable_communication: bool = True,
+        observation_dim: int = 14,
     ) -> None:
         self.algorithm = algorithm.lower()
         self.junctions = junctions or list(DEFAULT_JUNCTIONS)
@@ -64,8 +67,11 @@ class MARLCorridorController:
         self.hub = communication_hub or CorridorCommunicationHub(corridor_sequence=self.junctions)
         self.starvation_tracker = starvation_tracker or StarvationTracker(max_red_threshold_s=max_red_threshold_s)
         self.seed = seed
+        self.enable_safety_shield = enable_safety_shield
+        self.enable_communication = enable_communication
+        self.observation_dim = observation_dim
 
-        self.obs_space = CorridorObservationSpace(junctions=self.junctions)
+        self.obs_space = CorridorObservationSpace(junctions=self.junctions, dim=observation_dim)
         self.reward_fn = MultiIntersectionReward()
 
         # Phase mappings per junction
@@ -75,9 +81,10 @@ class MARLCorridorController:
         # Initialize shared centralized critic for MAPPO
         self.shared_critic = None
         self.shared_critic_optimizer = None
+        corridor_features = len(self.junctions) * self.observation_dim
         if self.algorithm == "mappo":
             self.shared_critic = MAPPOCentralizedCriticNetwork(
-                in_features=CORRIDOR_OBSERVATION_DIM, seed=seed + 100
+                in_features=corridor_features, seed=seed + 100
             )
             if TORCH_AVAILABLE:
                 import torch
@@ -92,8 +99,8 @@ class MARLCorridorController:
             if self.algorithm == "mappo":
                 self.agents[j_id] = MAPPOAgent(
                     agent_id=j_id,
-                    in_features=OBSERVATION_DIM_PER_JUNCTION,
-                    corridor_features=CORRIDOR_OBSERVATION_DIM,
+                    in_features=self.observation_dim,
+                    corridor_features=corridor_features,
                     num_actions=3,
                     shared_critic=self.shared_critic,
                     shared_critic_optimizer=self.shared_critic_optimizer,
@@ -102,14 +109,14 @@ class MARLCorridorController:
             elif self.algorithm == "ppo":
                 self.agents[j_id] = PPOAgent(
                     agent_id=j_id,
-                    in_features=self.obs_space.vectorize_junction(j_id, {}).shape[0],
+                    in_features=self.observation_dim,
                     num_actions=3,
                     seed=agent_seed,
                 )
             else:
                 self.agents[j_id] = DQNAgent(
                     agent_id=j_id,
-                    in_features=self.obs_space.vectorize_junction(j_id, {}).shape[0],
+                    in_features=self.observation_dim,
                     num_actions=3,
                     seed=agent_seed,
                 )
@@ -155,7 +162,8 @@ class MARLCorridorController:
         decisions: Dict[str, Dict[str, Any]] = {}
 
         # 1. Coordinate Inter-Intersection Communication Bus
-        self._exchange_inter_intersection_messages(raw_observations, sim_time)
+        if self.enable_communication:
+            self._exchange_inter_intersection_messages(raw_observations, sim_time)
 
         # 2. Update Starvation Tracker with latest approach queues and phases
         curr_phases = {}
@@ -216,6 +224,11 @@ class MARLCorridorController:
                 decisions[j_id] = self._fallback_decision(j_id, obs_dict, sim_time, "Corrupted observation (NaNs)")
                 continue
 
+            # Inference-time communication ablation masking (Series 4G)
+            if not self.enable_communication and len(vec) == 14:
+                vec[11] = 0.0  # upstream_inflow_norm
+                vec[12] = 0.0  # approaching_platoons_norm
+
             # Check signal timing constraints
             can_switch = True
             if ctrl:
@@ -224,15 +237,19 @@ class MARLCorridorController:
                 elapsed = float(obs_dict.get("phase_elapsed", 0.0))
                 can_switch = (elapsed >= 15.0)
 
-            # Anti-Starvation Action Masking
-            emergency_locked = bool(ctrl and ctrl.emergency_locked)
-            action_mask, mask_reason = self.starvation_tracker.get_action_mask(
-                j_id=j_id,
-                current_phase=int(obs_dict.get("phase", 0)),
-                can_switch=can_switch,
-                emergency_locked=emergency_locked,
-                sim_time=sim_time,
-            )
+            # Anti-Starvation Action Masking (Series 4A)
+            if self.enable_safety_shield:
+                emergency_locked = bool(ctrl and ctrl.emergency_locked)
+                action_mask, mask_reason = self.starvation_tracker.get_action_mask(
+                    j_id=j_id,
+                    current_phase=int(obs_dict.get("phase", 0)),
+                    can_switch=can_switch,
+                    emergency_locked=emergency_locked,
+                    sim_time=sim_time,
+                )
+            else:
+                action_mask = np.ones(3, dtype=bool)
+                mask_reason = "UNSHIELDED_RAW_POLICY"
 
             # Select agent action
             agent = self.agents[j_id]
@@ -306,7 +323,7 @@ class MARLCorridorController:
             target_phase = dec.get("target_phase")
 
             if action == ACTION_SWITCH and target_phase is not None:
-                switched = ctrl.request_switch(target_green_phase=target_phase, sim_time=sim_time)
+                switched = ctrl.request_switch(target_green_phase=target_phase, sim_time=sim_time, force=(not self.enable_safety_shield))
                 executed_ops[j_id] = f"REQUEST_SWITCH_TARGET_{target_phase}_{'OK' if switched else 'REJECTED'}"
             elif action == ACTION_EXTEND:
                 extended = ctrl.extend_current_green(sim_time)
