@@ -74,3 +74,13 @@ Thumbs.db
 # Scratch & ephemeral files
 scratch/
 outputs/temp_chrome_profile/
+
+# Local Demonstration & Release Deliverables (Local Only - Do Not Push)
+DEMO_RUNBOOK.md
+FINAL_SOFTWARE_RELEASE_AUDIT.md
+FEATURE_VERIFICATION_MATRIX.md
+KNOWN_ISSUES.md
+DEPLOYMENT_READINESS.md
+Documents/Research_Paper/
+
+
