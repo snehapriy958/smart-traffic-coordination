@@ -1,210 +1,429 @@
-# Smart Traffic Coordination System — Bengaluru Silk Board Corridor
+# Smart Traffic Coordination System — Bengaluru Silk Board Digital Twin & Intelligence Platform
 
 [![Python 3.11+](https://img.shields.io/badge/Python-3.11%20%7C%203.12%20%7C%203.13-blue.svg)](https://www.python.org/)
 [![SUMO 1.26+](https://img.shields.io/badge/SUMO-1.26%2B-orange.svg)](https://eclipse.dev/sumo/)
-[![FastAPI](https://img.shields.io/badge/FastAPI-0.100%2B-teal.svg)](https://fastapi.tiangolo.com/)
-[![React 18](https://img.shields.io/badge/React-18-cyan.svg)](https://react.dev/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.115%2B-teal.svg)](https://fastapi.tiangolo.com/)
+[![React 18](https://img.shields.io/badge/React-18.3-cyan.svg)](https://react.dev/)
 [![Three.js](https://img.shields.io/badge/Three.js-R3F-black.svg)](https://threejs.org/)
-[![Tests Passing](https://img.shields.io/badge/Tests-231%20Backend%20%7C%2082%20Frontend-brightgreen.svg)]()
+[![Automated Tests](https://img.shields.io/badge/Tests-430%20Passed%20(334%20Backend%20%7C%2096%20Frontend)-brightgreen.svg)]()
+[![Build Passing](https://img.shields.io/badge/Vite-Build%20Passed-success.svg)]()
 
-An intelligent multi-intersection traffic signal coordination and simulation platform modeled on the **Silk Board Corridor along Hosur Road (NH 44) in Bengaluru, Karnataka, India**.
+An intelligent multi-intersection traffic signal coordination, microscopic simulation, and 3D digital twin platform modeled on the **Central Silk Board arterial corridor along Hosur Road (NH 44) in Bengaluru, Karnataka, India**.
 
-The system integrates microscopic traffic simulation (Eclipse SUMO / TraCI), multi-strategy signal controllers (Fixed-Time, Coordinated Adaptive, Multi-Agent Double-DQN, Multi-Agent PPO), deterministic safety shielding, emergency corridor preemption, and real-time telemetry streaming to a React dashboard with an interactive Three.js 3D spatial digital twin.
-
----
-
-## 1. Project Overview & Problem Statement
-
-The Silk Board intersection in South Bengaluru is one of India's most notoriously congested urban traffic bottlenecks. Key operational challenges include:
-1. **Bottleneck Convergence:** High-volume traffic merging from Outer Ring Road (BTM Layout), HSR Layout, Electronic City, and Hosur Road onto a constrained corridor.
-2. **Uncoordinated Actuation:** Isolated pre-timed or local-actuated controllers cause secondary shockwaves, holding arterial green while downstream approaches spill back.
-3. **Cross-Street Starvation:** Aggressive green-extension on major arterials frequently starves high-volume secondary approaches (such as Madiwala Market).
-4. **Emergency Vehicle Blockage:** Emergency vehicles (e.g. ambulances) get trapped in static queues without dedicated preemption waves.
-
-### Project Objectives
-- Build a calibrated microscopic corridor simulation covering intersections **$J_1$ (Madiwala Checkpost)**, **$J_2$ (Central Silk Board)**, and **$J_3$ (Rupena Agrahara / Bommanahalli)**.
-- Implement and benchmark four signal control paradigms under identical traffic demand profiles.
-- Design a deterministic safety shield enforcing strict minimum green ($15.0\text{ s}$) and anti-starvation maximum red ($60.0\text{ s}$) guardrails.
-- Implement an emergency vehicle green wave providing rapid preemption traversal with zero queue stoppages.
-- Deliver a real-time full-stack dashboard with 10 Hz WebSocket telemetry and a 3D procedural digital twin.
+The platform couples microscopic traffic simulation (**Eclipse SUMO / TraCI**) with multi-agent reinforcement learning (**Double-DQN**, **PPO**), classical coordinated algorithms (**Webster Optimal Split**, **Max-Pressure**, **NEMA Dual-Ring**), deterministic safety shields, Level-1 emergency vehicle preemption waves, and a 3D procedural WebGL digital twin rendered with **Three.js** and **React Three Fiber**.
 
 ---
 
-## 2. System Architecture
+## 1. Problem Statement & Motivation
 
-The application is structured into seven distinct architectural layers:
+The **Central Silk Board** junction in South Bengaluru is widely recognized as one of the most severe urban congestion bottlenecks in India. The junction serves as the primary convergence point connecting the Outer Ring Road (ORR / BTM Layout), HSR Layout, Electronic City, BTM 2nd Stage, and Hosur Road.
+
+### Key Urban Challenges
+1. **Bottleneck Convergence & Spillback:** High-density peak flows merge onto a constrained arterial corridor, causing localized queues at one intersection to rapidly spill back across upstream intersections.
+2. **Uncoordinated Static Splits:** Conventional pre-timed signal controllers allocate static phase splits regardless of real-time queue accumulation, inducing severe arterial delays and shockwaves.
+3. **Cross-Street Starvation:** Excessive arterial green extension starves secondary side streets, generating localized gridlock on feeder approaches.
+4. **Emergency Vehicle Blockage:** Emergency response vehicles (ambulances, fire engines) encounter impassable congestion without automated green-wave preemption.
+
+### Simulation-First Research Scope
+This project models the Silk Board corridor in microscopic simulation to investigate how coordinated adaptive algorithms, multi-agent reinforcement learning, and deterministic safety mechanisms reduce cumulative vehicle delay, improve corridor throughput, and guarantee rapid emergency vehicle clearance.
+
+> **Research Transparency Notice:** All experimental results reported in this repository are derived from simulated traffic environments using Eclipse SUMO. The road geometry is extracted from OpenStreetMap data. Physical hardware deployment, loop-detector integration, and real-world municipal field calibration remain future work.
+
+---
+
+## 2. Key Platform Features
+
+- **Microscopic Traffic Simulation:** Powered by Eclipse SUMO 1.26+ with realistic Indian vehicle fleets (two-wheelers, cars, BMTC buses, commercial trucks, ambulances) adhering to Krauss car-following physics.
+- **Multiple Signal Control Paradigms:**
+  - *Fixed-Time Baseline:* Rigid pre-timed cycle plan based on historical Silk Board splits.
+  - *Coordinated Adaptive Controller:* Dynamic queue-proportional phase allocation with inter-junction green-wave progression.
+  - *Multi-Agent Double-DQN (Stage A):* Dueling value-based neural networks with discrete 3-action spaces and upstream inflow anticipation.
+  - *Multi-Agent PPO (Stage A):* Clipped surrogate actor-critic policy with Generalized Advantage Estimation (GAE).
+  - *Classical Baselines:* Webster Optimal Cycle/Split, Max-Pressure Network Control, and NEMA Actuated Control.
+- **Deterministic Multi-Tier Safety Shield:**
+  - *Minimum Green Enforcement ($10.0\text{ s}$):* Prevents rapid signal oscillation and phase chatter.
+  - *Mandatory Yellow Clearance ($4.0\text{ s}$):* Guarantees safe deceleration clearance before green onset.
+  - *Anti-Starvation Maximum Red Ceiling ($60.0\text{ s}$):* Guaranteed service for high-wait side-street approaches.
+- **Level-1 Emergency Green-Wave Preemption:** Asynchronous preemption corridor locks oncoming signals to priority green, achieving uninterrupted ambulance traversal with zero queue collisions.
+- **Real-Time Streaming & Resilience:** FastAPI backend featuring a dedicated single-writer WebSocket hub, sequence number monotonicity, bounded per-client queues, and process watchdogs.
+- **Interactive 3D Digital Twin:** Procedural 3D scene built with Three.js, React Three Fiber, and Tailwind CSS, rendering elevated flyovers, concrete piers, multi-lane road ribbons, dynamic vehicle meshes, and real-time 3-aspect signal heads.
+
+---
+
+## 3. System Architecture
+
+```mermaid
+flowchart TD
+    subgraph Frontend_Layer ["Frontend Digital Twin (React 18 + Vite)"]
+        UI_Twin["3D Spatial Corridor Twin (Three.js / R3F)"]
+        UI_Canvas["2D Live Corridor & Queue Heatmap"]
+        UI_Controls["Simulation Controls & Emergency Trigger"]
+        UI_Metrics["Real-time KPIs & Emissions Analytics"]
+        UI_Decisions["Explainable AI Decision Panel"]
+    end
+
+    subgraph Communication_Layer ["Communication & Streaming Layer"]
+        REST_API["FastAPI REST Endpoints (Port 8000)"]
+        WS_Hub["WebSocket Hub (Single-Writer, Monotonic Sequencing)"]
+    end
+
+    subgraph Backend_Layer ["Backend Core (Python 3.11-3.13)"]
+        Sim_Service["SimulationService (Watchdog & Thread Lifecycle)"]
+        Cmd_Queue["Command Queue (Isolated Per-Command Error Handling)"]
+        State_Ext["State & Metric Extractor (HBEFA4 Emissions, Queues)"]
+        DB_Engine["SQLite Database (Audit Logs & Telemetry History)"]
+    end
+
+    subgraph Controller_Layer ["Signal Control & Safety Engine"]
+        Safety_Shield["Deterministic Safety Shield (Min Green 10s, Yellow 4s, Starvation 60s)"]
+        Emerg_Wave["Emergency Preemption Coordinator (Level-1 Lock)"]
+        Fixed_Ctrl["Fixed-Time Baseline Controller"]
+        Adaptive_Ctrl["Coordinated Adaptive Controller (Pressure + Inflow)"]
+        MARL_DQN["Multi-Agent Double-DQN (Stage A Checkpoint)"]
+        MARL_PPO["Multi-Agent PPO (Stage A Checkpoint)"]
+    end
+
+    subgraph Simulation_Layer ["Microscopic Traffic Simulator"]
+        TraCI_Manager["TraCI Socket Lifecycle Manager (Port Allocation)"]
+        SUMO_Bin["Eclipse SUMO 1.26+ Micro-Simulation Engine"]
+        Corridor_Net["Silk Board Corridor Network (J1, J2, J3 | NH 44)"]
+    end
+
+    UI_Controls -->|POST /api/simulation/start| REST_API
+    UI_Controls -->|POST /api/signals/override| REST_API
+    REST_API --> Cmd_Queue
+    Cmd_Queue --> Sim_Service
+
+    Sim_Service --> TraCI_Manager
+    TraCI_Manager <-->|TCP Socket / TraCI| SUMO_Bin
+    SUMO_Bin --- Corridor_Net
+
+    Sim_Service --> State_Ext
+    State_Ext --> Controller_Layer
+    Controller_Layer --> Safety_Shield
+    Emerg_Wave -->|Preemption Lock| Safety_Shield
+    Safety_Shield -->|Actuate Signals| TraCI_Manager
+
+    State_Ext --> DB_Engine
+    State_Ext --> Sim_Service
+    Sim_Service --> WS_Hub
+    WS_Hub -->|1.0s Telemetry Frames| UI_Twin
+    WS_Hub -->|1.0s Telemetry Frames| UI_Canvas
+    WS_Hub -->|1.0s Telemetry Frames| UI_Metrics
+    Sim_Service --> UI_Decisions
+```
+
+---
+
+## 4. Corridor Network & Junction Layout
+
+The modeled corridor represents a critical $1.2\text{ km}$ stretch along **Hosur Road (National Highway 44)** in South Bengaluru, incorporating 3 signalized intersections and intermediate dual-carriageway arterial edges:
 
 ```
-+----------------------------------------------------------------------------------------------------+
-|                                    APPLICATION ARCHITECTURE                                       |
-+----------------------------------------------------------------------------------------------------+
-|                                                                                                    |
-|  1. FRONTEND LAYER (React 18 / Vite)                                                               |
-|     • 3D Spatial Digital Twin (Three.js / React Three Fiber): Extruded road ribbons, flyovers      |
-|     • 2D Live Corridor Canvas (SVG): Real-time queue density, speeds, 3-aspect signal aspects      |
-|     • Telemetry Panels: MetricsOverview, EmissionsChart, ControllerComparison, SignalStatusPanel   |
-|                                         ▲                                                          |
-|  2. COMMUNICATION LAYER                 │ HTTP REST (Port 8000) & WebSocket (10 Hz Stream)         |
-|     • FastAPI REST Endpoints: /api/simulation, /api/signals, /api/traffic, /api/experiments       |
-|     • Streaming Telemetry: /ws/traffic-stream (Monotonic sequence IDs, reconnect recovery)         |
-|                                         │                                                          |
-|  3. BACKEND SERVICE LAYER (FastAPI / Python)                                                       |
-|     • SimulationService: Threaded worker lifecycle, startup watchdog, safe cleanup                |
-|     • StateExtractor: Instantaneous approach queues, time-mean speeds, HBEFA4 emissions           |
-|     • Database Engine: SQLite with timezone-aware SQLAlchemy models                                |
-|                                         ▲                                                          |
-|  4. SIMULATION LAYER                    │ TraCI TCP Socket Interface                               |
-|     • Eclipse SUMO Micro-Simulator: Step length = 1.0s, Krauss car-following (sigma = 0.5)         |
-|     • Network Geometry: 3 Signalized Intersections (J1: Madiwala, J2: Silk Board, J3: Bommanahalli)|
-|     • Vehicle Demand: 378 vehicles / run, 5 classes (motorcycle, car, bus, truck, ambulance)       |
-|                                         │                                                          |
-|  5. CONTROLLER LAYER                    │ Signal Decisions (Phase 0, 1, 2, 3)                      |
-|     • Fixed-Time Baseline: Rigid pre-timed splits (90s cycle)                                      |
-|     • Coordinated Adaptive: Dynamic queue-proportional phase split & green-wave progression        |
-|     • MARL Double-DQN (Stage A): Value-based Q-network with 14-dim local state vector              |
-|     • MARL Actor-Critic PPO (Stage A): Discrete policy actor-critic with discrete action space     |
-|                                         │                                                          |
-|  6. DETERMINISTIC SAFETY SHIELD         │ Preemption Overrides & Action Masks                      |
-|     • Minimum Green Guardrail: Hard 15.0-second constraint prevents signal flicker                 |
-|     • Anti-Starvation Preemption: 60.0-second maximum red forces mandatory phase switch            |
-|     • Safe Yellow Transitions: 3.0-second mandatory yellow clearance before every phase change     |
-|     • Emergency Preemption Coordinator: Dynamic corridor green wave for approaching ambulances     |
-|                                         │                                                          |
-|  7. DATA & PERSISTENCE LAYER            │ JSON / SQLite                                            |
-|     • Checkpoint Store: PyTorch JSON weight dictionaries (checkpoints/)                            |
-|     • Validation Suite: outputs/validation/ (Historical 3-seed & 40-run 10-seed benchmarks)        |
-+----------------------------------------------------------------------------------------------------+
+                  To Koramangala / BTM
+                           │
+                           ▼
+ [North Inflow] ───► [ Junction J1 ] ◄─── [Cross Street: Madiwala]
+                           │
+                           ▼ (Hosur Road Spine: Edge 172853382#1)
+ [Outer Ring Rd] ──► [ Junction J2 ] ◄─── [Cross Street: HSR Layout]
+                           │ (Central Silk Board Core)
+                           ▼ (Hosur Road Spine: Edge 172853382#2)
+ [South Inflow] ───► [ Junction J3 ] ◄─── [Cross Street: Bommanahalli]
+                           │
+                           ▼
+                  To Electronic City
+```
+
+- **Junction J1 ($J_1$ - North Node / Madiwala Checkpost):** Coordinates northern arterial inflows from Hosur Road and cross traffic from St. John's / Madiwala Market.
+- **Junction J2 ($J_2$ - Core Hub / Central Silk Board Core):** Major 4-phase interchange handling heavy convergence from BTM Layout (Outer Ring Road West) and HSR Layout (Outer Ring Road East).
+- **Junction J3 ($J_3$ - South Node / Bommanahalli Junction):** Manages southern outbound dispersal towards Electronic City Flyover and local industrial approach traffic.
+
+---
+
+## 5. Controller Architectures & Action Spaces
+
+The platform provides a unified interface across classical, adaptive, and neural control paradigms:
+
+| Controller | Architecture & Policy | Action Space ($\mathcal{A}$) | Key Parameters |
+| :--- | :--- | :--- | :--- |
+| **Fixed-Time Baseline** | Static pre-timed cyclic plan | Pre-determined phase progression | 90s fixed cycle, static splits |
+| **Coordinated Adaptive** | Real-time queue backpressure with green-wave progression | Dynamic phase extension and switching | $k_{\text{inflow}} = 0.35$, offset synchrony |
+| **Double-DQN (Stage A)** | Multi-Agent Dueling Q-Network (14-dim state vector) | Discrete 3-action: $\{0: \text{KEEP}, 1: \text{SWITCH}, 2: \text{EXTEND}\}$ | $\gamma = 0.95$, dueling streams, $\epsilon$-decay |
+| **PPO (Stage A)** | Multi-Agent Discrete Actor-Critic with GAE | Discrete 3-action: $\{0: \text{KEEP}, 1: \text{SWITCH}, 2: \text{EXTEND}\}$ | Clip $\epsilon = 0.2$, $\lambda_{\text{GAE}} = 0.95$, entropy bonus |
+| **Webster Controller** | Classical delay-minimizing optimal split | Cyclic phase split adjustment | $C_{\text{opt}} = \frac{1.5L + 5}{1 - Y}$, saturation ratio $Y$ |
+| **Max-Pressure** | Network-wide store-and-forward pressure gradient | Selects phase maximizing upstream-downstream delta | Pressure $P_m = \sum Q_{\text{in}} - \sum Q_{\text{out}}$ |
+| **NEMA Dual-Ring** | Actuated phase gap-out and maximum green extension | Actuated passage extension / gap-out | Passage time $3.0\text{ s}$, max green ceiling |
+
+### Action Space Formulation
+For all AI controllers, the action space at each junction is strictly discrete with $N=3$ actions:
+$$\mathcal{A} = \{0: \text{KEEP}, 1: \text{SWITCH}, 2: \text{EXTEND}\}$$
+- $\text{KEEP} (0)$: Maintain current green phase; no timer alteration.
+- $\text{SWITCH} (1)$: Request transition to the next sequential green phase via mandatory yellow clearance.
+- $\text{EXTEND} (2)$: Extend current green phase duration by the decision step interval ($\Delta t = 5.0\text{ s}$), subject to maximum green and anti-starvation ceilings.
+
+---
+
+## 6. Authoritative Master Benchmark Results
+
+The authoritative master benchmark evaluates the four primary controllers across **10 matched random seeds** ($S = \{42, 84, 126, 168, 210, 252, 294, 336, 378, 420\}$) over a 900-second simulation horizon under identical multi-class vehicle demand ($N=109$ completed corridor trips per seed):
+
+### Primary Benchmark Summary Table ($N=10$ Seeds)
+
+| Metric | Fixed-Time Baseline | Coordinated Adaptive | Double-DQN (Stage A) | PPO (Stage A) |
+| :--- | :---: | :---: | :---: | :---: |
+| **Mean Corridor Travel Time** | $90.02 \pm 1.26\text{ s}$ | **$49.87 \pm 2.46\text{ s}$** ($-44.60\%$) | $56.64 \pm 2.22\text{ s}$ ($-37.08\%$) | $85.50 \pm 5.82\text{ s}$ ($-5.02\%$) |
+| **95% Confidence Interval** | $[89.12, 90.92]\text{ s}$ | **$[48.11, 51.63]\text{ s}$** | $[55.05, 58.22]\text{ s}$ | $[81.34, 89.66]\text{ s}$ |
+| **Cumulative Vehicle Delay** | $12{,}373.2 \pm 135.1\text{ veh}\cdot\text{s}$ | **$5{,}836.8 \pm 296.5\text{ veh}\cdot\text{s}$** ($-52.83\%$) | $8{,}024.4 \pm 261.2\text{ veh}\cdot\text{s}$ ($-35.15\%$) | $12{,}163.6 \pm 896.6\text{ veh}\cdot\text{s}$ ($-1.69\%$) |
+| **Mean Corridor Speed** | $28.21 \pm 0.37\text{ km/h}$ | **$37.98 \pm 0.26\text{ km/h}$** ($+34.66\%$) | $31.46 \pm 0.44\text{ km/h}$ ($+11.55\%$) | $25.56 \pm 0.91\text{ km/h}$ ($-9.37\%$) |
+| **Total Corridor $\text{CO}_2$** | $55.58 \pm 0.20\text{ kg}$ | **$42.72 \pm 0.64\text{ kg}$** ($-23.14\%$) | $47.15 \pm 0.48\text{ kg}$ ($-15.17\%$) | $55.03 \pm 1.70\text{ kg}$ ($-0.99\%$) |
+| **Total Fuel Consumption** | $23.99 \pm 0.08\text{ L}$ | **$18.44 \pm 0.28\text{ L}$** ($-23.15\%$) | $20.35 \pm 0.21\text{ L}$ ($-15.17\%$) | $23.76 \pm 0.73\text{ L}$ ($-0.98\%$) |
+| **Completed Trips** | $109.0 \pm 0.0$ | $109.0 \pm 0.0$ | $109.0 \pm 0.0$ | $109.0 \pm 0.0$ |
+| **Statistical Significance** | Reference | $p = 5.60 \times 10^{-13}$ (Significant) | $p = 5.90 \times 10^{-12}$ (Significant) | $p = 0.115$ (Not Significant) |
+| **Effect Size (Cohen's $d_z$)** | — | **$18.74$** (Very Large) | **$14.41$** (Very Large) | $0.77$ (Moderate) |
+
+### Statistical Rigor & Findings
+1. **Coordinated Adaptive Controller** is the top-performing strategy across all operational, efficiency, and environmental metrics, reducing travel time by **$44.60\%$** and cumulative delay by **$52.83\%$**.
+2. **Double-DQN (Stage A)** achieves statistically significant improvements over baseline ($37.08\%$ travel time reduction, $p < 10^{-11}$).
+3. **PPO (Stage A)** yields a marginal $5.02\%$ travel time reduction; however, after Bonferroni multiple-comparison correction ($\alpha = 0.0167$), the difference is **not statistically significant** ($p_{\text{adj}} = 0.115$).
+4. **MAPPO Series 4B & Series 4C:** Evaluated in dedicated multi-agent ablation studies. Series 4B confirms the necessity of 14-dimensional observation spaces over truncated states. Series 4C research protocols investigating global-local reward coupling ($\beta \in [0.0, 1.0]$) are documented in [`reports/final/`](file:///c:/Developers/Sneha/Projects/hybrid-traffic-control/reports/final/) and [`Documents/Research_Paper/`](file:///c:/Developers/Sneha/Projects/hybrid-traffic-control/Documents/Research_Paper/).
+
+---
+
+## 7. Emissions & Fuel Modeling Methodology
+
+Environmental emissions are extracted per-vehicle per-second directly from SUMO's integrated **HBEFA4 (Handbook Emission Factors for Road Transport v4.1)** emission classes:
+- `motorcycle`: `HBEFA4/motorcycle`
+- `car`: `HBEFA4/passenger_gasoline`
+- `bmtc_bus`: `HBEFA4/bus_urban`
+- `heavy_vehicle`: `HBEFA4/HDV`
+- `ambulance`: `HBEFA4/passenger_gasoline`
+
+### Fuel Mass-to-Volume Conversion
+SUMO outputs fuel consumption in milligrams ($mg$). To convert raw mass to volumetric liters ($L_{\text{petrol-eq}}$), the system applies the international standard automotive petrol density:
+$$\rho_{\text{petrol}} = 750{,}000\text{ mg/L} \quad (0.750\text{ kg/L})$$
+$$\text{Fuel Volume (L)} = \frac{\sum \text{Fuel}_{\text{SUMO}} (\text{mg})}{750{,}000\text{ mg/L}}$$
+Reported values reflect true volumetric fuel consumption across identical vehicle cohorts and identical time horizons.
+
+---
+
+## 8. Multi-Tier Deterministic Safety Shield
+
+Safety in urban signalized networks is governed by strict deterministic boundaries that cannot be overridden by neural network policies:
+
+1. **Minimum Green Time ($10.0\text{ s}$):** Guarantees green is held for at least 10 seconds following a phase switch to prevent signal fluttering and driver confusion.
+2. **Mandatory Yellow Clearance ($4.0\text{ s}$):** When a switch is initiated, signals transition through an explicit yellow aspect for 4 seconds before conflicting green displays.
+3. **Anti-Starvation Maximum Red Ceiling ($60.0\text{ s}$):** Tracks continuous red duration on all unserved approaches. If any approach exceeds 60 seconds of red time, the controller forces an immediate switch to serve the waiting queue.
+4. **Level-1 Emergency Corridor Preemption:** Monitored by the `EmergencyWaveCoordinator`. When an active emergency vehicle is detected approaching junction $J_i$:
+   - Normal cyclic switching is preempted.
+   - The signal transitions safely through yellow and locks into arterial priority green.
+   - Arterial green is held until the emergency vehicle clears downstream sensors.
+   - Tested and verified: Traversal completed in **45 seconds** with **zero stops** over a 500s horizon.
+
+---
+
+## 9. 3D Spatial Digital Twin & WebGL Visualization
+
+The frontend incorporates an interactive 3D digital twin of the Silk Board corridor built with **Three.js** and **React Three Fiber**:
+
+```
++----------------------------------------------------------------------------------------+
+|                               3D DIGITAL TWIN ENGINE                                  |
++----------------------------------------------------------------------------------------+
+|  • Procedural Road Ribbons: Continuous multi-lane asphalt meshes extruded from vectors |
+|  • Elevated Flyover Spans: Elevated Y-coordinates, concrete barrier parapets, piers   |
+|  • Dynamic 3-Aspect Signal Heads: Emissive Red, Yellow, Green bulbs updating live     |
+|  • Vehicle Kinematics: Real-time 3D bounding boxes interpolated from TraCI telemetry   |
+|  • Bengaluru Context: Low-poly urban architecture, setback buffers, and trees          |
++----------------------------------------------------------------------------------------+
+```
+
+### Visual Interface Showcase
+
+| 3D Digital Twin View | Live Corridor 2D Map & Queues |
+| :---: | :---: |
+| ![3D Digital Twin](outputs/screenshots/desktop_3d_twin.png) | ![Live Corridor View](outputs/screenshots/desktop_live_corridor.png) |
+| *Procedural 3D mesh rendering elevated flyovers and signals* | *Real-time arterial queue heatmap and 3-aspect phase indicators* |
+
+| Telemetry Analytics & Emissions | Safety & Emergency Controls |
+| :---: | :---: |
+| ![Analytics Dashboard](outputs/screenshots/desktop_analytics.png) | ![Safety Shield Status](outputs/screenshots/desktop_safety.png) |
+| *HBEFA4 emission curves, speeds, and queue accumulation* | *Active emergency wave tracking and anti-starvation timers* |
+
+---
+
+## 10. Repository Organization
+
+```text
+hybrid-traffic-control/
+├── backend/                        # FastAPI application & REST services
+│   ├── main.py                     # App entry point, CORS, and lifespan handlers
+│   ├── config.py                   # Environment configuration & path resolvers
+│   ├── database.py                 # SQLite database engine & session factories
+│   ├── models.py                   # SQLAlchemy ORM models for telemetry & audit
+│   ├── schemas.py                  # Pydantic v2 validation models
+│   ├── simulation_service.py       # Threaded SUMO worker & command queue
+│   ├── websocket_manager.py        # Dedicated single-writer WebSocket streaming hub
+│   └── routers/                    # Modular API endpoints (simulation, traffic, etc.)
+├── checkpoints/                    # Trained neural network weight dictionaries
+│   ├── p5_training/                # Historical 5-seed training checkpoints
+│   ├── p6/                         # Authoritative Stage A Double-DQN & PPO models
+│   └── phase4/                     # Series 4B and 4E ONNX and JSON models
+├── Documents/
+│   └── Research_Paper/             # Comprehensive research documentation workspace
+│       ├── 00_Project_Overview/    # Hypotheses, objectives, contributions
+│       ├── 01_Literature_Review/   # Lit review, BibTeX, DOI registers
+│       ├── 02_Methodology/         # Mathematical equations, safety bounds
+│       ├── 03_Experimental_Data/   # Raw manifests, provenance records
+│       ├── 04_Results_and_Analysis/# Master tables, statistical tests
+│       ├── 05_Validation_and_Testing/# Verification matrices & audit logs
+│       └── 06_Research_Paper/      # Complete paper master draft & sections
+├── frontend/                       # React 18 SPA dashboard
+│   ├── src/
+│   │   ├── components/             # UI components, signal panels, KPI cards
+│   │   │   └── Research/           # Master benchmark and series research views
+│   │   ├── services/               # REST API client & resilient WebSocket client
+│   │   └── utils/                  # Coordinate transforms, 3D geometry builders
+│   ├── package.json                # Frontend dependencies & Node test scripts
+│   └── vite.config.js              # Vite bundler configuration & proxies
+├── outputs/                        # Experimental data & verified benchmarks
+│   ├── benchmarks/                 # Preservation audit records
+│   ├── experiments/                # Series 4B, 4C, 4E, 4G experimental runs
+│   ├── screenshots/                # Verified platform screenshots
+│   └── validation/
+│       ├── 10seeds/                # Authoritative 40-run master benchmark (runs/)
+│       └── final_reproducible_analysis/ # Recomputed statistics & paired CSVs
+├── reports/final/                  # Formal engineering & scientific audit reports
+├── research/                       # Primary manuscript drafts & BibTeX bibliography
+├── scripts/                        # Automation, training, and benchmarking scripts
+├── sumo/silk_board/                # SUMO microscopic simulation assets
+│   ├── network/silk_board.net.xml  # Corridor road network (J1, J2, J3)
+│   ├── demand/silk_board.rou.xml   # Multi-class route demand profiles
+│   ├── demand/vehicle_types.add.xml# HBEFA4 vehicle type configurations
+│   └── silk_board.sumocfg          # Simulation configuration file
+├── tests/                          # 334 automated backend test modules
+├── docker-compose.yml              # Container orchestration
+├── Dockerfile                      # Backend container definition
+└── requirements.txt                # Python dependencies
 ```
 
 ---
 
-## 3. Technology Stack
-
-- **Microscopic Traffic Simulator:** Eclipse SUMO 1.26.0 / TraCI Python API
-- **Backend API & Orchestration:** FastAPI 0.115+, Uvicorn, Python 3.11–3.13, Pydantic v2
-- **Deep Reinforcement Learning:** PyTorch 2.6+, NumPy, SciPy (Dual Double-DQN & Actor-Critic PPO)
-- **Database & Persistence:** SQLite 3, SQLAlchemy 2.0+ (Timezone-aware UTC)
-- **Frontend SPA Dashboard:** React 18, Vite 5, Tailwind CSS, Lucide React, Recharts
-- **Spatial 3D Digital Twin:** Three.js, React Three Fiber (`@react-three/fiber`), `@react-three/drei`
-- **Testing & Quality Assurance:** Pytest 8+ (231 backend tests), Node.js native test runner (82 tests)
-
----
-
-## 4. Key Implemented Features
-
-1. **Microscopic Heterogeneous Simulation:** Accurate simulation of 5 Indian traffic vehicle types with calibrated Krauss car-following parameters:
-   - `motorcycle`: Length 2.2m, max speed 60 km/h, accel 2.6 m/s$^2$, decel 4.5 m/s$^2$, $\sigma = 0.5$.
-   - `car`: Length 4.5m, max speed 60 km/h, accel 2.6 m/s$^2$, decel 4.5 m/s$^2$, $\sigma = 0.5$.
-   - `bmtc_bus`: Length 12.0m, max speed 50 km/h, accel 1.2 m/s$^2$, decel 3.0 m/s$^2$, $\sigma = 0.5$.
-   - `heavy_vehicle`: Length 10.0m, max speed 50 km/h, accel 1.0 m/s$^2$, decel 3.0 m/s$^2$, $\sigma = 0.5$.
-   - `ambulance`: Length 5.0m, max speed 72 km/h, accel 3.0 m/s$^2$, decel 5.0 m/s$^2$, $\sigma = 0.2$.
-2. **Four Signal Controllers:**
-   - **Fixed-Time Baseline:** Standard pre-timed cycle splits based on historical Silk Board signal plans.
-   - **Coordinated Adaptive Controller:** Dynamic queue-proportional phase allocation with green-wave progression offsets.
-   - **MARL Double-DQN (Stage A):** Multi-agent value-based Q-learning operating on 14-dimensional normalized junction observations.
-   - **MARL Actor-Critic PPO (Stage A):** Multi-agent Proximal Policy Optimization operating on discrete actor-critic heads.
-3. **Deterministic Safety Shield:**
-   - **Minimum Green:** 15.0 seconds hard lower bound (`min_green = 15.0s`).
-   - **Anti-Starvation Preemption:** 60.0 seconds maximum red threshold (`max_green = 60.0s`). Automatically overrides policy decisions to clear starved cross-street queues.
-   - **Yellow Clearance:** Mandatory 3.0-second yellow transition on all signal switches.
-4. **Emergency Vehicle Preemption:** Dedicated priority wave clearing inbound ambulances (`ambulance_0`) along the Hosur arterial corridor with zero queue stoppages.
-5. **Interactive Visualization Stack:**
-   - **3D Spatial Digital Twin:** Procedural 3D road ribbons with accurate vertical elevations: Ground level ($Y = 0$), elevated Silk Board Flyover ($Y = +8.0\text{ m}$) with concrete support pillars, and depressed Madiwala Underpass ($Y = -4.5\text{ m}$).
-   - **2D Live Corridor Canvas:** Real-time arterial topology diagram with per-junction vehicle counts, queue density color thresholds, average speeds, 3-aspect illuminated signal lights, and emergency wave alerts over WebSockets at 10 Hz.
-
----
-
-## 5. Methodological Scope & Truthfulness Disclosures
-
-To maintain strict scientific and engineering integrity, the following boundaries must be clearly understood:
-- **Simulation Environment:** This platform is an **OSM-derived SUMO synthetic micro-simulation** of the Silk Board road network. It is not an active control interface connected to live physical Bangalore Traffic Police signal hardware or live camera detector feeds.
-- **3D Digital Twin Scope:** The 3D view renders procedural roadway ribbons, true elevation changes (flyover/underpass), lane markings, and junction landmarks. **It does not render animated moving 3D vehicle meshes.** Real-time vehicle counts, queues, and progression are monitored via the 2D live canvas.
-- **MARL Checkpoint Scope:** The evaluated RL models are **Stage A curriculum checkpoints**. MARL PPO exhibits action-head saturation at intersections $J_1$ and $J_2$, causing it to rely on the 60-second anti-starvation safety guardrail.
-- **Speed Metric Definition:** The reported speed metric (`avg_speed_kmh`) is the **network-wide time-mean of instantaneous approach speeds** sampled at 1.0-second intervals across all active intersection approach lanes. It is **not** the harmonic space-mean speed derived from corridor length ($L / \bar{T}_{\text{corridor}}$).
-
----
-
-## 6. Experimental Benchmark Results
-
-### A. Definitive 10-Seed Master Benchmark ($N = 10\text{ Seeds}, df = 9, 40\text{ Runs}, 15{,}120\text{ Vehicle-Runs}$)
-
-Evaluated over full 900-second simulations across random seeds `1` through `10` covering Peak (0–300s), Shoulder (300–600s), and Off-Peak (600–900s) regimes:
-
-| Controller | Mean Corridor Travel Time | Travel Time Imprv. | Space-Mean Speed | Speed Change | Mean Cumulative Delay | Delay Imprv. | Paired $t$-Test ($df=9$) | Bonferroni Adjusted $p$ ($m=3$) |
-|:---|---:|---:|---:|---:|---:|---:|:---:|:---:|
-| **Fixed-Time Baseline** | $90.02 \pm 0.40\text{ s}$ | Baseline | $28.21 \pm 0.12\text{ km/h}$ | Baseline | $12{,}373.2 \pm 42.7\text{ veh}\cdot\text{s}$ | Baseline | — | — |
-| **Coordinated Adaptive** | **$49.87 \pm 0.78\text{ s}$** | **$-44.61\%$** | **$37.98 \pm 0.08\text{ km/h}$** | **$+34.68\%$** | **$5{,}836.8 \pm 93.8\text{ veh}\cdot\text{s}$** | **$-52.82\%$** | $t = -59.25, p < 10^{-12}$ | **$p_{\text{adj}} < 10^{-11}$ (Significant)** |
-| **MARL Double-DQN (Stage A)** | **$56.64 \pm 0.70\text{ s}$** | **$-37.08\%$** | **$31.46 \pm 0.14\text{ km/h}$** | **$+11.56\%$** | **$8{,}024.4 \pm 90.1\text{ veh}\cdot\text{s}$** | **$-35.13\%$** | $t = -45.57, p < 10^{-11}$ | **$p_{\text{adj}} < 10^{-10}$ (Significant)** |
-| **MARL PPO (Stage A)** | **$85.50 \pm 1.84\text{ s}$** | **$-5.01\%$** | **$25.56 \pm 0.29\text{ km/h}$** | **$-9.34\%$** *(Penalty)* | **$12{,}163.6 \pm 283.5\text{ veh}\cdot\text{s}$** | **$-1.66\%$** *(n.s.)* | $t = -2.42, p = 0.0384$ | **$p_{\text{adj}} = 0.1153$ (NOT Significant)** |
-
-### B. Historical 3-Seed Benchmark ($N = 3\text{ Seeds}, df = 2, 12\text{ Runs}, 4{,}536\text{ Vehicle-Runs}$)
-
-| Controller | Mean Corridor Travel Time | Travel Time Imprv. | Mean Speed | Cumulative Delay | Delay Imprv. | Paired $t$-Test ($df=2$) |
-|:---|---:|---:|---:|---:|---:|:---:|
-| **Fixed-Time Baseline** | $89.87\text{ s}$ | Baseline | $28.28\text{ km/h}$ | $12{,}357.7\text{ veh}\cdot\text{s}$ | Baseline | — |
-| **Coordinated Adaptive** | **$48.88\text{ s}$** | **$-45.61\%$** | **$38.20\text{ km/h}$** | **$5{,}736.3\text{ veh}\cdot\text{s}$** | **$-53.58\%$** | $t = -106.41, p = 0.00009$ |
-| **MARL Double-DQN** | **$58.57\text{ s}$** | **$-34.82\%$** | **$31.31\text{ km/h}$** | **$8{,}169.3\text{ veh}\cdot\text{s}$** | **$-33.88\%$** | $t = -56.24, p = 0.00032$ |
-| **MARL PPO** | **$88.68\text{ s}$** | **$-1.31\%$** | **$24.96\text{ km/h}$** | **$12{,}826.7\text{ veh}\cdot\text{s}$** | **$+3.81\%$** | $t = -1.06, p = 0.40$ (Not Sig.) |
-
-### C. Vehicle Population Accounting
-- **Vehicles per run:** Exactly **378 vehicles** are generated per 900-second run.
-- **Trip Completion Rate:** **100% completion rate** in all 40 simulation runs ($378\text{ departed}, 378\text{ arrived}, 0\text{ unfinished}$ at $t = 900\text{ s}$).
-- **Corridor Traversal Trips:** Exactly **109 vehicles (28.8%)** follow continuous route `corridor_j1_j2_j3`.
-- **Feeder-Turn Movements:** Exactly **269 vehicles (71.2%)** execute turning movements entering/exiting via side streets.
-
----
-
-## 7. Quickstart Setup & Execution
+## 11. Installation & Local Setup
 
 ### Prerequisites
-- Python 3.11 – 3.13
-- Eclipse SUMO $\ge 1.18.0$ (Ensure `SUMO_HOME` environment variable is configured)
-- Node.js v18+ / v20+ / v22+
+1. **Operating System:** Windows 10/11, macOS, or Linux (Ubuntu 22.04+ recommended).
+2. **Python:** Version `3.11`, `3.12`, or `3.13`.
+3. **Node.js:** Version `18.0` or higher (with `npm`).
+4. **Eclipse SUMO:** Version `1.20.0` or higher installed.
+   - Verify `SUMO_HOME` environment variable is set (e.g., `C:\Program Files (x86)\Eclipse\Sumo`).
+   - Ensure `sumo` and `sumo-gui` are on your system `PATH`.
 
-### 1. Start Backend API Server
+### Windows Local Installation
+
 ```powershell
-# From repository root
-uvicorn backend.main:app --host 0.0.0.0 --port 8000 --reload
-```
-Interactive OpenAPI documentation will be accessible at `http://localhost:8000/docs`.
+# 1. Clone repository
+git clone https://github.com/snehapriy958/smart-traffic-coordination.git
+cd smart-traffic-coordination
 
-### 2. Start Frontend SPA Dashboard
-```powershell
-# From repository root
-npm --prefix frontend run dev
-```
-Navigate your browser to `http://localhost:5173/`.
+# 2. Set up Python virtual environment
+python -m venv .venv
+.venv\Scripts\Activate.ps1
 
-### 3. Run Automated Regression Test Suites
-```powershell
-# 1. Backend Pytest suite (231 tests)
-pytest tests/ -q
+# 3. Install Python dependencies
+pip install -r requirements.txt
+pip install -r requirements-dev.txt
 
-# 2. Frontend Vitest suite (82 tests)
-npm --prefix frontend test -- --run
+# 4. Set up frontend
+cd frontend
+npm install
+cd ..
 
-# 3. Production build verification
-npm --prefix frontend run build
+# 5. Configure environment variables
+Copy-Item .env.example .env
 ```
 
 ---
 
-## 8. Project Documentation Directory
+## 12. Running the Platform
 
-For complete audit records, mathematical specifications, viva guides, and presentation slide decks:
-- [`docs/FINAL_PROJECT_STATUS.md`](docs/FINAL_PROJECT_STATUS.md): Comprehensive system architecture and model inventories.
-- [`docs/MATHEMATICAL_FORMULATION_AND_CONTROLLER_SPECIFICATION.md`](docs/MATHEMATICAL_FORMULATION_AND_CONTROLLER_SPECIFICATION.md): Complete mathematical derivations, emission conversions, and RL formulation.
-- [`docs/LIVE_DEMONSTRATION_RUNBOOK.md`](docs/LIVE_DEMONSTRATION_RUNBOOK.md): Step-by-step practical demonstration sequence and troubleshooting runbook.
-- [`docs/TECHNICAL_VIVA_PREPARATION_GUIDE.md`](docs/TECHNICAL_VIVA_PREPARATION_GUIDE.md): 65 comprehensive technical questions and in-depth answers for viva defense.
-- [`docs/EXPERIMENTAL_RESULTS_10_SEEDS.md`](docs/EXPERIMENTAL_RESULTS_10_SEEDS.md): Detailed 10-seed master experimental results and statistical proofs.
-- [`docs/audits/FINAL_EVIDENCE_AUDIT.md`](docs/audits/FINAL_EVIDENCE_AUDIT.md): Final forensic evidence audit verifying seeds, metrics, and safety overrides.
-- [`docs/ARTIFACT_MANIFEST.md`](docs/ARTIFACT_MANIFEST.md): Inventory of experimental datasets, checkpoints, and storage recommendations.
-- [`docs/ARCHITECTURE_DIAGRAM.md`](docs/ARCHITECTURE_DIAGRAM.md): Full technical architecture specifications and Mermaid diagrams.
-- [`docs/PRESENTATION_SLIDES_SPECIFICATION.md`](docs/PRESENTATION_SLIDES_SPECIFICATION.md): Slide-by-slide specification for final-year engineering review.
-- [`docs/Smart_Traffic_Coordination_Final_Presentation.pptx`](docs/Smart_Traffic_Coordination_Final_Presentation.pptx): Generated 15-slide PowerPoint deck.
+### Option A: Local Native Execution (Recommended for Development)
+
+```powershell
+# Terminal 1: Launch Backend API & Simulation Service
+.venv\Scripts\Activate.ps1
+python -m uvicorn backend.main:app --host 0.0.0.0 --port 8000 --reload
+
+# Terminal 2: Launch Frontend Development Server
+cd frontend
+npm run dev
+```
+Open your browser to `http://localhost:5173` to access the dashboard.
+Access the interactive OpenAPI Swagger documentation at `http://localhost:8000/docs`.
+
+### Option B: Docker Compose Execution
+
+```bash
+# Build and run containers in detached mode
+docker-compose up --build -d
+
+# View service logs
+docker-compose logs -f
+```
+Access the application at `http://localhost:3000` (frontend) and `http://localhost:8000` (backend).
 
 ---
 
-## 9. License & Attribution
+## 13. Quality Assurance & Automated Testing
 
-Developed as a Final-Year Engineering Capstone Project. Built with Eclipse SUMO, FastAPI, PyTorch, React, and Three.js.
+The repository maintains an automated test suite with **430 unique tests** passing across backend and frontend environments:
+
+```powershell
+# Run backend test suite (334 tests)
+.venv\Scripts\Activate.ps1
+pytest tests/ -v
+
+# Run core controller comparison tests
+pytest tests/test_controller_comparison.py -v
+
+# Run command queue & concurrency tests
+pytest tests/test_command_queue.py -v
+
+# Run live SUMO emergency preemption test
+pytest tests/test_emergency_runtime_safety.py -v
+
+# Run frontend tests (96 tests)
+cd frontend
+npm test
+
+# Build frontend production bundle
+npm run build
+```
+
+---
+
+## 14. Academic Research Workspace
+
+A comprehensive, evidence-backed academic documentation workspace is preserved inside [`Documents/Research_Paper/`](Documents/Research_Paper/):
+- **Full Manuscript Draft:** [`Documents/Research_Paper/06_Research_Paper/RESEARCH_PAPER_MASTER_DRAFT.md`](Documents/Research_Paper/06_Research_Paper/RESEARCH_PAPER_MASTER_DRAFT.md)
+- **Literature Review & BibTeX:** [`Documents/Research_Paper/01_Literature_Review/REFERENCES.bib`](Documents/Research_Paper/01_Literature_Review/REFERENCES.bib)
+- **Mathematical Formulations:** [`Documents/Research_Paper/02_Methodology/MATHEMATICAL_EQUATIONS.md`](Documents/Research_Paper/02_Methodology/MATHEMATICAL_EQUATIONS.md)
+- **Raw Benchmark Catalog:** [`Documents/Research_Paper/03_Experimental_Data/RAW_DATA_CATALOG.md`](Documents/Research_Paper/03_Experimental_Data/RAW_DATA_CATALOG.md)
+- **Reproducibility Protocol:** [`research/REPRODUCIBILITY_PROTOCOL.md`](research/REPRODUCIBILITY_PROTOCOL.md)
+
+---
+
+## 15. Research Limitations & Future Directions
+
+- **Simulation-to-Real Gap:** While the road geometry and signal topologies reflect the actual Silk Board junction via OpenStreetMap, traffic demand was synthesized based on published Bengaluru Traffic Police peak volume estimates. Calibration against empirical radar/loop detector data remains future work.
+- **Microscopic Assumptions:** The simulation assumes full visibility of vehicle positions and speeds via TraCI. Physical deployment will encounter sensor noise, occlusion, and GPS positioning latency.
+- **Series 4C Scaling:** Spatial multi-agent reward coupling ($\beta \in [0.0, 1.0]$) demonstrated promising localized coordination in preliminary runs; full 150-episode training across all 5 parameter tiers requires high-performance cluster computing.
+- **Connected Vehicle Penetration:** Future work includes modeling varying market penetration rates of Connected and Automated Vehicles (CAVs) interacting with non-communicating legacy fleets.
+
+---
+
+## 16. Author & Contributions
+
+- **Lead Researcher & Engineer:** Sneha Priya ([@snehapriy958](https://github.com/snehapriy958))<br/>
+- **Project:** Smart Traffic Coordination System — Bengaluru Traffic Intelligence Platform<br/>
+**License:** MIT License — See [`LICENSE`](LICENSE) for details.
