@@ -1,0 +1,23 @@
+{
+  "controller": "baseline",
+  "seed": 8,
+  "completed": true,
+  "execution_wall_time_s": 30.71,
+  "simulation_duration_s": 900.0,
+  "total_vehicles_inserted": 109,
+  "total_corridor_trips_completed": 109,
+  "mean_corridor_travel_time_s": 92.12844036697248,
+  "mean_corridor_speed_kmh": 21.131381850016474,
+  "cumulative_delay_veh_s": 12567.0,
+  "cumulative_waiting_time_s": 12567.0,
+  "mean_corridor_queue": 13.963333333333333,
+  "max_corridor_queue": 56,
+  "total_co2_kg": 55.85500365686721,
+  "total_nox_g": 42.15708368803772,
+  "total_fuel_liters": 24.1131,
+  "emergency_traversal_duration_s": 48.0,
+  "emergency_cleared": true,
+  "j1_mean_queue": 1.7444444444444445,
+  "j2_mean_queue": 9.897777777777778,
+  "j3_mean_queue": 2.321111111111111
+}

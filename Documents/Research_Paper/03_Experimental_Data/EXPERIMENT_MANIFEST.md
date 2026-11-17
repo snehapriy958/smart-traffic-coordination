@@ -1,0 +1,44 @@
+# Master Experiment Manifest (10-Seed Confirmatory Benchmark)
+
+| Run ID | Mode | Seed | Duration | Status | Raw JSON Output Path |
+| :---: | :---: | :---: | :---: | :---: | :--- |
+| RUN-01 | `baseline` | 1 | 900s | COMPLETED | `outputs/validation/10seeds/runs/run_baseline_seed1.json` |
+| RUN-02 | `baseline` | 2 | 900s | COMPLETED | `outputs/validation/10seeds/runs/run_baseline_seed2.json` |
+| RUN-03 | `baseline` | 3 | 900s | COMPLETED | `outputs/validation/10seeds/runs/run_baseline_seed3.json` |
+| RUN-04 | `baseline` | 4 | 900s | COMPLETED | `outputs/validation/10seeds/runs/run_baseline_seed4.json` |
+| RUN-05 | `baseline` | 5 | 900s | COMPLETED | `outputs/validation/10seeds/runs/run_baseline_seed5.json` |
+| RUN-06 | `baseline` | 6 | 900s | COMPLETED | `outputs/validation/10seeds/runs/run_baseline_seed6.json` |
+| RUN-07 | `baseline` | 7 | 900s | COMPLETED | `outputs/validation/10seeds/runs/run_baseline_seed7.json` |
+| RUN-08 | `baseline` | 8 | 900s | COMPLETED | `outputs/validation/10seeds/runs/run_baseline_seed8.json` |
+| RUN-09 | `baseline` | 9 | 900s | COMPLETED | `outputs/validation/10seeds/runs/run_baseline_seed9.json` |
+| RUN-10 | `baseline` | 10 | 900s | COMPLETED | `outputs/validation/10seeds/runs/run_baseline_seed10.json` |
+| RUN-11 | `coordinated` | 1 | 900s | COMPLETED | `outputs/validation/10seeds/runs/run_coordinated_seed1.json` |
+| RUN-12 | `coordinated` | 2 | 900s | COMPLETED | `outputs/validation/10seeds/runs/run_coordinated_seed2.json` |
+| RUN-13 | `coordinated` | 3 | 900s | COMPLETED | `outputs/validation/10seeds/runs/run_coordinated_seed3.json` |
+| RUN-14 | `coordinated` | 4 | 900s | COMPLETED | `outputs/validation/10seeds/runs/run_coordinated_seed4.json` |
+| RUN-15 | `coordinated` | 5 | 900s | COMPLETED | `outputs/validation/10seeds/runs/run_coordinated_seed5.json` |
+| RUN-16 | `coordinated` | 6 | 900s | COMPLETED | `outputs/validation/10seeds/runs/run_coordinated_seed6.json` |
+| RUN-17 | `coordinated` | 7 | 900s | COMPLETED | `outputs/validation/10seeds/runs/run_coordinated_seed7.json` |
+| RUN-18 | `coordinated` | 8 | 900s | COMPLETED | `outputs/validation/10seeds/runs/run_coordinated_seed8.json` |
+| RUN-19 | `coordinated` | 9 | 900s | COMPLETED | `outputs/validation/10seeds/runs/run_coordinated_seed9.json` |
+| RUN-20 | `coordinated` | 10 | 900s | COMPLETED | `outputs/validation/10seeds/runs/run_coordinated_seed10.json` |
+| RUN-21 | `marl_dqn` | 1 | 900s | COMPLETED | `outputs/validation/10seeds/runs/run_marl_dqn_seed1.json` |
+| RUN-22 | `marl_dqn` | 2 | 900s | COMPLETED | `outputs/validation/10seeds/runs/run_marl_dqn_seed2.json` |
+| RUN-23 | `marl_dqn` | 3 | 900s | COMPLETED | `outputs/validation/10seeds/runs/run_marl_dqn_seed3.json` |
+| RUN-24 | `marl_dqn` | 4 | 900s | COMPLETED | `outputs/validation/10seeds/runs/run_marl_dqn_seed4.json` |
+| RUN-25 | `marl_dqn` | 5 | 900s | COMPLETED | `outputs/validation/10seeds/runs/run_marl_dqn_seed5.json` |
+| RUN-26 | `marl_dqn` | 6 | 900s | COMPLETED | `outputs/validation/10seeds/runs/run_marl_dqn_seed6.json` |
+| RUN-27 | `marl_dqn` | 7 | 900s | COMPLETED | `outputs/validation/10seeds/runs/run_marl_dqn_seed7.json` |
+| RUN-28 | `marl_dqn` | 8 | 900s | COMPLETED | `outputs/validation/10seeds/runs/run_marl_dqn_seed8.json` |
+| RUN-29 | `marl_dqn` | 9 | 900s | COMPLETED | `outputs/validation/10seeds/runs/run_marl_dqn_seed9.json` |
+| RUN-30 | `marl_dqn` | 10 | 900s | COMPLETED | `outputs/validation/10seeds/runs/run_marl_dqn_seed10.json` |
+| RUN-31 | `marl_ppo` | 1 | 900s | COMPLETED | `outputs/validation/10seeds/runs/run_marl_ppo_seed1.json` |
+| RUN-32 | `marl_ppo` | 2 | 900s | COMPLETED | `outputs/validation/10seeds/runs/run_marl_ppo_seed2.json` |
+| RUN-33 | `marl_ppo` | 3 | 900s | COMPLETED | `outputs/validation/10seeds/runs/run_marl_ppo_seed3.json` |
+| RUN-34 | `marl_ppo` | 4 | 900s | COMPLETED | `outputs/validation/10seeds/runs/run_marl_ppo_seed4.json` |
+| RUN-35 | `marl_ppo` | 5 | 900s | COMPLETED | `outputs/validation/10seeds/runs/run_marl_ppo_seed5.json` |
+| RUN-36 | `marl_ppo` | 6 | 900s | COMPLETED | `outputs/validation/10seeds/runs/run_marl_ppo_seed6.json` |
+| RUN-37 | `marl_ppo` | 7 | 900s | COMPLETED | `outputs/validation/10seeds/runs/run_marl_ppo_seed7.json` |
+| RUN-38 | `marl_ppo` | 8 | 900s | COMPLETED | `outputs/validation/10seeds/runs/run_marl_ppo_seed8.json` |
+| RUN-39 | `marl_ppo` | 9 | 900s | COMPLETED | `outputs/validation/10seeds/runs/run_marl_ppo_seed9.json` |
+| RUN-40 | `marl_ppo` | 10 | 900s | COMPLETED | `outputs/validation/10seeds/runs/run_marl_ppo_seed10.json` |

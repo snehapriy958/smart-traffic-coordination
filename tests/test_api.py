@@ -149,13 +149,97 @@ def test_experiments_compare():
     names = [c["controller_name"] for c in data["controllers"]]
     assert "Fixed-Time Baseline" in names
     assert "Coordinated Adaptive Controller" in names
-    assert "PPO (Proximal Policy Optimization)" in names
-    assert "DQN (Deep Q-Network)" in names
 
-    # Verify PPO and DQN are explicitly marked Not implemented
-    for c in data["controllers"]:
-        if "PPO" in c["controller_name"] or "DQN" in c["controller_name"]:
-            assert c["status"] == "Not implemented"
+    ctrl_map = {c["controller_name"]: c for c in data["controllers"]}
+
+    # If authoritative 10-seed benchmark is active
+    if "Double-DQN (Stage A)" in ctrl_map:
+        base = ctrl_map["Fixed-Time Baseline"]
+        coord = ctrl_map["Coordinated Adaptive Controller"]
+        dqn = ctrl_map["Double-DQN (Stage A)"]
+        ppo = ctrl_map["PPO (Stage A)"]
+
+        # In 10-seed benchmark:
+        # Baseline ~ 90.02s, Coordinated ~ 49.87s, DQN ~ 56.64s, PPO ~ 85.50s
+        assert pytest.approx(base["mean_travel_time_s"], 0.5) == 90.02
+        assert pytest.approx(coord["mean_travel_time_s"], 0.5) == 49.87
+        assert pytest.approx(dqn["mean_travel_time_s"], 0.5) == 56.64
+        assert pytest.approx(ppo["mean_travel_time_s"], 0.5) == 85.50
+        assert coord["mean_travel_time_s"] < base["mean_travel_time_s"]
+        assert dqn["mean_travel_time_s"] < base["mean_travel_time_s"]
+        assert coord["mean_travel_time_s"] < dqn["mean_travel_time_s"]
+
+        # Authoritative fuel and delay assertions
+        assert "Implemented" in base["status"] or "Reproduced" in base["status"]
+        assert pytest.approx(base["total_fuel_liters"], 0.5) == 23.99
+        assert base["total_fuel_liters"] < 50.0
+        assert pytest.approx(coord["total_fuel_liters"], 0.5) == 18.44
+        assert coord["total_fuel_liters"] < base["total_fuel_liters"]
+        assert pytest.approx(dqn["total_fuel_liters"], 0.5) == 20.35
+        assert dqn["total_fuel_liters"] < base["total_fuel_liters"]
+
+        assert pytest.approx(base["cumulative_delay_veh_s"], 5.0) == 12373.2
+        assert pytest.approx(coord["cumulative_delay_veh_s"], 5.0) == 5836.8
+        assert coord["cumulative_delay_veh_s"] < base["cumulative_delay_veh_s"]
+        assert pytest.approx(dqn["cumulative_delay_veh_s"], 5.0) == 8024.4
+        assert dqn["cumulative_delay_veh_s"] < base["cumulative_delay_veh_s"]
+
+        assert base["mean_instantaneous_waiting_time_s"] is not None
+        assert base["cumulative_waiting_time_s"] is not None
+        assert base["cumulative_delay_veh_s"] is not None
+    else:
+        # Legacy / fallback 5-seed benchmark
+        assert "DQN (Deep Q-Network)" in names
+        assert "PPO (Proximal Policy Optimization)" in names
+        base = ctrl_map["Fixed-Time Baseline"]
+        coord = ctrl_map["Coordinated Adaptive Controller"]
+        dqn = ctrl_map["DQN (Deep Q-Network)"]
+        ppo = ctrl_map["PPO (Proximal Policy Optimization)"]
+
+        assert pytest.approx(base["total_fuel_liters"], 0.1) == 23.18
+        assert base["total_fuel_liters"] < 50.0
+        assert coord["mean_travel_time_s"] < base["mean_travel_time_s"]
+        assert dqn["completed_trips"] == 0.0
+        assert pytest.approx(ppo["mean_travel_time_s"], 0.1) == 65.15
+
+
+def test_experiments_marl_summary():
+    response = client.get("/api/experiments/marl-summary")
+    assert response.status_code == 200
+    data = response.json()
+    assert "summary" in data
+    assert "fuel_density_model" in data
+    assert "0.750 kg/L" in data["fuel_density_model"]
+
+    metrics = {r["metric"]: r for r in data["summary"]}
+    assert "total_fuel_liters" in metrics
+    fuel_row = metrics["total_fuel_liters"]
+    assert pytest.approx(fuel_row["baseline"], 0.1) == 23.18
+    assert pytest.approx(fuel_row["coordinated"], 0.1) == 18.39
+    assert pytest.approx(fuel_row["marl_ppo"], 0.1) == 26.55
+    assert pytest.approx(fuel_row["marl_dqn"], 0.1) == 34.15
+
+    assert "total_corridor_waiting_time_s" in metrics
+    assert "cumulative_waiting_time_s" in metrics
+
+
+def test_experiments_marl_detailed():
+    response = client.get("/api/experiments/marl-detailed")
+    assert response.status_code == 200
+    data = response.json()
+    assert "seeds" in data
+    assert data["seeds"] == [1, 2, 3, 4, 5]
+    assert "provenance_metadata" in data
+    assert "fuel_density_model" in data
+    assert "runs" in data
+    assert "baseline" in data["runs"]
+    assert "coordinated" in data["runs"]
+    assert "marl_dqn" in data["runs"]
+    assert "marl_ppo" in data["runs"]
+    assert len(data["runs"]["baseline"]) == 5
+    assert len(data["runs"]["coordinated"]) == 5
+    assert len(data["runs"]["marl_dqn"]) == 5
+    assert len(data["runs"]["marl_ppo"]) == 5
 
 
 def test_experiments_history():

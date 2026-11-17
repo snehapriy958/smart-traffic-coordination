@@ -1,0 +1,266 @@
+{
+  "metadata": {
+    "experiment": "Series 4F: Edge Inference Profiling and Action Agreement",
+    "eval_tensor_samples": 8100,
+    "held_out_trajectories": 6,
+    "sessions_per_config": 5,
+    "bootstrap_resamples": 10000,
+    "timestamp": "2026-11-10 21:48:51"
+  },
+  "configurations": {
+    "mappo_torch_fp32_b1": {
+      "mean_ms": 0.0772,
+      "median_ms": 0.0697,
+      "p95_ms": 0.136,
+      "p99_ms": 0.2218,
+      "min_ms": 0.0373,
+      "max_ms": 14.9302,
+      "std_ms": 0.0982,
+      "throughput_samples_per_sec": 12957.0,
+      "session_latencies_ms": [
+        0.0925,
+        0.0802,
+        0.0655,
+        0.0753,
+        0.0759
+      ]
+    },
+    "mappo_ort_fp32_b1": {
+      "mean_ms": 0.0232,
+      "median_ms": 0.0196,
+      "p95_ms": 0.0404,
+      "p99_ms": 0.0636,
+      "min_ms": 0.0139,
+      "max_ms": 0.4292,
+      "std_ms": 0.012,
+      "throughput_samples_per_sec": 43164.0,
+      "session_latencies_ms": [
+        0.0281,
+        0.0229,
+        0.0219,
+        0.0236,
+        0.0211
+      ]
+    },
+    "mappo_ort_int8_b1": {
+      "mean_ms": 0.0341,
+      "median_ms": 0.0335,
+      "p95_ms": 0.0515,
+      "p99_ms": 0.0758,
+      "min_ms": 0.0182,
+      "max_ms": 0.4526,
+      "std_ms": 0.0124,
+      "throughput_samples_per_sec": 29309.4,
+      "session_latencies_ms": [
+        0.0337,
+        0.0332,
+        0.0341,
+        0.0357,
+        0.0361
+      ]
+    },
+    "dqn_torch_fp32_b1": {
+      "mean_ms": 0.171,
+      "median_ms": 0.1567,
+      "p95_ms": 0.2947,
+      "p99_ms": 0.4256,
+      "min_ms": 0.0817,
+      "max_ms": 7.3218,
+      "std_ms": 0.0849,
+      "throughput_samples_per_sec": 5846.3,
+      "session_latencies_ms": [
+        0.1956,
+        0.1863,
+        0.1412,
+        0.1683,
+        0.1686
+      ]
+    },
+    "dqn_ort_fp32_b1": {
+      "mean_ms": 0.0387,
+      "median_ms": 0.0345,
+      "p95_ms": 0.0703,
+      "p99_ms": 0.1239,
+      "min_ms": 0.0168,
+      "max_ms": 6.2708,
+      "std_ms": 0.0457,
+      "throughput_samples_per_sec": 25818.2,
+      "session_latencies_ms": [
+        0.0312,
+        0.0317,
+        0.0345,
+        0.0454,
+        0.0537
+      ]
+    },
+    "dqn_ort_int8_b1": {
+      "mean_ms": 0.0625,
+      "median_ms": 0.0575,
+      "p95_ms": 0.1106,
+      "p99_ms": 0.1829,
+      "min_ms": 0.0257,
+      "max_ms": 9.5801,
+      "std_ms": 0.0658,
+      "throughput_samples_per_sec": 15996.6,
+      "session_latencies_ms": [
+        0.0731,
+        0.0441,
+        0.0469,
+        0.0748,
+        0.0774
+      ]
+    },
+    "mappo_torch_fp32_b4": {
+      "mean_ms": 0.0384,
+      "median_ms": 0.0275,
+      "p95_ms": 0.0809,
+      "p99_ms": 0.1523,
+      "min_ms": 0.014,
+      "max_ms": 7.6523,
+      "std_ms": 0.113,
+      "throughput_samples_per_sec": 26050.5,
+      "session_latencies_ms": [
+        0.061,
+        0.0387,
+        0.0328,
+        0.0297,
+        0.0309
+      ]
+    },
+    "mappo_ort_fp32_b4": {
+      "mean_ms": 0.0083,
+      "median_ms": 0.0075,
+      "p95_ms": 0.0138,
+      "p99_ms": 0.0232,
+      "min_ms": 0.0037,
+      "max_ms": 0.1207,
+      "std_ms": 0.0044,
+      "throughput_samples_per_sec": 120555.7,
+      "session_latencies_ms": [
+        0.0087,
+        0.0087,
+        0.0082,
+        0.0083,
+        0.0083
+      ]
+    },
+    "mappo_ort_int8_b4": {
+      "mean_ms": 0.0087,
+      "median_ms": 0.0085,
+      "p95_ms": 0.0124,
+      "p99_ms": 0.0187,
+      "min_ms": 0.0048,
+      "max_ms": 0.0851,
+      "std_ms": 0.003,
+      "throughput_samples_per_sec": 114463.5,
+      "session_latencies_ms": [
+        0.0082,
+        0.0085,
+        0.0094,
+        0.009,
+        0.0091
+      ]
+    },
+    "dqn_torch_fp32_b4": {
+      "mean_ms": 0.0609,
+      "median_ms": 0.0505,
+      "p95_ms": 0.1139,
+      "p99_ms": 0.191,
+      "min_ms": 0.0294,
+      "max_ms": 1.3874,
+      "std_ms": 0.0409,
+      "throughput_samples_per_sec": 16411.3,
+      "session_latencies_ms": [
+        0.0551,
+        0.0653,
+        0.0679,
+        0.0542,
+        0.0636
+      ]
+    },
+    "dqn_ort_fp32_b4": {
+      "mean_ms": 0.0105,
+      "median_ms": 0.0096,
+      "p95_ms": 0.0161,
+      "p99_ms": 0.0266,
+      "min_ms": 0.0048,
+      "max_ms": 2.2651,
+      "std_ms": 0.0229,
+      "throughput_samples_per_sec": 94800.6,
+      "session_latencies_ms": [
+        0.0121,
+        0.0109,
+        0.0107,
+        0.0099,
+        0.0098
+      ]
+    },
+    "dqn_ort_int8_b4": {
+      "mean_ms": 0.0152,
+      "median_ms": 0.0141,
+      "p95_ms": 0.0243,
+      "p99_ms": 0.0359,
+      "min_ms": 0.0072,
+      "max_ms": 0.1413,
+      "std_ms": 0.0059,
+      "throughput_samples_per_sec": 65833.3,
+      "session_latencies_ms": [
+        0.0148,
+        0.0146,
+        0.0158,
+        0.0166,
+        0.015
+      ]
+    }
+  },
+  "non_inferiority_hypothesis_test": {
+    "margin_delta_ms": 1.0,
+    "alpha": 0.05,
+    "mappo": {
+      "mean_diff_ms": -0.0433,
+      "t_statistic": -227.2689,
+      "p_value_one_sided": 0.0,
+      "non_inferior_established": true
+    },
+    "dqn": {
+      "mean_diff_ms": -0.1087,
+      "t_statistic": -109.3182,
+      "p_value_one_sided": 0.0,
+      "non_inferior_established": true
+    }
+  },
+  "action_agreement_ratio": {
+    "mappo_actor": {
+      "point_aar_percent": 100.0,
+      "ci_95_lower_percent": 100.0,
+      "ci_95_upper_percent": 100.0,
+      "per_trajectory_aar_percent": [
+        100.0,
+        100.0,
+        100.0,
+        100.0,
+        100.0,
+        100.0
+      ],
+      "engineering_threshold_met": true,
+      "n_bootstrap_resamples": 10000,
+      "block_length_steps": 30
+    },
+    "dueling_dqn": {
+      "point_aar_percent": 100.0,
+      "ci_95_lower_percent": 100.0,
+      "ci_95_upper_percent": 100.0,
+      "per_trajectory_aar_percent": [
+        100.0,
+        100.0,
+        100.0,
+        100.0,
+        100.0,
+        100.0
+      ],
+      "engineering_threshold_met": true,
+      "n_bootstrap_resamples": 10000,
+      "block_length_steps": 30
+    }
+  }
+}

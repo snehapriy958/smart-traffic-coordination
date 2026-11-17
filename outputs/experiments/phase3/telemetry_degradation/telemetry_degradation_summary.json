@@ -1,0 +1,160 @@
+{
+  "metadata": {
+    "experiment": "Series 2: Telemetry Non-Ideality",
+    "duration_s": 900.0,
+    "controllers": [
+      "coordinated",
+      "webster",
+      "nema",
+      "marl_mappo"
+    ],
+    "total_runs": 120,
+    "completed_runs": 120
+  },
+  "detector_dropouts": {
+    "drop_05": {
+      "coordinated": {
+        "travel_time_mean_s": 56.46,
+        "cumulative_delay_veh_s": 9115.83,
+        "mean_queue": 10.13,
+        "dropped_obs_mean": 263.3,
+        "stale_faults_mean": 0.3
+      },
+      "webster": {
+        "travel_time_mean_s": 58.86,
+        "cumulative_delay_veh_s": 9251.67,
+        "mean_queue": 10.28,
+        "dropped_obs_mean": 263.3,
+        "stale_faults_mean": 0.3
+      },
+      "nema": {
+        "travel_time_mean_s": 59.29,
+        "cumulative_delay_veh_s": 8141.5,
+        "mean_queue": 9.05,
+        "dropped_obs_mean": 263.3,
+        "stale_faults_mean": 0.3
+      },
+      "marl_mappo": {
+        "travel_time_mean_s": 64.02,
+        "cumulative_delay_veh_s": 9690.33,
+        "mean_queue": 10.77,
+        "dropped_obs_mean": 263.3,
+        "stale_faults_mean": 0.3
+      }
+    },
+    "drop_10": {
+      "coordinated": {
+        "travel_time_mean_s": 56.46,
+        "cumulative_delay_veh_s": 9111.0,
+        "mean_queue": 10.12,
+        "dropped_obs_mean": 529.2,
+        "stale_faults_mean": 0.5
+      },
+      "webster": {
+        "travel_time_mean_s": 58.86,
+        "cumulative_delay_veh_s": 9251.67,
+        "mean_queue": 10.28,
+        "dropped_obs_mean": 529.2,
+        "stale_faults_mean": 0.5
+      },
+      "nema": {
+        "travel_time_mean_s": 59.12,
+        "cumulative_delay_veh_s": 8034.5,
+        "mean_queue": 8.93,
+        "dropped_obs_mean": 529.2,
+        "stale_faults_mean": 0.5
+      },
+      "marl_mappo": {
+        "travel_time_mean_s": 64.03,
+        "cumulative_delay_veh_s": 9689.0,
+        "mean_queue": 10.77,
+        "dropped_obs_mean": 529.2,
+        "stale_faults_mean": 0.5
+      }
+    },
+    "drop_20": {
+      "coordinated": {
+        "travel_time_mean_s": 57.0,
+        "cumulative_delay_veh_s": 9034.5,
+        "mean_queue": 10.04,
+        "dropped_obs_mean": 1052.3,
+        "stale_faults_mean": 1.2
+      },
+      "webster": {
+        "travel_time_mean_s": 58.86,
+        "cumulative_delay_veh_s": 9263.0,
+        "mean_queue": 10.29,
+        "dropped_obs_mean": 1052.3,
+        "stale_faults_mean": 1.2
+      },
+      "nema": {
+        "travel_time_mean_s": 59.13,
+        "cumulative_delay_veh_s": 8017.67,
+        "mean_queue": 8.91,
+        "dropped_obs_mean": 1052.3,
+        "stale_faults_mean": 1.2
+      },
+      "marl_mappo": {
+        "travel_time_mean_s": 64.03,
+        "cumulative_delay_veh_s": 9689.67,
+        "mean_queue": 10.77,
+        "dropped_obs_mean": 1052.3,
+        "stale_faults_mean": 1.2
+      }
+    }
+  },
+  "packet_losses": {
+    "loss_05": {
+      "coordinated": {
+        "travel_time_mean_s": 56.46,
+        "cumulative_delay_veh_s": 9112.5,
+        "mean_queue": 10.12,
+        "dropped_packets_mean": 89.7
+      },
+      "webster": {
+        "travel_time_mean_s": 58.86,
+        "cumulative_delay_veh_s": 9247.5,
+        "mean_queue": 10.28,
+        "dropped_packets_mean": 89.7
+      },
+      "nema": {
+        "travel_time_mean_s": 59.27,
+        "cumulative_delay_veh_s": 8190.67,
+        "mean_queue": 9.1,
+        "dropped_packets_mean": 89.7
+      },
+      "marl_mappo": {
+        "travel_time_mean_s": 64.03,
+        "cumulative_delay_veh_s": 9688.33,
+        "mean_queue": 10.77,
+        "dropped_packets_mean": 89.7
+      }
+    },
+    "loss_15": {
+      "coordinated": {
+        "travel_time_mean_s": 56.46,
+        "cumulative_delay_veh_s": 9112.5,
+        "mean_queue": 10.12,
+        "dropped_packets_mean": 266.7
+      },
+      "webster": {
+        "travel_time_mean_s": 58.86,
+        "cumulative_delay_veh_s": 9247.5,
+        "mean_queue": 10.28,
+        "dropped_packets_mean": 266.7
+      },
+      "nema": {
+        "travel_time_mean_s": 59.27,
+        "cumulative_delay_veh_s": 8190.67,
+        "mean_queue": 9.1,
+        "dropped_packets_mean": 266.7
+      },
+      "marl_mappo": {
+        "travel_time_mean_s": 64.03,
+        "cumulative_delay_veh_s": 9688.33,
+        "mean_queue": 10.77,
+        "dropped_packets_mean": 266.7
+      }
+    }
+  }
+}

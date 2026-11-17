@@ -1,0 +1,74 @@
+{
+  "metadata": {
+    "experiment": "Series 4: Multi-Modal Transit Signal Priority",
+    "duration_s": 900.0,
+    "controllers": [
+      "coordinated",
+      "webster",
+      "nema",
+      "marl_mappo"
+    ],
+    "seeds": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12
+    ],
+    "total_runs": 48,
+    "completed_runs": 48
+  },
+  "per_controller": {
+    "coordinated": {
+      "runs": 12,
+      "mean_corridor_travel_time_s": 56.98,
+      "cumulative_delay_veh_s": 8699.08,
+      "passenger_hours_of_delay_phd": 1.635,
+      "tsp_requests_mean": 19.1,
+      "tsp_grants_mean": 10.5,
+      "tsp_grant_rate": 0.5499,
+      "tsp_total_extended_time_mean_s": 47.5,
+      "buses_assisted_mean": 4.4
+    },
+    "webster": {
+      "runs": 12,
+      "mean_corridor_travel_time_s": 58.51,
+      "cumulative_delay_veh_s": 9226.33,
+      "passenger_hours_of_delay_phd": 1.832,
+      "tsp_requests_mean": 17.3,
+      "tsp_grants_mean": 15.3,
+      "tsp_grant_rate": 0.8855,
+      "tsp_total_extended_time_mean_s": 70.7,
+      "buses_assisted_mean": 5.7
+    },
+    "nema": {
+      "runs": 12,
+      "mean_corridor_travel_time_s": 63.44,
+      "cumulative_delay_veh_s": 8546.75,
+      "passenger_hours_of_delay_phd": 2.038,
+      "tsp_requests_mean": 18.2,
+      "tsp_grants_mean": 16.6,
+      "tsp_grant_rate": 0.9156,
+      "tsp_total_extended_time_mean_s": 82.2,
+      "buses_assisted_mean": 4.5
+    },
+    "marl_mappo": {
+      "runs": 12,
+      "mean_corridor_travel_time_s": 65.02,
+      "cumulative_delay_veh_s": 10027.67,
+      "passenger_hours_of_delay_phd": 2.428,
+      "tsp_requests_mean": 8.2,
+      "tsp_grants_mean": 0.0,
+      "tsp_grant_rate": 0.0,
+      "tsp_total_extended_time_mean_s": 0.0,
+      "buses_assisted_mean": 0.0
+    }
+  }
+}

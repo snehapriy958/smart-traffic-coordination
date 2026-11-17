@@ -1,0 +1,22 @@
+{
+  "scenario": "heavy_congestion_1_5",
+  "scale": 1.5,
+  "controller": "coordinated",
+  "seed": 1,
+  "completed": true,
+  "execution_wall_time_s": 52.5,
+  "simulation_duration_s": 900.0,
+  "total_vehicles_inserted": 166,
+  "total_corridor_trips_completed": 166,
+  "mean_corridor_travel_time_s": 88.90963855421687,
+  "mean_corridor_speed_kmh": 26.415193789208654,
+  "cumulative_delay_veh_s": 33668.0,
+  "cumulative_waiting_time_s": 33668.0,
+  "mean_corridor_queue": 37.40888888888889,
+  "max_corridor_queue": 82,
+  "total_co2_kg": 111.07633815781031,
+  "total_nox_g": 73.9368115574099,
+  "total_fuel_liters": 47.9549,
+  "emergency_traversal_duration_s": 90.0,
+  "emergency_cleared": true
+}

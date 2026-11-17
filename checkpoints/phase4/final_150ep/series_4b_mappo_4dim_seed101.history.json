@@ -1,0 +1,1502 @@
+[
+  {
+    "episode": 1,
+    "mean_reward": -20.73114824424655,
+    "trips_completed": 109,
+    "travel_time_mean_s": 81.05504587155963,
+    "cumulative_delay_veh_s": 11531.0,
+    "policy_loss": 0.03237411806152927,
+    "critic_loss": 0.7153621935794945,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 2,
+    "mean_reward": -21.050789523682457,
+    "trips_completed": 109,
+    "travel_time_mean_s": 75.3302752293578,
+    "cumulative_delay_veh_s": 12041.0,
+    "policy_loss": 0.019470029841694568,
+    "critic_loss": 0.8253328794444315,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 3,
+    "mean_reward": -17.282457596639144,
+    "trips_completed": 109,
+    "travel_time_mean_s": 72.45871559633028,
+    "cumulative_delay_veh_s": 10525.0,
+    "policy_loss": 0.02819347192222873,
+    "critic_loss": 0.5796695868236686,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 4,
+    "mean_reward": -24.676115489157024,
+    "trips_completed": 109,
+    "travel_time_mean_s": 75.04587155963303,
+    "cumulative_delay_veh_s": 12953.0,
+    "policy_loss": 0.03564936847736438,
+    "critic_loss": 0.987195895402571,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 5,
+    "mean_reward": -19.247380956393133,
+    "trips_completed": 109,
+    "travel_time_mean_s": 64.28440366972477,
+    "cumulative_delay_veh_s": 11395.0,
+    "policy_loss": 0.024795661576920085,
+    "critic_loss": 0.7621833106260358,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 6,
+    "mean_reward": -22.417567088827663,
+    "trips_completed": 109,
+    "travel_time_mean_s": 70.6697247706422,
+    "cumulative_delay_veh_s": 13024.0,
+    "policy_loss": 0.027618299331516025,
+    "critic_loss": 0.8409569514847438,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 7,
+    "mean_reward": -19.713835018570194,
+    "trips_completed": 109,
+    "travel_time_mean_s": 74.5137614678899,
+    "cumulative_delay_veh_s": 11580.0,
+    "policy_loss": 0.023101160106145675,
+    "critic_loss": 0.643104135247025,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 8,
+    "mean_reward": -15.554009986100889,
+    "trips_completed": 109,
+    "travel_time_mean_s": 70.08256880733946,
+    "cumulative_delay_veh_s": 9767.0,
+    "policy_loss": 0.037044812004185385,
+    "critic_loss": 0.42964488417492247,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 9,
+    "mean_reward": -23.264914845018826,
+    "trips_completed": 109,
+    "travel_time_mean_s": 67.74311926605505,
+    "cumulative_delay_veh_s": 12277.0,
+    "policy_loss": 0.02803527790432175,
+    "critic_loss": 0.8325245842027168,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 10,
+    "mean_reward": -23.45281319398426,
+    "trips_completed": 109,
+    "travel_time_mean_s": 76.22018348623853,
+    "cumulative_delay_veh_s": 12425.0,
+    "policy_loss": 0.025452528469678427,
+    "critic_loss": 0.7271121185816204,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 11,
+    "mean_reward": -18.55037034506546,
+    "trips_completed": 109,
+    "travel_time_mean_s": 66.87155963302752,
+    "cumulative_delay_veh_s": 10513.0,
+    "policy_loss": 0.027571561704907148,
+    "critic_loss": 0.5582000890591492,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 12,
+    "mean_reward": -20.43049760039958,
+    "trips_completed": 109,
+    "travel_time_mean_s": 77.88073394495413,
+    "cumulative_delay_veh_s": 10405.0,
+    "policy_loss": 0.0319295891871055,
+    "critic_loss": 0.7830684600630775,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 13,
+    "mean_reward": -19.07475103641311,
+    "trips_completed": 109,
+    "travel_time_mean_s": 86.4954128440367,
+    "cumulative_delay_veh_s": 11295.0,
+    "policy_loss": 0.023102938963307274,
+    "critic_loss": 0.6513650298739473,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 14,
+    "mean_reward": -26.792863956181467,
+    "trips_completed": 109,
+    "travel_time_mean_s": 79.11926605504587,
+    "cumulative_delay_veh_s": 14256.0,
+    "policy_loss": 0.030290791992512014,
+    "critic_loss": 1.1200177650898695,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 15,
+    "mean_reward": -16.219454936763224,
+    "trips_completed": 109,
+    "travel_time_mean_s": 59.6605504587156,
+    "cumulative_delay_veh_s": 8982.0,
+    "policy_loss": 0.037063201030509335,
+    "critic_loss": 0.40642902806090814,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 16,
+    "mean_reward": -20.031063126721097,
+    "trips_completed": 109,
+    "travel_time_mean_s": 80.8440366972477,
+    "cumulative_delay_veh_s": 11842.0,
+    "policy_loss": 0.03766855764099293,
+    "critic_loss": 0.6072501200251281,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 17,
+    "mean_reward": -25.034093478159832,
+    "trips_completed": 109,
+    "travel_time_mean_s": 96.77064220183486,
+    "cumulative_delay_veh_s": 15091.0,
+    "policy_loss": 0.016663814687894445,
+    "critic_loss": 1.2568601072455445,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 18,
+    "mean_reward": -19.51064705388264,
+    "trips_completed": 109,
+    "travel_time_mean_s": 88.96330275229357,
+    "cumulative_delay_veh_s": 11760.0,
+    "policy_loss": 0.026176993579914175,
+    "critic_loss": 0.7087665299884975,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 19,
+    "mean_reward": -24.615776836369538,
+    "trips_completed": 109,
+    "travel_time_mean_s": 69.63302752293578,
+    "cumulative_delay_veh_s": 13075.0,
+    "policy_loss": 0.02744363175912036,
+    "critic_loss": 0.8042896715613703,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 20,
+    "mean_reward": -20.880357158498494,
+    "trips_completed": 109,
+    "travel_time_mean_s": 73.22935779816514,
+    "cumulative_delay_veh_s": 11075.0,
+    "policy_loss": 0.016232427302747966,
+    "critic_loss": 0.6812790991117557,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 21,
+    "mean_reward": -20.290834305760356,
+    "trips_completed": 109,
+    "travel_time_mean_s": 75.80733944954129,
+    "cumulative_delay_veh_s": 11111.0,
+    "policy_loss": 0.03466478795227077,
+    "critic_loss": 0.6132733915001154,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 22,
+    "mean_reward": -23.034933097211184,
+    "trips_completed": 109,
+    "travel_time_mean_s": 68.02752293577981,
+    "cumulative_delay_veh_s": 12275.0,
+    "policy_loss": 0.02447563869257768,
+    "critic_loss": 0.7135166879743338,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 23,
+    "mean_reward": -22.40757907668935,
+    "trips_completed": 109,
+    "travel_time_mean_s": 63.330275229357795,
+    "cumulative_delay_veh_s": 13786.0,
+    "policy_loss": 0.0197135824089249,
+    "critic_loss": 0.6454168332119783,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 24,
+    "mean_reward": -18.693884370721843,
+    "trips_completed": 109,
+    "travel_time_mean_s": 77.33944954128441,
+    "cumulative_delay_veh_s": 10718.0,
+    "policy_loss": 0.029195057818045215,
+    "critic_loss": 0.6506643636152148,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 25,
+    "mean_reward": -18.24640856172347,
+    "trips_completed": 109,
+    "travel_time_mean_s": 77.90825688073394,
+    "cumulative_delay_veh_s": 10429.0,
+    "policy_loss": 0.035706394248538546,
+    "critic_loss": 0.5199866582018634,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 26,
+    "mean_reward": -17.33471601487522,
+    "trips_completed": 109,
+    "travel_time_mean_s": 68.44036697247707,
+    "cumulative_delay_veh_s": 10358.0,
+    "policy_loss": 0.0235187453424765,
+    "critic_loss": 0.4762898198639353,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 27,
+    "mean_reward": -22.668801251107098,
+    "trips_completed": 109,
+    "travel_time_mean_s": 73.94495412844037,
+    "cumulative_delay_veh_s": 11560.0,
+    "policy_loss": 0.03191202830316292,
+    "critic_loss": 0.7889475513870517,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 28,
+    "mean_reward": -21.674766154163127,
+    "trips_completed": 109,
+    "travel_time_mean_s": 85.56880733944953,
+    "cumulative_delay_veh_s": 11512.0,
+    "policy_loss": 0.04125726762124234,
+    "critic_loss": 0.6739893753081561,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 29,
+    "mean_reward": -18.544000868947304,
+    "trips_completed": 109,
+    "travel_time_mean_s": 78.8440366972477,
+    "cumulative_delay_veh_s": 10439.0,
+    "policy_loss": 0.024087597202095724,
+    "critic_loss": 0.5450211787596345,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 30,
+    "mean_reward": -24.40424661169867,
+    "trips_completed": 109,
+    "travel_time_mean_s": 107.12844036697248,
+    "cumulative_delay_veh_s": 13923.0,
+    "policy_loss": 0.043407406016356426,
+    "critic_loss": 1.0539266356577477,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 31,
+    "mean_reward": -22.112652063639768,
+    "trips_completed": 109,
+    "travel_time_mean_s": 83.1743119266055,
+    "cumulative_delay_veh_s": 12604.0,
+    "policy_loss": 0.016849964236219723,
+    "critic_loss": 0.6029105133687457,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 32,
+    "mean_reward": -20.68613351108189,
+    "trips_completed": 109,
+    "travel_time_mean_s": 85.14678899082568,
+    "cumulative_delay_veh_s": 11552.0,
+    "policy_loss": 0.02635132169557942,
+    "critic_loss": 0.6170667714128891,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 33,
+    "mean_reward": -28.95533694071545,
+    "trips_completed": 109,
+    "travel_time_mean_s": 124.0091743119266,
+    "cumulative_delay_veh_s": 17930.0,
+    "policy_loss": 0.02584059512656596,
+    "critic_loss": 1.4059227529292306,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 34,
+    "mean_reward": -24.04086524932515,
+    "trips_completed": 109,
+    "travel_time_mean_s": 98.28440366972477,
+    "cumulative_delay_veh_s": 13307.0,
+    "policy_loss": 0.023407738552325304,
+    "critic_loss": 0.9798518214374781,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 35,
+    "mean_reward": -23.10894610333773,
+    "trips_completed": 109,
+    "travel_time_mean_s": 74.55045871559633,
+    "cumulative_delay_veh_s": 12325.0,
+    "policy_loss": 0.027926481639345486,
+    "critic_loss": 0.7002482417350014,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 36,
+    "mean_reward": -22.159609134646598,
+    "trips_completed": 109,
+    "travel_time_mean_s": 82.21100917431193,
+    "cumulative_delay_veh_s": 12751.0,
+    "policy_loss": 0.009626273200329808,
+    "critic_loss": 0.583886930719018,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 37,
+    "mean_reward": -24.390080756407645,
+    "trips_completed": 109,
+    "travel_time_mean_s": 76.53211009174312,
+    "cumulative_delay_veh_s": 12923.0,
+    "policy_loss": 0.02983944999674956,
+    "critic_loss": 0.7741953704506159,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 38,
+    "mean_reward": -17.515413531626567,
+    "trips_completed": 109,
+    "travel_time_mean_s": 69.63302752293578,
+    "cumulative_delay_veh_s": 10951.0,
+    "policy_loss": 0.0280742969777849,
+    "critic_loss": 0.40739285641660294,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 39,
+    "mean_reward": -19.83372925740088,
+    "trips_completed": 109,
+    "travel_time_mean_s": 70.77981651376147,
+    "cumulative_delay_veh_s": 11570.0,
+    "policy_loss": 0.01798891412197716,
+    "critic_loss": 0.5134079255163669,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 40,
+    "mean_reward": -18.36150263585049,
+    "trips_completed": 109,
+    "travel_time_mean_s": 74.56880733944953,
+    "cumulative_delay_veh_s": 11056.0,
+    "policy_loss": 0.018628594165460935,
+    "critic_loss": 0.5501405178258817,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 41,
+    "mean_reward": -24.676957733500327,
+    "trips_completed": 109,
+    "travel_time_mean_s": 101.40366972477064,
+    "cumulative_delay_veh_s": 13627.0,
+    "policy_loss": 0.027790236887004643,
+    "critic_loss": 0.9795425236225128,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 42,
+    "mean_reward": -25.653662195912947,
+    "trips_completed": 109,
+    "travel_time_mean_s": 78.12844036697248,
+    "cumulative_delay_veh_s": 14299.0,
+    "policy_loss": 0.019461645185947417,
+    "critic_loss": 0.7843782640993595,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 43,
+    "mean_reward": -17.871526516278028,
+    "trips_completed": 109,
+    "travel_time_mean_s": 62.825688073394495,
+    "cumulative_delay_veh_s": 10871.0,
+    "policy_loss": 0.015858864665238396,
+    "critic_loss": 0.44465318669875464,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 44,
+    "mean_reward": -25.10146340648272,
+    "trips_completed": 109,
+    "travel_time_mean_s": 95.5229357798165,
+    "cumulative_delay_veh_s": 14354.0,
+    "policy_loss": 0.020981114399101997,
+    "critic_loss": 1.0845594244388244,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 45,
+    "mean_reward": -17.738704373343815,
+    "trips_completed": 109,
+    "travel_time_mean_s": 71.41284403669725,
+    "cumulative_delay_veh_s": 10765.0,
+    "policy_loss": 0.0280215956011994,
+    "critic_loss": 0.5194921830048164,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 46,
+    "mean_reward": -22.78913342102521,
+    "trips_completed": 109,
+    "travel_time_mean_s": 73.95412844036697,
+    "cumulative_delay_veh_s": 12137.0,
+    "policy_loss": 0.01744773541059759,
+    "critic_loss": 0.763821832711498,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 47,
+    "mean_reward": -24.439591785470267,
+    "trips_completed": 109,
+    "travel_time_mean_s": 76.88073394495413,
+    "cumulative_delay_veh_s": 13066.0,
+    "policy_loss": 0.01877841329098576,
+    "critic_loss": 0.7702638003975153,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 48,
+    "mean_reward": -17.976004821564203,
+    "trips_completed": 109,
+    "travel_time_mean_s": 76.06422018348624,
+    "cumulative_delay_veh_s": 10868.0,
+    "policy_loss": 0.03216439728728599,
+    "critic_loss": 0.4743657707236707,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 49,
+    "mean_reward": -24.6117274777739,
+    "trips_completed": 109,
+    "travel_time_mean_s": 111.41284403669725,
+    "cumulative_delay_veh_s": 14979.0,
+    "policy_loss": 0.01298377030632562,
+    "critic_loss": 1.1834730174392463,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 50,
+    "mean_reward": -16.663336737329505,
+    "trips_completed": 109,
+    "travel_time_mean_s": 70.81651376146789,
+    "cumulative_delay_veh_s": 9749.0,
+    "policy_loss": 0.039572892814046814,
+    "critic_loss": 0.4111099051466833,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 51,
+    "mean_reward": -24.693483988908312,
+    "trips_completed": 109,
+    "travel_time_mean_s": 84.21100917431193,
+    "cumulative_delay_veh_s": 14402.0,
+    "policy_loss": 0.025574585526353784,
+    "critic_loss": 0.8895153639217218,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 52,
+    "mean_reward": -19.687945061468152,
+    "trips_completed": 109,
+    "travel_time_mean_s": 73.39449541284404,
+    "cumulative_delay_veh_s": 11489.0,
+    "policy_loss": 0.019513762338707843,
+    "critic_loss": 0.6054253924948474,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 53,
+    "mean_reward": -21.326682366873808,
+    "trips_completed": 109,
+    "travel_time_mean_s": 66.95412844036697,
+    "cumulative_delay_veh_s": 12054.0,
+    "policy_loss": 0.033429137327604816,
+    "critic_loss": 0.7076435276617606,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 54,
+    "mean_reward": -29.461377364734332,
+    "trips_completed": 109,
+    "travel_time_mean_s": 100.10091743119266,
+    "cumulative_delay_veh_s": 14790.0,
+    "policy_loss": 0.022576117794960736,
+    "critic_loss": 1.2684158852944771,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 55,
+    "mean_reward": -24.541468747101746,
+    "trips_completed": 109,
+    "travel_time_mean_s": 73.13761467889908,
+    "cumulative_delay_veh_s": 14460.0,
+    "policy_loss": 0.008145849970686767,
+    "critic_loss": 0.8162548162663976,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 56,
+    "mean_reward": -20.17070056276236,
+    "trips_completed": 109,
+    "travel_time_mean_s": 86.4954128440367,
+    "cumulative_delay_veh_s": 12461.0,
+    "policy_loss": 0.03243407626739806,
+    "critic_loss": 0.49940273935596147,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 57,
+    "mean_reward": -20.053784543893098,
+    "trips_completed": 109,
+    "travel_time_mean_s": 74.22018348623853,
+    "cumulative_delay_veh_s": 11372.0,
+    "policy_loss": 0.017222763892884057,
+    "critic_loss": 0.5696584841857354,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 58,
+    "mean_reward": -22.454128332875808,
+    "trips_completed": 109,
+    "travel_time_mean_s": 88.08256880733946,
+    "cumulative_delay_veh_s": 13127.0,
+    "policy_loss": 0.031589044972012446,
+    "critic_loss": 0.9824643027658264,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 59,
+    "mean_reward": -19.680796983731664,
+    "trips_completed": 109,
+    "travel_time_mean_s": 73.58715596330275,
+    "cumulative_delay_veh_s": 11502.0,
+    "policy_loss": 0.03336859858698315,
+    "critic_loss": 0.505700804789861,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 60,
+    "mean_reward": -18.67702424200571,
+    "trips_completed": 109,
+    "travel_time_mean_s": 65.76146788990826,
+    "cumulative_delay_veh_s": 11454.0,
+    "policy_loss": 0.019732870006312922,
+    "critic_loss": 0.5126036943867802,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 61,
+    "mean_reward": -22.73332174640791,
+    "trips_completed": 109,
+    "travel_time_mean_s": 63.25688073394495,
+    "cumulative_delay_veh_s": 14212.0,
+    "policy_loss": 0.041017010083629034,
+    "critic_loss": 0.7428526827444633,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 62,
+    "mean_reward": -20.122360513342745,
+    "trips_completed": 109,
+    "travel_time_mean_s": 76.11926605504587,
+    "cumulative_delay_veh_s": 11816.0,
+    "policy_loss": 0.013544652507536942,
+    "critic_loss": 0.6530751631905635,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 63,
+    "mean_reward": -19.41870540693959,
+    "trips_completed": 109,
+    "travel_time_mean_s": 92.33944954128441,
+    "cumulative_delay_veh_s": 12144.0,
+    "policy_loss": 0.016480550692520208,
+    "critic_loss": 0.5437830709541838,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 64,
+    "mean_reward": -19.44420778663414,
+    "trips_completed": 109,
+    "travel_time_mean_s": 84.22018348623853,
+    "cumulative_delay_veh_s": 11503.0,
+    "policy_loss": 0.024983351744918357,
+    "critic_loss": 0.4533867251127958,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 65,
+    "mean_reward": -16.34681447122373,
+    "trips_completed": 109,
+    "travel_time_mean_s": 66.69724770642202,
+    "cumulative_delay_veh_s": 10278.0,
+    "policy_loss": 0.023802231935163343,
+    "critic_loss": 0.4485071464752158,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 66,
+    "mean_reward": -18.314619031512837,
+    "trips_completed": 109,
+    "travel_time_mean_s": 78.91743119266054,
+    "cumulative_delay_veh_s": 11206.0,
+    "policy_loss": 0.026380575510362787,
+    "critic_loss": 0.5433926945241789,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 67,
+    "mean_reward": -24.49723725284387,
+    "trips_completed": 109,
+    "travel_time_mean_s": 94.46788990825688,
+    "cumulative_delay_veh_s": 12512.0,
+    "policy_loss": 0.018690895785888038,
+    "critic_loss": 0.82834692299366,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 68,
+    "mean_reward": -28.983914606698104,
+    "trips_completed": 109,
+    "travel_time_mean_s": 87.68807339449542,
+    "cumulative_delay_veh_s": 15979.0,
+    "policy_loss": 0.02253613236567213,
+    "critic_loss": 0.9150876844922702,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 69,
+    "mean_reward": -22.49259521770837,
+    "trips_completed": 109,
+    "travel_time_mean_s": 77.94495412844037,
+    "cumulative_delay_veh_s": 12174.0,
+    "policy_loss": 0.01196198958075709,
+    "critic_loss": 0.5744640992333492,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 70,
+    "mean_reward": -25.365282162204704,
+    "trips_completed": 109,
+    "travel_time_mean_s": 86.37614678899082,
+    "cumulative_delay_veh_s": 13617.0,
+    "policy_loss": 0.012053063925769594,
+    "critic_loss": 0.860778061983486,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 71,
+    "mean_reward": -19.311797879885894,
+    "trips_completed": 109,
+    "travel_time_mean_s": 82.53211009174312,
+    "cumulative_delay_veh_s": 10936.0,
+    "policy_loss": 0.018696329401185114,
+    "critic_loss": 0.5340622887015343,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 72,
+    "mean_reward": -19.045623506668715,
+    "trips_completed": 109,
+    "travel_time_mean_s": 70.60550458715596,
+    "cumulative_delay_veh_s": 10898.0,
+    "policy_loss": 0.012743029313989808,
+    "critic_loss": 0.47076185966531436,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 73,
+    "mean_reward": -23.593596517870324,
+    "trips_completed": 109,
+    "travel_time_mean_s": 96.65137614678899,
+    "cumulative_delay_veh_s": 13653.0,
+    "policy_loss": 0.0306686681540062,
+    "critic_loss": 0.896702652486662,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 74,
+    "mean_reward": -21.400836394672847,
+    "trips_completed": 109,
+    "travel_time_mean_s": 87.1743119266055,
+    "cumulative_delay_veh_s": 11194.0,
+    "policy_loss": 0.02665796208505829,
+    "critic_loss": 0.6246023210386435,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 75,
+    "mean_reward": -21.732069882657054,
+    "trips_completed": 109,
+    "travel_time_mean_s": 92.89908256880734,
+    "cumulative_delay_veh_s": 12427.0,
+    "policy_loss": 0.02459999726464351,
+    "critic_loss": 0.7733288069566091,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 76,
+    "mean_reward": -19.66242917213284,
+    "trips_completed": 109,
+    "travel_time_mean_s": 74.20183486238533,
+    "cumulative_delay_veh_s": 11219.0,
+    "policy_loss": 0.013524188887741833,
+    "critic_loss": 0.695719825103879,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 77,
+    "mean_reward": -22.342146291942186,
+    "trips_completed": 109,
+    "travel_time_mean_s": 98.69724770642202,
+    "cumulative_delay_veh_s": 13277.0,
+    "policy_loss": 0.025682651075638,
+    "critic_loss": 0.7644358665992816,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 78,
+    "mean_reward": -21.63279476633519,
+    "trips_completed": 109,
+    "travel_time_mean_s": 82.77981651376147,
+    "cumulative_delay_veh_s": 12435.0,
+    "policy_loss": 0.02527653591500388,
+    "critic_loss": 0.672516247505943,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 79,
+    "mean_reward": -23.379157177009603,
+    "trips_completed": 109,
+    "travel_time_mean_s": 103.01834862385321,
+    "cumulative_delay_veh_s": 13551.0,
+    "policy_loss": 0.024554625934817723,
+    "critic_loss": 0.8961829616377751,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 80,
+    "mean_reward": -18.51902644035789,
+    "trips_completed": 109,
+    "travel_time_mean_s": 85.10091743119266,
+    "cumulative_delay_veh_s": 11633.0,
+    "policy_loss": 0.021928941080760624,
+    "critic_loss": 0.5567439799507459,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 81,
+    "mean_reward": -23.77267141131014,
+    "trips_completed": 109,
+    "travel_time_mean_s": 94.64220183486239,
+    "cumulative_delay_veh_s": 13591.0,
+    "policy_loss": 0.02937847934145894,
+    "critic_loss": 1.0574637273326517,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 82,
+    "mean_reward": -20.37797359493277,
+    "trips_completed": 109,
+    "travel_time_mean_s": 80.14678899082568,
+    "cumulative_delay_veh_s": 12039.0,
+    "policy_loss": 0.01747403102409508,
+    "critic_loss": 0.6187211348364751,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 83,
+    "mean_reward": -14.134191834365632,
+    "trips_completed": 109,
+    "travel_time_mean_s": 75.77981651376147,
+    "cumulative_delay_veh_s": 9350.0,
+    "policy_loss": 0.01582688176487055,
+    "critic_loss": 0.3289052019516627,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 84,
+    "mean_reward": -22.004844292750988,
+    "trips_completed": 109,
+    "travel_time_mean_s": 94.92660550458716,
+    "cumulative_delay_veh_s": 13418.0,
+    "policy_loss": 0.01306851027119491,
+    "critic_loss": 0.7665027763694525,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 85,
+    "mean_reward": -24.494430030430518,
+    "trips_completed": 109,
+    "travel_time_mean_s": 91.77981651376147,
+    "cumulative_delay_veh_s": 14793.0,
+    "policy_loss": 0.013642701801533501,
+    "critic_loss": 0.8316536155839761,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 86,
+    "mean_reward": -22.578181844820055,
+    "trips_completed": 109,
+    "travel_time_mean_s": 78.76146788990826,
+    "cumulative_delay_veh_s": 12536.0,
+    "policy_loss": 0.02437863556875123,
+    "critic_loss": 0.6588758564243714,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 87,
+    "mean_reward": -25.307644219057693,
+    "trips_completed": 109,
+    "travel_time_mean_s": 105.92660550458716,
+    "cumulative_delay_veh_s": 13790.0,
+    "policy_loss": 0.007335993844187923,
+    "critic_loss": 1.0096769351512194,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 88,
+    "mean_reward": -19.783594722053312,
+    "trips_completed": 109,
+    "travel_time_mean_s": 89.58715596330275,
+    "cumulative_delay_veh_s": 11383.0,
+    "policy_loss": 0.017634465773072514,
+    "critic_loss": 0.5695868071168662,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 89,
+    "mean_reward": -20.980761273330227,
+    "trips_completed": 109,
+    "travel_time_mean_s": 77.13761467889908,
+    "cumulative_delay_veh_s": 11264.0,
+    "policy_loss": 0.02477367063984275,
+    "critic_loss": 0.6396436584492524,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 90,
+    "mean_reward": -27.18929066325805,
+    "trips_completed": 109,
+    "travel_time_mean_s": 107.89908256880734,
+    "cumulative_delay_veh_s": 14724.0,
+    "policy_loss": 0.04871939758563206,
+    "critic_loss": 0.8417125816146532,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 91,
+    "mean_reward": -21.811074486164717,
+    "trips_completed": 109,
+    "travel_time_mean_s": 82.58715596330275,
+    "cumulative_delay_veh_s": 12148.0,
+    "policy_loss": 0.019494285589704907,
+    "critic_loss": 0.689318857093652,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 92,
+    "mean_reward": -21.587105507285457,
+    "trips_completed": 109,
+    "travel_time_mean_s": 84.6788990825688,
+    "cumulative_delay_veh_s": 11941.0,
+    "policy_loss": 0.00833407649770379,
+    "critic_loss": 0.48385054506361486,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 93,
+    "mean_reward": -18.48641465777735,
+    "trips_completed": 109,
+    "travel_time_mean_s": 73.94495412844037,
+    "cumulative_delay_veh_s": 11493.0,
+    "policy_loss": 0.018424049594129126,
+    "critic_loss": 0.5409763688532014,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 94,
+    "mean_reward": -20.902335819865666,
+    "trips_completed": 109,
+    "travel_time_mean_s": 90.27522935779817,
+    "cumulative_delay_veh_s": 11801.0,
+    "policy_loss": 0.026088913276584615,
+    "critic_loss": 0.5166018626497437,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 95,
+    "mean_reward": -26.182585996440697,
+    "trips_completed": 109,
+    "travel_time_mean_s": 78.39449541284404,
+    "cumulative_delay_veh_s": 12043.0,
+    "policy_loss": 0.0006542373034689163,
+    "critic_loss": 0.7912370165189108,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 96,
+    "mean_reward": -23.399285392217905,
+    "trips_completed": 109,
+    "travel_time_mean_s": 70.8440366972477,
+    "cumulative_delay_veh_s": 13404.0,
+    "policy_loss": 0.02205244080267019,
+    "critic_loss": 0.6977667888626456,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 97,
+    "mean_reward": -22.607443165846703,
+    "trips_completed": 109,
+    "travel_time_mean_s": 89.10091743119266,
+    "cumulative_delay_veh_s": 12497.0,
+    "policy_loss": 0.025538082482914136,
+    "critic_loss": 0.7384176862736543,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 98,
+    "mean_reward": -20.47776924151255,
+    "trips_completed": 109,
+    "travel_time_mean_s": 83.92660550458716,
+    "cumulative_delay_veh_s": 12421.0,
+    "policy_loss": 0.016067689284682274,
+    "critic_loss": 0.5912926082809766,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 99,
+    "mean_reward": -24.194505794282207,
+    "trips_completed": 109,
+    "travel_time_mean_s": 79.21100917431193,
+    "cumulative_delay_veh_s": 14094.0,
+    "policy_loss": 0.02786361686885357,
+    "critic_loss": 0.9444346696138382,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 100,
+    "mean_reward": -20.88168997050347,
+    "trips_completed": 109,
+    "travel_time_mean_s": 81.77981651376147,
+    "cumulative_delay_veh_s": 11997.0,
+    "policy_loss": 0.014704290642920469,
+    "critic_loss": 0.4873590039710204,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 101,
+    "mean_reward": -27.226447865476548,
+    "trips_completed": 109,
+    "travel_time_mean_s": 95.55045871559633,
+    "cumulative_delay_veh_s": 15176.0,
+    "policy_loss": 0.02044805551154746,
+    "critic_loss": 1.139597409653167,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 102,
+    "mean_reward": -23.180849260062782,
+    "trips_completed": 109,
+    "travel_time_mean_s": 92.35779816513761,
+    "cumulative_delay_veh_s": 12132.0,
+    "policy_loss": 0.029987489587316913,
+    "critic_loss": 0.9381280544524392,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 103,
+    "mean_reward": -29.91471600458362,
+    "trips_completed": 109,
+    "travel_time_mean_s": 100.88990825688073,
+    "cumulative_delay_veh_s": 15805.0,
+    "policy_loss": 0.018008529948484567,
+    "critic_loss": 1.0845454605917135,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 104,
+    "mean_reward": -27.128272283107382,
+    "trips_completed": 109,
+    "travel_time_mean_s": 78.66055045871559,
+    "cumulative_delay_veh_s": 14184.0,
+    "policy_loss": 0.015282307399643792,
+    "critic_loss": 0.9622183355192343,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 105,
+    "mean_reward": -25.797858158946998,
+    "trips_completed": 109,
+    "travel_time_mean_s": 95.1651376146789,
+    "cumulative_delay_veh_s": 14652.0,
+    "policy_loss": 0.010873910701937146,
+    "critic_loss": 0.958672962586085,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 106,
+    "mean_reward": -20.488349981879324,
+    "trips_completed": 109,
+    "travel_time_mean_s": 69.08256880733946,
+    "cumulative_delay_veh_s": 11219.0,
+    "policy_loss": 0.012654274112234513,
+    "critic_loss": 0.6560129779701431,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 107,
+    "mean_reward": -22.384699097415208,
+    "trips_completed": 109,
+    "travel_time_mean_s": 83.77981651376147,
+    "cumulative_delay_veh_s": 13335.0,
+    "policy_loss": 0.009823997856842149,
+    "critic_loss": 0.8153224145372708,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 108,
+    "mean_reward": -22.09530936914501,
+    "trips_completed": 109,
+    "travel_time_mean_s": 77.60550458715596,
+    "cumulative_delay_veh_s": 12696.0,
+    "policy_loss": 0.026774560065112182,
+    "critic_loss": 0.696961167237411,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 109,
+    "mean_reward": -24.28750814866599,
+    "trips_completed": 109,
+    "travel_time_mean_s": 99.57798165137615,
+    "cumulative_delay_veh_s": 14135.0,
+    "policy_loss": 0.019712911701450744,
+    "critic_loss": 1.0072705633938313,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 110,
+    "mean_reward": -16.249925142388324,
+    "trips_completed": 109,
+    "travel_time_mean_s": 72.3302752293578,
+    "cumulative_delay_veh_s": 10171.0,
+    "policy_loss": 0.008867779348252548,
+    "critic_loss": 0.31485327739889424,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 111,
+    "mean_reward": -27.378354480346857,
+    "trips_completed": 109,
+    "travel_time_mean_s": 108.90825688073394,
+    "cumulative_delay_veh_s": 15441.0,
+    "policy_loss": 0.019489375682961607,
+    "critic_loss": 1.2195889815688132,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 112,
+    "mean_reward": -22.76833344565087,
+    "trips_completed": 109,
+    "travel_time_mean_s": 77.45871559633028,
+    "cumulative_delay_veh_s": 13025.0,
+    "policy_loss": 0.026772142869109908,
+    "critic_loss": 0.7700550994525354,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 113,
+    "mean_reward": -27.380798137625437,
+    "trips_completed": 109,
+    "travel_time_mean_s": 77.56880733944953,
+    "cumulative_delay_veh_s": 14739.0,
+    "policy_loss": 0.0296874567711105,
+    "critic_loss": 1.0650248526905974,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 114,
+    "mean_reward": -20.08464296908674,
+    "trips_completed": 109,
+    "travel_time_mean_s": 87.88073394495413,
+    "cumulative_delay_veh_s": 11501.0,
+    "policy_loss": 0.023691951628360488,
+    "critic_loss": 0.6207217471053202,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 115,
+    "mean_reward": -20.729919630159348,
+    "trips_completed": 109,
+    "travel_time_mean_s": 74.77064220183486,
+    "cumulative_delay_veh_s": 11774.0,
+    "policy_loss": 0.012469081052889429,
+    "critic_loss": 0.6268906074886521,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 116,
+    "mean_reward": -24.569122571128915,
+    "trips_completed": 109,
+    "travel_time_mean_s": 83.27522935779817,
+    "cumulative_delay_veh_s": 14327.0,
+    "policy_loss": 0.028235843549999924,
+    "critic_loss": 0.90963039342314,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 117,
+    "mean_reward": -22.887682108448974,
+    "trips_completed": 109,
+    "travel_time_mean_s": 81.0,
+    "cumulative_delay_veh_s": 13056.0,
+    "policy_loss": 0.020886715832683773,
+    "critic_loss": 0.7158884989718596,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 118,
+    "mean_reward": -18.090916719038102,
+    "trips_completed": 109,
+    "travel_time_mean_s": 70.69724770642202,
+    "cumulative_delay_veh_s": 10680.0,
+    "policy_loss": 0.0049288348398274845,
+    "critic_loss": 0.4688491712634762,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 119,
+    "mean_reward": -18.27343622030429,
+    "trips_completed": 109,
+    "travel_time_mean_s": 63.944954128440365,
+    "cumulative_delay_veh_s": 11631.0,
+    "policy_loss": 0.01592928965886434,
+    "critic_loss": 0.4454119481146336,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 120,
+    "mean_reward": -18.486520624486783,
+    "trips_completed": 109,
+    "travel_time_mean_s": 80.39449541284404,
+    "cumulative_delay_veh_s": 10095.0,
+    "policy_loss": 0.02018998535349965,
+    "critic_loss": 0.5471354028830926,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 121,
+    "mean_reward": -30.49621772814157,
+    "trips_completed": 109,
+    "travel_time_mean_s": 86.4770642201835,
+    "cumulative_delay_veh_s": 16353.0,
+    "policy_loss": 0.016143632757787907,
+    "critic_loss": 1.2358256578445435,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 122,
+    "mean_reward": -23.415364127171916,
+    "trips_completed": 109,
+    "travel_time_mean_s": 104.6697247706422,
+    "cumulative_delay_veh_s": 13139.0,
+    "policy_loss": 0.015326540042749713,
+    "critic_loss": 0.8263446380694707,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 123,
+    "mean_reward": -30.45445057117748,
+    "trips_completed": 109,
+    "travel_time_mean_s": 102.24770642201835,
+    "cumulative_delay_veh_s": 16682.0,
+    "policy_loss": 0.0076847701488683634,
+    "critic_loss": 1.3349465801070133,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 124,
+    "mean_reward": -25.61484251184198,
+    "trips_completed": 109,
+    "travel_time_mean_s": 94.90825688073394,
+    "cumulative_delay_veh_s": 13898.0,
+    "policy_loss": 0.030037993099540476,
+    "critic_loss": 0.8230744329591592,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 125,
+    "mean_reward": -14.71143147402016,
+    "trips_completed": 109,
+    "travel_time_mean_s": 63.25688073394495,
+    "cumulative_delay_veh_s": 9129.0,
+    "policy_loss": 0.031213343453903995,
+    "critic_loss": 0.34128659140939516,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 126,
+    "mean_reward": -18.74760699249229,
+    "trips_completed": 109,
+    "travel_time_mean_s": 90.03669724770643,
+    "cumulative_delay_veh_s": 11707.0,
+    "policy_loss": 0.0358082499820739,
+    "critic_loss": 0.49947656119863193,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 127,
+    "mean_reward": -31.844172974790876,
+    "trips_completed": 109,
+    "travel_time_mean_s": 99.10091743119266,
+    "cumulative_delay_veh_s": 17365.0,
+    "policy_loss": 0.02234630772533516,
+    "critic_loss": 1.2447121483584245,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 128,
+    "mean_reward": -25.19695230640862,
+    "trips_completed": 109,
+    "travel_time_mean_s": 75.39449541284404,
+    "cumulative_delay_veh_s": 12802.0,
+    "policy_loss": 0.017168972046217982,
+    "critic_loss": 0.865441370382905,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 129,
+    "mean_reward": -28.131993243287543,
+    "trips_completed": 109,
+    "travel_time_mean_s": 113.36697247706422,
+    "cumulative_delay_veh_s": 15501.0,
+    "policy_loss": 0.02134193933258454,
+    "critic_loss": 1.369849211908877,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 130,
+    "mean_reward": -33.028473517108104,
+    "trips_completed": 109,
+    "travel_time_mean_s": 88.20183486238533,
+    "cumulative_delay_veh_s": 16474.0,
+    "policy_loss": 0.02078854313844608,
+    "critic_loss": 1.1195302841564019,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 131,
+    "mean_reward": -25.745913880018463,
+    "trips_completed": 109,
+    "travel_time_mean_s": 84.70642201834862,
+    "cumulative_delay_veh_s": 14273.0,
+    "policy_loss": 0.02222059115043117,
+    "critic_loss": 0.9749610189348459,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 132,
+    "mean_reward": -24.21901679770556,
+    "trips_completed": 109,
+    "travel_time_mean_s": 85.93577981651376,
+    "cumulative_delay_veh_s": 13009.0,
+    "policy_loss": 0.015974866319447757,
+    "critic_loss": 0.8383588559615115,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 133,
+    "mean_reward": -25.616672759890122,
+    "trips_completed": 109,
+    "travel_time_mean_s": 112.39449541284404,
+    "cumulative_delay_veh_s": 15255.0,
+    "policy_loss": 0.01715421938440866,
+    "critic_loss": 1.1092847240467867,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 134,
+    "mean_reward": -26.10168252740507,
+    "trips_completed": 109,
+    "travel_time_mean_s": 89.0,
+    "cumulative_delay_veh_s": 15015.0,
+    "policy_loss": 0.0334824349420766,
+    "critic_loss": 0.9805775540570418,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 135,
+    "mean_reward": -23.477381531019585,
+    "trips_completed": 109,
+    "travel_time_mean_s": 79.5137614678899,
+    "cumulative_delay_veh_s": 14180.0,
+    "policy_loss": 0.026089583104476337,
+    "critic_loss": 0.7414806911100944,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 136,
+    "mean_reward": -17.11255348416481,
+    "trips_completed": 109,
+    "travel_time_mean_s": 71.59633027522936,
+    "cumulative_delay_veh_s": 9785.0,
+    "policy_loss": 0.007075970625090928,
+    "critic_loss": 0.48052426616971694,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 137,
+    "mean_reward": -22.15224563621062,
+    "trips_completed": 109,
+    "travel_time_mean_s": 93.13761467889908,
+    "cumulative_delay_veh_s": 12304.0,
+    "policy_loss": 0.007680774987157851,
+    "critic_loss": 0.7956253121296565,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 138,
+    "mean_reward": -21.92722419487133,
+    "trips_completed": 109,
+    "travel_time_mean_s": 74.4954128440367,
+    "cumulative_delay_veh_s": 11402.0,
+    "policy_loss": 0.01803454833312167,
+    "critic_loss": 0.5998045809566974,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 139,
+    "mean_reward": -25.464983038323833,
+    "trips_completed": 109,
+    "travel_time_mean_s": 98.09174311926606,
+    "cumulative_delay_veh_s": 14110.0,
+    "policy_loss": 0.027523588751339246,
+    "critic_loss": 0.7408986845364173,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 140,
+    "mean_reward": -23.480080674362437,
+    "trips_completed": 109,
+    "travel_time_mean_s": 94.64220183486239,
+    "cumulative_delay_veh_s": 13258.0,
+    "policy_loss": 0.027725426273213494,
+    "critic_loss": 0.8079705809553465,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 141,
+    "mean_reward": -21.300228730457206,
+    "trips_completed": 109,
+    "travel_time_mean_s": 77.5229357798165,
+    "cumulative_delay_veh_s": 11277.0,
+    "policy_loss": 0.014260057608286537,
+    "critic_loss": 0.6314756408333778,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 142,
+    "mean_reward": -19.332661915231512,
+    "trips_completed": 109,
+    "travel_time_mean_s": 80.61467889908256,
+    "cumulative_delay_veh_s": 10729.0,
+    "policy_loss": 0.020755637768242095,
+    "critic_loss": 0.44988111990193524,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 143,
+    "mean_reward": -20.003703277318845,
+    "trips_completed": 109,
+    "travel_time_mean_s": 83.98165137614679,
+    "cumulative_delay_veh_s": 10381.0,
+    "policy_loss": 0.014165689966951809,
+    "critic_loss": 0.462347986549139,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 144,
+    "mean_reward": -20.928711066819677,
+    "trips_completed": 109,
+    "travel_time_mean_s": 68.1743119266055,
+    "cumulative_delay_veh_s": 11893.0,
+    "policy_loss": 0.021915687662031915,
+    "critic_loss": 0.5037541017557184,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 145,
+    "mean_reward": -18.592833714773548,
+    "trips_completed": 109,
+    "travel_time_mean_s": 82.73394495412845,
+    "cumulative_delay_veh_s": 10445.0,
+    "policy_loss": 0.01680734323648115,
+    "critic_loss": 0.4889289451452593,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 146,
+    "mean_reward": -26.98806081151574,
+    "trips_completed": 109,
+    "travel_time_mean_s": 79.19266055045871,
+    "cumulative_delay_veh_s": 14433.0,
+    "policy_loss": 0.03704018926040994,
+    "critic_loss": 0.961705686400334,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 147,
+    "mean_reward": -26.506188095200418,
+    "trips_completed": 109,
+    "travel_time_mean_s": 79.12844036697248,
+    "cumulative_delay_veh_s": 13717.0,
+    "policy_loss": 0.01732706161629822,
+    "critic_loss": 0.8620867028832435,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 148,
+    "mean_reward": -25.631928903772803,
+    "trips_completed": 109,
+    "travel_time_mean_s": 101.23853211009174,
+    "cumulative_delay_veh_s": 14424.0,
+    "policy_loss": 0.011160073372431927,
+    "critic_loss": 0.7341748559226592,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 149,
+    "mean_reward": -22.188784264158542,
+    "trips_completed": 109,
+    "travel_time_mean_s": 95.68807339449542,
+    "cumulative_delay_veh_s": 12215.0,
+    "policy_loss": 0.03752989553225537,
+    "critic_loss": 0.644250767181317,
+    "td_loss": 0.0
+  },
+  {
+    "episode": 150,
+    "mean_reward": -22.443762564669044,
+    "trips_completed": 109,
+    "travel_time_mean_s": 81.13761467889908,
+    "cumulative_delay_veh_s": 12874.0,
+    "policy_loss": 0.020806304334352415,
+    "critic_loss": 0.6265861911078294,
+    "td_loss": 0.0
+  }
+]

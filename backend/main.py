@@ -2,21 +2,33 @@
 backend/main.py
 
 FastAPI Application Entry Point.
-Configures CORS, lifespan initialization, REST routers, and WebSocket telemetry stream.
+Configures CORS, lifespan initialization, structured logging, security headers,
+request timing middleware, REST routers, and WebSocket telemetry stream.
 """
 
 from __future__ import annotations
 
 import asyncio
 from contextlib import asynccontextmanager
+from datetime import datetime, timezone
+import json
+import logging
+import time
 from typing import AsyncGenerator
 
-from fastapi import FastAPI, WebSocket, WebSocketDisconnect
+from fastapi import FastAPI, Request, Response, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
-from backend.config import CORS_ORIGINS, DEBUG
+from backend.config import (
+    CORS_ORIGINS,
+    DEBUG,
+    ENABLE_SECURITY_HEADERS,
+    LOG_LEVEL,
+    STRUCTURED_LOGGING,
+)
 from backend.database import init_db
+from backend.logging_config import configure_logging
 from backend.routers import (
     decisions,
     emergencies,
@@ -30,10 +42,16 @@ from backend.routers import (
 from backend.simulation_service import sim_service
 from backend.websocket_manager import ws_manager
 
+# Configure structured logging
+configure_logging(level_name=LOG_LEVEL, structured=STRUCTURED_LOGGING)
+logger = logging.getLogger("main")
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     """Application lifespan context for startup initialization and graceful shutdown."""
+    logger.info("Starting Smart Traffic Coordination backend application...")
+
     # 1. Initialize Database schema and pre-seed risk zones
     init_db()
 
@@ -43,8 +61,11 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
 
     yield
 
-    # 3. Shutdown: ensure TraCI and background simulation thread are terminated
+    # 3. Shutdown: gracefully disconnect WebSocket clients and ensure simulation is terminated
+    logger.info("Shutting down backend services...")
+    await ws_manager.shutdown()
     sim_service.stop_simulation()
+    logger.info("Graceful shutdown complete.")
 
 
 app = FastAPI(
@@ -65,6 +86,27 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
+@app.middleware("http")
+async def security_and_timing_middleware(request: Request, call_next) -> Response:
+    """Adds process timing metrics and standard HTTP security hardening headers."""
+    start_time = time.perf_counter()
+    response = await call_next(request)
+    duration_ms = (time.perf_counter() - start_time) * 1000.0
+
+    # Timing header
+    response.headers["X-Process-Time"] = f"{duration_ms:.2f}ms"
+
+    # Security headers
+    if ENABLE_SECURITY_HEADERS:
+        response.headers["X-Content-Type-Options"] = "nosniff"
+        response.headers["X-Frame-Options"] = "DENY"
+        response.headers["X-XSS-Protection"] = "1; mode=block"
+        response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+
+    return response
+
+
 # Register REST Routers
 app.include_router(health.router)
 app.include_router(simulation.router)
@@ -83,6 +125,7 @@ def root():
         "corridor": "Bengaluru Silk Board (J1 -> J2 -> J3)",
         "docs": "/docs",
         "health": "/api/health",
+        "readiness": "/api/readiness",
         "websocket": "/ws/traffic",
     }
 
@@ -98,29 +141,37 @@ async def websocket_traffic_endpoint(websocket: WebSocket):
     Broadcasts simulation time, queues, vehicle counts, signal states, emissions,
     emergency preemption status, and controller decisions while running.
     """
-    await ws_manager.connect(websocket)
+    st = sim_service.get_status()
+    initial_payload = {
+        "type": "INITIAL_STATE",
+        "sequence_number": sim_service.get_sequence_number(),
+        "session_uuid": st.run_uuid,
+        "timestamp_utc": datetime.now(timezone.utc).isoformat(),
+        "simulation_time": st.simulation_time,
+        "status": "RUNNING" if st.running and not st.paused else ("PAUSED" if st.paused else "STOPPED"),
+        "mode": st.mode,
+        "metrics": sim_service.get_metrics(),
+        "junctions": sim_service.get_live_junctions(),
+        "signals": sim_service.get_signals(),
+        "emergencies": sim_service.get_emergencies(),
+        "decisions": [d.model_dump() for d in sim_service.get_decisions()[-5:]],
+        "vehicles": sim_service.get_live_vehicles(),
+    }
+    session = await ws_manager.connect(websocket, initial_payload=initial_payload)
     try:
-        # Send immediate initial state upon connection
-        st = sim_service.get_status()
-        initial_payload = {
-            "type": "INITIAL_STATE",
-            "simulation_time": st.simulation_time,
-            "status": "RUNNING" if st.running and not st.paused else ("PAUSED" if st.paused else "STOPPED"),
-            "mode": st.mode,
-            "metrics": sim_service.get_metrics(),
-            "junctions": sim_service.get_live_junctions(),
-            "signals": sim_service.get_signals(),
-            "emergencies": sim_service.get_emergencies(),
-            "decisions": [d.model_dump() for d in sim_service.get_decisions()[-5:]],
-        }
-        await websocket.send_json(initial_payload)
-
         # Keep connection open and listen for optional client pings/messages
-        while True:
+        while session.is_connected and not session.closed:
             client_msg = await websocket.receive_text()
             if client_msg.strip().lower() == "ping":
-                await websocket.send_json({"type": "PONG"})
+                session.enqueue(
+                    json.dumps({
+                        "type": "PONG",
+                        "timestamp_utc": datetime.now(timezone.utc).isoformat(),
+                    }),
+                    is_replaceable=False,
+                )
     except WebSocketDisconnect:
         await ws_manager.disconnect(websocket)
-    except Exception:
+    except Exception as exc:
+        logger.debug(f"WebSocket client error for {session.client_id}: {exc}")
         await ws_manager.disconnect(websocket)

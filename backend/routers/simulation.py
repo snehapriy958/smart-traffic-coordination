@@ -26,26 +26,40 @@ def get_simulation_status() -> SimulationStatusResponse:
 @router.post("/start", response_model=CommandResponse)
 def start_simulation(payload: SimulationStartRequest) -> CommandResponse:
     """Starts a new simulation run with validated settings."""
-    valid_modes = {"baseline", "coordinated"}
+    valid_modes = {"baseline", "coordinated", "marl_ppo", "marl_dqn"}
     if payload.mode.lower() not in valid_modes:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=f"Invalid mode '{payload.mode}'. Supported modes: {sorted(list(valid_modes))}.",
         )
 
-    ok, msg = sim_service.start_simulation(
-        mode=payload.mode,
-        duration=payload.duration,
-        seed=payload.seed,
-        step_length=payload.step_length,
-        decision_interval=payload.decision_interval,
-        enable_emergency=payload.enable_emergency,
-        gui=payload.gui,
-    )
+    try:
+        ok, msg = sim_service.start_simulation(
+            mode=payload.mode,
+            duration=payload.duration,
+            seed=payload.seed,
+            step_length=payload.step_length,
+            decision_interval=payload.decision_interval,
+            enable_emergency=payload.enable_emergency,
+            gui=payload.gui,
+            startup_timeout_s=payload.startup_timeout_s,
+            checkpoint_path=payload.checkpoint_path,
+        )
+    except ValueError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(exc),
+        ) from exc
 
     if not ok:
+        if "already" in msg.lower():
+            status_code = status.HTTP_409_CONFLICT
+        elif "timed out" in msg.lower() or "timeout" in msg.lower():
+            status_code = status.HTTP_504_GATEWAY_TIMEOUT
+        else:
+            status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
         raise HTTPException(
-            status_code=status.HTTP_409_CONFLICT,
+            status_code=status_code,
             detail=msg,
         )
 
@@ -80,6 +94,16 @@ def resume_simulation() -> CommandResponse:
 def stop_simulation() -> CommandResponse:
     """Safely stops the simulation and cleanly releases SUMO/TraCI resources."""
     ok, msg = sim_service.stop_simulation()
+    if not ok:
+        status_code = (
+            status.HTTP_400_BAD_REQUEST
+            if "not currently running" in msg.lower()
+            else status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
+        raise HTTPException(
+            status_code=status_code,
+            detail=msg,
+        )
     return CommandResponse(success=True, message=msg, simulation_time=sim_service._current_sim_time)
 
 
@@ -87,4 +111,9 @@ def stop_simulation() -> CommandResponse:
 def reset_simulation() -> CommandResponse:
     """Resets the simulation to a clean initial state."""
     ok, msg = sim_service.reset_simulation()
+    if not ok:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=msg,
+        )
     return CommandResponse(success=True, message=msg, simulation_time=0.0)

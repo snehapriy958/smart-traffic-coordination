@@ -6,11 +6,24 @@ Real-time traffic state and corridor metrics endpoints.
 
 from __future__ import annotations
 
+from typing import Any, Dict
 from fastapi import APIRouter
 from backend.schemas import TrafficLiveResponse, TrafficMetricsResponse
 from backend.simulation_service import sim_service
 
 router = APIRouter(prefix="/api/traffic", tags=["Traffic"])
+
+
+@router.get("/vehicles")
+def get_live_vehicles() -> Dict[str, Any]:
+    """Returns active SUMO vehicle telemetry for the 3D digital twin."""
+    status_obj = sim_service.get_status()
+    st_str = "RUNNING" if status_obj.running and not status_obj.paused else ("PAUSED" if status_obj.paused else "STOPPED")
+    return {
+        "simulation_time": status_obj.simulation_time,
+        "status": st_str,
+        "vehicles": sim_service.get_live_vehicles(),
+    }
 
 
 @router.get("/live", response_model=TrafficLiveResponse)
@@ -31,15 +44,19 @@ def get_traffic_metrics() -> TrafficMetricsResponse:
     data = sim_service.get_metrics()
     return TrafficMetricsResponse(
         simulation_time=data.get("simulation_time", 0.0),
-        total_vehicles=data.get("total_vehicles", 0),
-        throughput_vehicles=data.get("throughput_vehicles", 0),
-        mean_speed_kmh=data.get("mean_speed_kmh", 0.0),
-        total_corridor_waiting_time_s=data.get("total_corridor_waiting_time_s", 0.0),
+        total_vehicles=data.get("total_vehicles"),
+        throughput_vehicles=data.get("throughput_vehicles"),
+        mean_corridor_travel_time_s=data.get("mean_corridor_travel_time_s"),
+        mean_speed_kmh=data.get("mean_speed_kmh"),
+        total_corridor_waiting_time_s=data.get("total_corridor_waiting_time_s"),
+        mean_instantaneous_waiting_time_s=data.get("mean_instantaneous_waiting_time_s"),
+        cumulative_delay_veh_s=data.get("cumulative_delay_veh_s"),
+        cumulative_waiting_time_s=data.get("cumulative_waiting_time_s"),
         mean_corridor_queue=data.get("mean_corridor_queue", 0.0),
         max_corridor_queue=data.get("max_corridor_queue", 0),
-        total_co2_kg=data.get("total_co2_kg", 0.0),
-        total_nox_g=data.get("total_nox_g", 0.0),
-        total_fuel_liters=data.get("total_fuel_liters", 0.0),
-        emergency_traversal_duration_s=data.get("emergency_traversal_duration_s", 0.0),
+        total_co2_kg=data.get("total_co2_kg"),
+        total_nox_g=data.get("total_nox_g"),
+        total_fuel_liters=data.get("total_fuel_liters"),
+        emergency_traversal_duration_s=data.get("emergency_traversal_duration_s"),
         junction_queues=data.get("junction_queues", {}),
     )

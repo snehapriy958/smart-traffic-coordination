@@ -16,22 +16,22 @@ export function Header({ wsStatus, health, simStatus, onOpenOverride }) {
   const isSimPaused = simStatus?.paused;
 
   return (
-    <header className="border-b border-slate-800 bg-[#0f172a]/80 backdrop-blur px-6 py-4 flex flex-wrap items-center justify-between gap-4 sticky top-0 z-40">
+    <header className="border-b border-slate-200 bg-white/95 backdrop-blur px-6 py-4 flex flex-wrap items-center justify-between gap-4 sticky top-0 z-40 shadow-sm">
       {/* Title & Branding */}
       <div className="flex items-center gap-3">
-        <div className="h-10 w-10 rounded-lg bg-gradient-to-tr from-cyan-600 to-blue-500 flex items-center justify-center shadow-lg shadow-cyan-500/20">
+        <div className="h-10 w-10 rounded-lg bg-gradient-to-tr from-teal-600 to-emerald-600 flex items-center justify-center shadow-md shadow-teal-600/20">
           <Activity className="h-6 w-6 text-white" />
         </div>
         <div>
           <div className="flex items-center gap-2">
-            <h1 className="text-lg font-bold tracking-tight text-white uppercase">
+            <h1 className="text-lg font-bold tracking-tight text-slate-900 uppercase">
               Bengaluru Traffic Coordination Center
             </h1>
-            <span className="px-2 py-0.5 text-xs font-semibold rounded bg-cyan-500/10 text-cyan-400 border border-cyan-500/30">
+            <span className="px-2 py-0.5 text-xs font-semibold rounded bg-teal-50 text-teal-700 border border-teal-200">
               Silk Board Corridor
             </span>
           </div>
-          <p className="text-xs text-slate-400">
+          <p className="text-xs text-slate-500">
             Multi-Intersection Adaptive Signal & Emergency Preemption Hub (J1 &rarr; J2 &rarr; J3)
           </p>
         </div>
@@ -40,33 +40,33 @@ export function Header({ wsStatus, health, simStatus, onOpenOverride }) {
       {/* Status Indicators & Clock */}
       <div className="flex items-center flex-wrap gap-4">
         {/* WebSocket Status */}
-        <div className="flex items-center gap-2 px-3 py-1.5 rounded-md bg-slate-900 border border-slate-800 text-xs">
-          <Radio className={`h-4 w-4 ${isWsConnected ? 'text-emerald-400 animate-pulse' : 'text-rose-400'}`} />
-          <span className="text-slate-400">Stream:</span>
-          <span className={`font-semibold ${isWsConnected ? 'text-emerald-400' : 'text-rose-400'}`}>
+        <div className="flex items-center gap-2 px-3 py-1.5 rounded-md bg-slate-50 border border-slate-200 text-xs">
+          <Radio className={`h-4 w-4 ${isWsConnected ? 'text-emerald-600 animate-pulse' : 'text-rose-600'}`} />
+          <span className="text-slate-500">Stream:</span>
+          <span className={`font-semibold ${isWsConnected ? 'text-emerald-600' : 'text-rose-600'}`}>
             {wsStatus}
           </span>
         </div>
 
         {/* SUMO Status */}
-        <div className="flex items-center gap-2 px-3 py-1.5 rounded-md bg-slate-900 border border-slate-800 text-xs">
-          <Cpu className="h-4 w-4 text-blue-400" />
-          <span className="text-slate-400">SUMO:</span>
-          <span className="font-semibold text-slate-200">
+        <div className="flex items-center gap-2 px-3 py-1.5 rounded-md bg-slate-50 border border-slate-200 text-xs">
+          <Cpu className="h-4 w-4 text-teal-600" />
+          <span className="text-slate-500">SUMO:</span>
+          <span className="font-semibold text-slate-800">
             {health?.sumo_available ? 'Online (v1.26)' : 'Offline'}
           </span>
         </div>
 
         {/* Simulation State Pill */}
-        <div className="flex items-center gap-2 px-3 py-1.5 rounded-md bg-slate-900 border border-slate-800 text-xs">
-          <span className="text-slate-400">Status:</span>
+        <div className="flex items-center gap-2 px-3 py-1.5 rounded-md bg-slate-50 border border-slate-200 text-xs">
+          <span className="text-slate-500">Status:</span>
           <span
             className={`font-semibold px-2 py-0.5 rounded text-[11px] ${
               isSimRunning
-                ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/40'
+                ? 'bg-emerald-50 text-emerald-700 border border-emerald-300'
                 : isSimPaused
-                ? 'bg-amber-500/20 text-amber-400 border border-amber-500/40'
-                : 'bg-slate-700/50 text-slate-400 border border-slate-600'
+                ? 'bg-amber-50 text-amber-700 border border-amber-300'
+                : 'bg-slate-100 text-slate-600 border border-slate-200'
             }`}
           >
             {isSimRunning ? 'RUNNING' : isSimPaused ? 'PAUSED' : 'STOPPED'}
@@ -74,7 +74,7 @@ export function Header({ wsStatus, health, simStatus, onOpenOverride }) {
         </div>
 
         {/* Digital Clock */}
-        <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-slate-900 border border-slate-800 text-xs text-slate-300">
+        <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-slate-50 border border-slate-200 text-xs text-slate-700">
           <Clock className="h-4 w-4 text-slate-400" />
           <span className="font-mono">{currentTime}</span>
         </div>
@@ -82,10 +82,10 @@ export function Header({ wsStatus, health, simStatus, onOpenOverride }) {
         {/* Manual Override Action */}
         <button
           onClick={onOpenOverride}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/30 text-xs font-semibold transition"
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-300 text-xs font-semibold transition shadow-sm"
           title="Operator Manual Phase Override"
         >
-          <AlertTriangle className="h-4 w-4" />
+          <AlertTriangle className="h-4 w-4 text-amber-600" />
           <span>Manual Override</span>
         </button>
       </div>

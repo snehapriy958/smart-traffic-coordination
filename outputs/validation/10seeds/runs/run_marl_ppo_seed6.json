@@ -1,0 +1,163 @@
+{
+  "mode": "marl_ppo",
+  "seed": 6,
+  "duration_s": 900,
+  "wall_time_s": 40.46,
+  "status": "COMPLETED",
+  "phase_switches": {
+    "J1": 42,
+    "J2": 31,
+    "J3": 81
+  },
+  "action_counts": {
+    "J1": {
+      "total_decisions": 181,
+      "KEEP": 177,
+      "SWITCH": 4,
+      "EXTEND": 0
+    },
+    "J2": {
+      "total_decisions": 181,
+      "KEEP": 114,
+      "SWITCH": 0,
+      "EXTEND": 67
+    },
+    "J3": {
+      "total_decisions": 181,
+      "KEEP": 88,
+      "SWITCH": 41,
+      "EXTEND": 52
+    }
+  },
+  "starvation_events_count": 5,
+  "starvation_events": [
+    {
+      "timestamp": 121.0,
+      "junction_id": "J2",
+      "starved_approach": "corridor_hosur",
+      "red_duration_s": 60.0,
+      "queue_count": 19,
+      "current_phase": 2,
+      "target_phase": 0,
+      "action_enforced": "SWITCH"
+    },
+    {
+      "timestamp": 181.0,
+      "junction_id": "J2",
+      "starved_approach": "madiwala",
+      "red_duration_s": 60.0,
+      "queue_count": 10,
+      "current_phase": 0,
+      "target_phase": 2,
+      "action_enforced": "SWITCH"
+    },
+    {
+      "timestamp": 568.0,
+      "junction_id": "J2",
+      "starved_approach": "madiwala",
+      "red_duration_s": 60.0,
+      "queue_count": 11,
+      "current_phase": 0,
+      "target_phase": 2,
+      "action_enforced": "SWITCH"
+    },
+    {
+      "timestamp": 628.0,
+      "junction_id": "J2",
+      "starved_approach": "corridor_hosur",
+      "red_duration_s": 60.0,
+      "queue_count": 13,
+      "current_phase": 2,
+      "target_phase": 0,
+      "action_enforced": "SWITCH"
+    },
+    {
+      "timestamp": 688.0,
+      "junction_id": "J2",
+      "starved_approach": "madiwala",
+      "red_duration_s": 60.0,
+      "queue_count": 5,
+      "current_phase": 0,
+      "target_phase": 2,
+      "action_enforced": "SWITCH"
+    }
+  ],
+  "regimes": {
+    "peak": {
+      "interval": [
+        0,
+        300
+      ],
+      "departed": 208,
+      "arrived": 130,
+      "corridor_trips": 36,
+      "unfinished": 78,
+      "avg_corridor_travel_time_s": 101.47,
+      "avg_net_travel_time_s": 76.97,
+      "avg_speed_kmh": 27.76,
+      "avg_waiting_time_s": 568.53,
+      "cumulative_delay_veh_s": 4910.0,
+      "avg_queue_veh": 16.37,
+      "max_queue_veh": 37,
+      "co2_kg": 25.6243,
+      "fuel_liters": 11.0537
+    },
+    "shoulder": {
+      "interval": [
+        300,
+        600
+      ],
+      "departed": 170,
+      "arrived": 222,
+      "corridor_trips": 66,
+      "unfinished": 26,
+      "avg_corridor_travel_time_s": 79.39,
+      "avg_net_travel_time_s": 85.36,
+      "avg_speed_kmh": 25.72,
+      "avg_waiting_time_s": 699.3,
+      "cumulative_delay_veh_s": 5607.0,
+      "avg_queue_veh": 18.69,
+      "max_queue_veh": 44,
+      "co2_kg": 25.2477,
+      "fuel_liters": 10.9064
+    },
+    "off_peak": {
+      "interval": [
+        600,
+        900
+      ],
+      "departed": 0,
+      "arrived": 26,
+      "corridor_trips": 7,
+      "unfinished": 0,
+      "avg_corridor_travel_time_s": 84.57,
+      "avg_net_travel_time_s": 86.58,
+      "avg_speed_kmh": 23.17,
+      "avg_waiting_time_s": 81.17,
+      "cumulative_delay_veh_s": 604.0,
+      "avg_queue_veh": 2.01,
+      "max_queue_veh": 14,
+      "co2_kg": 2.0826,
+      "fuel_liters": 0.9003
+    }
+  },
+  "full_900s": {
+    "interval": [
+      0,
+      900
+    ],
+    "departed": 378,
+    "arrived": 378,
+    "corridor_trips": 109,
+    "unfinished": 0,
+    "avg_corridor_travel_time_s": 87.02,
+    "avg_net_travel_time_s": 82.56,
+    "avg_speed_kmh": 26.2,
+    "avg_waiting_time_s": 449.66,
+    "cumulative_delay_veh_s": 11121.0,
+    "avg_queue_veh": 12.36,
+    "max_queue_veh": 44,
+    "co2_kg": 52.9545,
+    "fuel_liters": 22.8605
+  }
+}

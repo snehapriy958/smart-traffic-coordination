@@ -10,14 +10,21 @@ broadcasts telemetry, records decisions, and persists metrics to SQLite.
 from __future__ import annotations
 
 import asyncio
+import concurrent.futures
 import json
 import logging
+import queue
+import subprocess
 import threading
 import time
 import uuid
-from datetime import datetime
+from dataclasses import dataclass
+from datetime import datetime, timezone
+from enum import Enum
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
+
+import traci
 
 from backend.config import BASE_DIR, SUMO_CONFIG_PATH, SUMO_STEP_LENGTH
 from backend.database import SessionLocal
@@ -46,6 +53,314 @@ from traffic_service.state_extractor import IntersectionState
 logger = logging.getLogger("simulation_service")
 
 
+APPROVED_MARL_CHECKPOINTS = {
+    "marl_ppo": ("checkpoints/p6/ppo_stage_a_best.json", "ppo"),
+    "marl_dqn": ("checkpoints/p6/dqn_stage_a_best.json", "dqn"),
+}
+
+FLYOVER_EDGE_IDS = {
+    "40696222", "133759694", "160511376", "519734960", "886153772",
+    "1208112303", "1299917512", "1299917514", "1299917517", "1299932382",
+    "1301808818", "1301808820", "1303740767", "1351994264", "1351994264-AddedOffRampEdge",
+}
+
+UNDERPASS_EDGE_IDS = {
+    "133763758", "133763760", "148210028", "148210029", "148210030", "239438609",
+}
+
+
+
+def resolve_checkpoint_path(mode: str, checkpoint_path: Optional[str]) -> Optional[Path]:
+    """Validate an explicit checkpoint against the small API allowlist."""
+    if checkpoint_path is None:
+        return None
+    mode_key = mode.lower()
+    approved = APPROVED_MARL_CHECKPOINTS.get(mode_key)
+    if approved is None:
+        raise ValueError("checkpoint_path is supported only for marl_ppo and marl_dqn modes")
+    allowed_relative_path, expected_algorithm = approved
+    if checkpoint_path.replace("\\", "/") != allowed_relative_path:
+        raise ValueError(f"checkpoint_path is not approved for {mode_key}")
+
+    project_root = BASE_DIR.resolve()
+    approved_directory = (project_root / "checkpoints" / "p6").resolve()
+    resolved = (project_root / allowed_relative_path).resolve()
+    if not approved_directory.is_relative_to(project_root) or not resolved.is_relative_to(approved_directory):
+        raise ValueError("checkpoint_path resolves outside the approved checkpoint directory")
+    if not resolved.is_file():
+        raise ValueError(f"Approved checkpoint does not exist: {allowed_relative_path}")
+    try:
+        with resolved.open("r", encoding="utf-8") as checkpoint_file:
+            checkpoint_data = json.load(checkpoint_file)
+    except (OSError, json.JSONDecodeError) as exc:
+        raise ValueError(f"Approved checkpoint is unreadable or invalid JSON: {allowed_relative_path}") from exc
+    if not isinstance(checkpoint_data, dict) or checkpoint_data.get("algorithm") != expected_algorithm:
+        raise ValueError(
+            f"Checkpoint algorithm must be '{expected_algorithm}' for mode '{mode_key}'"
+        )
+    return resolved
+
+
+class StartupStatus(str, Enum):
+    REQUESTED = "REQUESTED"
+    STARTING = "STARTING"
+    CONNECTING = "CONNECTING"
+    READY = "READY"
+    FAILED = "FAILED"
+
+
+class StartupResult(tuple):
+    """
+    Subclass of tuple providing backwards-compatible unpacking:
+        ok, msg = sim_service.start_simulation(...)
+    while exposing rich structured metadata for API responses, logging, and diagnostics.
+    """
+    success: bool
+    message: str
+    status: StartupStatus
+    pid: Optional[int]
+    startup_duration_s: float
+    error: Optional[str]
+    run_uuid: Optional[str]
+
+    def __new__(
+        cls,
+        success: bool,
+        message: str,
+        status: StartupStatus,
+        pid: Optional[int] = None,
+        startup_duration_s: float = 0.0,
+        error: Optional[str] = None,
+        run_uuid: Optional[str] = None,
+    ):
+        instance = super().__new__(cls, (success, message))
+        instance.success = success
+        instance.message = message
+        instance.status = status
+        instance.pid = pid
+        instance.startup_duration_s = startup_duration_s
+        instance.error = error
+        instance.run_uuid = run_uuid
+        return instance
+
+    def __repr__(self) -> str:
+        return (
+            f"StartupResult(success={self.success}, message='{self.message}', "
+            f"status={self.status}, pid={self.pid}, "
+            f"startup_duration_s={self.startup_duration_s:.3f}, error={self.error}, run_uuid={self.run_uuid})"
+        )
+
+
+class CommandStatus(str, Enum):
+    PENDING = "PENDING"
+    RUNNING = "RUNNING"
+    EXECUTED = "EXECUTED"
+    REJECTED = "REJECTED"
+    CANCELLED = "CANCELLED"
+    TIMED_OUT = "TIMED_OUT"
+    EXECUTION_OUTCOME_UNKNOWN = "EXECUTION_OUTCOME_UNKNOWN"
+
+
+class CommandResult(tuple):
+    """
+    Subclass of tuple providing backwards-compatible unpacking:
+        ok, msg = sim_service.request_manual_override(...)
+    while exposing rich structured metadata for API responses, logging, and diagnostics.
+    """
+    success: bool
+    message: str
+    status: CommandStatus
+    junction_id: Optional[str]
+    applied_phase: Optional[int]
+    simulation_time: float
+    command_id: Optional[str]
+    rejection_reason: Optional[str]
+    executing_thread: Optional[str]
+
+    def __new__(
+        cls,
+        success: bool,
+        message: str,
+        status: CommandStatus = CommandStatus.EXECUTED,
+        junction_id: Optional[str] = None,
+        applied_phase: Optional[int] = None,
+        simulation_time: float = 0.0,
+        command_id: Optional[str] = None,
+        rejection_reason: Optional[str] = None,
+        executing_thread: Optional[str] = None,
+    ):
+        instance = super().__new__(cls, (success, message))
+        instance.success = success
+        instance.message = message
+        instance.status = status
+        instance.junction_id = junction_id
+        instance.applied_phase = applied_phase
+        instance.simulation_time = simulation_time
+        instance.command_id = command_id
+        instance.rejection_reason = rejection_reason or ("" if success else message)
+        instance.executing_thread = executing_thread
+        return instance
+
+    def __repr__(self) -> str:
+        return (
+            f"CommandResult(success={self.success}, message='{self.message}', "
+            f"status={self.status}, junction_id={self.junction_id}, "
+            f"applied_phase={self.applied_phase}, simulation_time={self.simulation_time}, "
+            f"command_id={self.command_id}, executing_thread={self.executing_thread})"
+        )
+
+
+class SignalOverrideCommand:
+    """
+    Thread-safe command object coordinating state transitions between
+    the API caller thread and the background SumoSimulationWorker thread.
+
+    Enforces atomic transitions:
+      PENDING -> RUNNING -> EXECUTED / REJECTED
+      PENDING -> CANCELLED / TIMED_OUT (Caller timeout before worker execution)
+      RUNNING -> EXECUTION_OUTCOME_UNKNOWN (Caller timeout while worker is executing)
+    """
+
+    def __init__(
+        self,
+        command_id: str,
+        session_uuid: str,
+        junction_id: str,
+        target_phase: int,
+        confirmed: bool,
+        created_at: float,
+        timeout_s: float,
+    ) -> None:
+        self.command_id = command_id
+        self.session_uuid = session_uuid
+        self.junction_id = junction_id
+        self.target_phase = target_phase
+        self.confirmed = confirmed
+        self.created_at = created_at
+        self.timeout_s = timeout_s
+
+        self._state_lock = threading.Lock()
+        self._status: CommandStatus = CommandStatus.PENDING
+        self.future: concurrent.futures.Future[CommandResult] = concurrent.futures.Future()
+        self.result: Optional[CommandResult] = None
+
+    @property
+    def status(self) -> CommandStatus:
+        with self._state_lock:
+            return self._status
+
+    def is_expired(self, current_time: float) -> bool:
+        return (current_time - self.created_at) > self.timeout_s
+
+    def try_transition_to_running(self) -> bool:
+        """
+        Atomically transitions command from PENDING to RUNNING.
+        Returns True if transition succeeded, False if already CANCELLED or TIMED_OUT.
+        """
+        with self._state_lock:
+            if self._status == CommandStatus.PENDING:
+                self._status = CommandStatus.RUNNING
+                return True
+            return False
+
+    def complete_execution(self, result: CommandResult) -> None:
+        """
+        Atomically transitions command from RUNNING to EXECUTED or REJECTED
+        and fulfills the future without throwing InvalidStateError.
+        """
+        with self._state_lock:
+            self._status = result.status
+            self.result = result
+            if not self.future.done():
+                self.future.set_result(result)
+
+    def cancel_pending(self, reason: str, sim_time: float, thread_name: str) -> Optional[CommandResult]:
+        """
+        Cancels the command if it is still PENDING.
+        """
+        with self._state_lock:
+            if self._status == CommandStatus.PENDING:
+                self._status = CommandStatus.CANCELLED
+                res = CommandResult(
+                    success=False,
+                    message=f"Command cancelled: {reason}",
+                    status=CommandStatus.CANCELLED,
+                    junction_id=self.junction_id,
+                    applied_phase=self.target_phase,
+                    simulation_time=sim_time,
+                    command_id=self.command_id,
+                    rejection_reason=reason,
+                    executing_thread=thread_name,
+                )
+                self.result = res
+                if not self.future.done():
+                    self.future.set_result(res)
+                return res
+            return None
+
+    def handle_caller_timeout(self, sim_time: float, caller_thread: str) -> CommandResult:
+        """
+        Called by the API thread when waiting on the future times out.
+        Atomically determines whether the command definitely did not execute (cancelled while PENDING)
+        or whether execution outcome is unknown (already RUNNING).
+        """
+        with self._state_lock:
+            if self._status == CommandStatus.PENDING:
+                self._status = CommandStatus.TIMED_OUT
+                res = CommandResult(
+                    success=False,
+                    message=f"Command timed out after {self.timeout_s:.1f}s waiting in queue; definitely not executed.",
+                    status=CommandStatus.TIMED_OUT,
+                    junction_id=self.junction_id,
+                    applied_phase=self.target_phase,
+                    simulation_time=sim_time,
+                    command_id=self.command_id,
+                    rejection_reason="TIMED_OUT_IN_QUEUE",
+                    executing_thread=caller_thread,
+                )
+                self.result = res
+                if not self.future.done():
+                    self.future.set_result(res)
+                return res
+
+            elif self._status == CommandStatus.RUNNING:
+                # Command is actively executing on worker thread! Execution outcome unknown to caller.
+                res = CommandResult(
+                    success=False,
+                    message=(
+                        f"Command timed out after {self.timeout_s:.1f}s while executing in simulation worker. "
+                        "Execution outcome is currently unknown (in-flight)."
+                    ),
+                    status=CommandStatus.EXECUTION_OUTCOME_UNKNOWN,
+                    junction_id=self.junction_id,
+                    applied_phase=self.target_phase,
+                    simulation_time=sim_time,
+                    command_id=self.command_id,
+                    rejection_reason="IN_FLIGHT_TIMEOUT",
+                    executing_thread=caller_thread,
+                )
+                # DO NOT cancel self.future! Let worker complete self.future cleanly without InvalidStateError.
+                return res
+
+            else:
+                # Worker completed it right as timeout fired
+                if self.future.done():
+                    try:
+                        return self.future.result()
+                    except Exception:
+                        pass
+                return CommandResult(
+                    success=False,
+                    message=f"Command timed out (current status: {self._status}).",
+                    status=self._status,
+                    junction_id=self.junction_id,
+                    applied_phase=self.target_phase,
+                    simulation_time=sim_time,
+                    command_id=self.command_id,
+                    executing_thread=caller_thread,
+                )
+
+
 class SimulationService:
     """Singleton service managing background SUMO simulation lifecycle and telemetry."""
 
@@ -53,6 +368,7 @@ class SimulationService:
         self._lock = threading.RLock()
         self._sim: Optional[MultiIntersectionSimulation] = None
         self._thread: Optional[threading.Thread] = None
+        self._command_queue: Optional[queue.Queue[SignalOverrideCommand]] = None
 
         self._running: bool = False
         self._paused: bool = False
@@ -69,13 +385,23 @@ class SimulationService:
         self._current_sim_time: float = 0.0
         self._current_run_id: Optional[int] = None
         self._current_run_uuid: Optional[str] = None
+        self._sequence_number: int = 0
         self._error_message: Optional[str] = None
+
+        # Synchronous startup and process watchdog state
+        self._startup_event: threading.Event = threading.Event()
+        self._startup_result: Optional[StartupResult] = None
+        self._startup_status: StartupStatus | str = "STOPPED"
+        self._active_sumo_process: Optional[subprocess.Popen] = None
+        self._active_sumo_pid: Optional[int] = None
+        self._watchdog_escalated: bool = False
 
         # In-memory telemetry cache
         self._latest_states: Dict[str, IntersectionState] = {}
         self._decisions_log: List[DecisionItemSchema] = []
         self._emergency_events: List[EmergencyEventItemSchema] = []
         self._cached_metrics: Dict[str, Any] = {}
+        self._latest_vehicles: List[Dict[str, Any]] = []
 
         # Loop reference for async websocket broadcasting
         self.loop: Optional[asyncio.AbstractEventLoop] = None
@@ -90,7 +416,7 @@ class SimulationService:
                 action="INITIALIZE",
                 reason="System ready for simulation initialization.",
                 is_override=False,
-                timestamp=datetime.utcnow().isoformat(),
+                timestamp=datetime.now(timezone.utc).isoformat(),
             )
         )
 
@@ -111,11 +437,34 @@ class SimulationService:
         decision_interval: float = 5.0,
         enable_emergency: bool = True,
         gui: bool = False,
-    ) -> Tuple[bool, str]:
-        """Starts a new simulation run in the background thread."""
+        startup_timeout_s: float = 10.0,
+        checkpoint_path: Optional[str] = None,
+    ) -> StartupResult:
+        """
+        Starts a new simulation run in the background thread with synchronous
+        readiness handshaking. Blocks caller until worker confirms READY or FAILED,
+        or startup_timeout_s expires.
+        """
+        start_request_time = time.time()
+        resolved_checkpoint_path = resolve_checkpoint_path(mode, checkpoint_path)
         with self._lock:
-            if self._running:
-                return False, "Simulation is already running. Please stop or reset first."
+            # Check if active simulation exists, previous worker is still terminating, or startup in progress
+            if (
+                self._running
+                or (self._thread and self._thread.is_alive())
+                or self._startup_status in (
+                    StartupStatus.REQUESTED,
+                    StartupStatus.STARTING,
+                    StartupStatus.CONNECTING,
+                )
+            ):
+                return StartupResult(
+                    False,
+                    "Simulation is already running or previous worker thread is still cleaning up. Please wait or stop/reset first.",
+                    StartupStatus.FAILED,
+                    error="ALREADY_RUNNING",
+                    run_uuid=self._current_run_uuid,
+                )
 
             self._mode = mode.lower()
             self._duration = duration
@@ -127,14 +476,27 @@ class SimulationService:
 
             self._paused = False
             self._stop_requested = False
+        with self._lock:
+            self._latest_vehicles = []
             self._error_message = None
             self._current_sim_time = 0.0
             self._latest_states = {}
             self._decisions_log = []
             self._emergency_events = []
+            self._cached_metrics = {}
+            self._active_sumo_process = None
+            self._active_sumo_pid = None
+            self._watchdog_escalated = False
+
+            # Reset startup synchronization
+            self._startup_event.clear()
+            self._startup_result = None
+            self._startup_status = StartupStatus.REQUESTED
 
             run_uuid = f"run_{uuid.uuid4().hex[:12]}"
             self._current_run_uuid = run_uuid
+            self._sequence_number = 0
+            self._command_queue = queue.Queue(maxsize=32)
 
             # Create Database Record
             db = SessionLocal()
@@ -142,11 +504,11 @@ class SimulationService:
                 run_rec = SimulationRun(
                     run_uuid=run_uuid,
                     mode=self._mode,
-                    status="RUNNING",
+                    status="STARTING",
                     seed=self._seed,
                     duration_requested=self._duration,
                     duration_simulated=0.0,
-                    started_at=datetime.utcnow(),
+                    started_at=datetime.now(timezone.utc),
                 )
                 db.add(run_rec)
                 db.commit()
@@ -159,26 +521,94 @@ class SimulationService:
             finally:
                 db.close()
 
-            # Record Start Decision
-            self._record_decision(
-                sim_time=0.0,
-                junction_id="SYSTEM",
-                current_phase=0,
-                target_phase=None,
-                action="START",
-                reason=f"Started {self._mode.upper()} simulation (Seed: {self._seed}, Duration: {self._duration}s).",
+            logger.info(
+                f"Simulation startup requested (UUID: {run_uuid}, mode: {self._mode}, timeout: {startup_timeout_s}s)"
             )
 
             # Spawn Worker Thread
-            self._running = True
             self._thread = threading.Thread(
                 target=self._run_simulation_worker,
+                args=(resolved_checkpoint_path,) if resolved_checkpoint_path is not None else (),
                 daemon=True,
                 name="SumoSimulationWorker",
             )
             self._thread.start()
 
-            return True, f"Simulation started in {self._mode} mode (UUID: {run_uuid})"
+        # Wait outside lock for worker thread to signal readiness or failure
+        signaled = self._startup_event.wait(timeout=startup_timeout_s)
+
+        if not signaled:
+            # Startup timed out!
+            elapsed = time.time() - start_request_time
+            logger.critical(
+                f"Simulation startup timed out after {elapsed:.2f}s (Session: {run_uuid}). "
+                "Initiating watchdog cleanup..."
+            )
+            with self._lock:
+                self._startup_status = StartupStatus.FAILED
+                self._error_message = f"Simulation startup timed out after {startup_timeout_s:.1f}s."
+                self._stop_requested = True
+                proc_to_kill = self._active_sumo_process
+                pid_to_kill = self._active_sumo_pid
+
+            # Escalate watchdog if process was launched
+            if proc_to_kill or pid_to_kill:
+                self._escalate_process_watchdog(proc_to_kill, pid_to_kill, run_uuid)
+
+            # Join worker thread
+            if self._thread and self._thread.is_alive():
+                self._thread.join(timeout=2.0)
+
+            # Finalize cleanup with lock
+            with self._lock:
+                self._cleanup_sim(final_status="ERROR")
+
+            return StartupResult(
+                False,
+                f"Simulation startup timed out after {startup_timeout_s:.1f}s.",
+                StartupStatus.FAILED,
+                pid=pid_to_kill,
+                startup_duration_s=elapsed,
+                error="STARTUP_TIMEOUT",
+                run_uuid=run_uuid,
+            )
+
+        # Worker signaled: inspect startup result
+        res = self._startup_result
+        if res is None:
+            with self._lock:
+                res = StartupResult(
+                    False,
+                    "Simulation startup failed with unknown state.",
+                    StartupStatus.FAILED,
+                    run_uuid=run_uuid,
+                )
+
+        if res.success:
+            with self._lock:
+                self._running = True
+                self._startup_status = StartupStatus.READY
+                self._update_db_status("RUNNING")
+                self._record_decision(
+                    sim_time=0.0,
+                    junction_id="SYSTEM",
+                    current_phase=0,
+                    target_phase=None,
+                    action="START",
+                    reason=f"Started {self._mode.upper()} simulation (Seed: {self._seed}, PID: {res.pid}, Duration: {self._duration}s).",
+                )
+            logger.info(
+                f"Simulation startup confirmed READY (UUID: {run_uuid}, PID: {res.pid}, duration: {res.startup_duration_s:.2f}s)"
+            )
+            return res
+        else:
+            # Worker failed during startup
+            logger.error(
+                f"Simulation startup FAILED (UUID: {run_uuid}, duration: {res.startup_duration_s:.2f}s, reason: {res.message})"
+            )
+            if self._thread and self._thread.is_alive():
+                self._thread.join(timeout=2.0)
+            return res
 
     def pause_simulation(self) -> Tuple[bool, str]:
         """Safely pauses the running simulation."""
@@ -220,31 +650,148 @@ class SimulationService:
             self._update_db_status("RUNNING")
             return True, "Simulation resumed successfully."
 
-    def stop_simulation(self) -> Tuple[bool, str]:
-        """Stops the simulation and safely releases SUMO/TraCI resources."""
+    def _escalate_process_watchdog(
+        self,
+        target_process: Optional[subprocess.Popen],
+        target_pid: Optional[int],
+        target_uuid: Optional[str],
+    ) -> bool:
+        """
+        Controlled Tier 2 OS-level process watchdog escalation.
+        Operates strictly on the verified subprocess.Popen handle and PID
+        belonging to the specified session.
+        Never executes global taskkill or pkill commands.
+        Never calls TraCI methods from this thread.
+        """
+        if not target_process and target_pid is None:
+            logger.warning("Watchdog escalation skipped: No active process handle or PID recorded.")
+            return False
+
+        logger.critical(
+            f"WATCHDOG TRIGGERED: Terminating unresponsive SUMO process for Session UUID={target_uuid}, PID={target_pid}."
+        )
+
         with self._lock:
-            if not self._running and not self._sim:
+            self._watchdog_escalated = True
+            self._record_decision(
+                sim_time=self._current_sim_time,
+                junction_id="SYSTEM",
+                current_phase=0,
+                target_phase=None,
+                action="WATCHDOG_TERMINATION",
+                reason=f"Watchdog escalated: Terminating unresponsive SUMO process PID {target_pid} (Session: {target_uuid}).",
+            )
+
+        # Session PID verification: ensure handle matches target_pid
+        if target_process is not None and target_pid is not None:
+            if target_process.pid != target_pid:
+                logger.error(
+                    f"PID mismatch during watchdog escalation: handle PID {target_process.pid} != target PID {target_pid}. Aborting termination."
+                )
+                return False
+
+        # If process object exists and has already exited, nothing to do
+        if target_process is not None and target_process.poll() is not None:
+            logger.info(f"Target process PID {target_pid} already exited with code {target_process.returncode}.")
+            return True
+
+        # Tier 2a: Graceful process termination via target_process.terminate()
+        terminated_ok = False
+        if target_process is not None:
+            try:
+                logger.info(f"Watchdog: Sending terminate() to PID {target_pid}...")
+                target_process.terminate()
+                target_process.wait(timeout=3.0)
+                logger.info(f"Target process PID {target_pid} terminated successfully via terminate().")
+                terminated_ok = True
+            except subprocess.TimeoutExpired:
+                logger.warning(f"Target process PID {target_pid} did not terminate within 3.0s; escalating to kill()...")
+            except Exception as e:
+                logger.warning(f"Error calling terminate() on process handle: {e}")
+
+            if not terminated_ok:
+                # Tier 2b: Forced process termination via target_process.kill()
+                try:
+                    logger.critical(f"Watchdog: Sending kill() to PID {target_pid}...")
+                    target_process.kill()
+                    target_process.wait(timeout=2.0)
+                    logger.info(f"Target process PID {target_pid} terminated successfully via kill().")
+                    terminated_ok = True
+                except subprocess.TimeoutExpired:
+                    logger.error(f"Target process PID {target_pid} failed to terminate within 2.0s after kill().")
+                except Exception as e:
+                    logger.error(f"Error calling kill() on process handle: {e}")
+
+        return terminated_ok
+
+    def stop_simulation(self) -> Tuple[bool, str]:
+        """
+        Thread-safely requests the simulation worker to stop and wait for clean termination.
+        TraCI resources are closed EXCLUSIVELY by the simulation worker thread in its finally block.
+        If the worker thread fails to terminate within 5.0s, the Tier 2 process watchdog
+        escalates to terminate the specific SUMO process at the OS level.
+        """
+        shutdown_request_time = time.time()
+        with self._lock:
+            # If not running and worker thread is not alive, reject
+            if not self._running and not self._sim and (not self._thread or not self._thread.is_alive()):
                 return False, "Simulation is not currently running."
 
             self._stop_requested = True
             self._paused = False
+            target_proc = self._active_sumo_process
+            target_pid = self._active_sumo_pid
+            target_uuid = self._current_run_uuid
 
-        # Wait for thread to finish outside lock
+        logger.info(
+            f"Shutdown requested for session {target_uuid} (PID: {target_pid}) at {datetime.now(timezone.utc).isoformat()}"
+        )
+
+        # Tier 1: Wait for worker thread to finish its execution and finally cleanup outside lock
         if self._thread and self._thread.is_alive():
             self._thread.join(timeout=5.0)
 
-        with self._lock:
-            self._cleanup_sim(final_status="STOPPED")
-            return True, "Simulation stopped successfully and resources released."
+            # Tier 2: Watchdog escalation if worker thread is still alive after Tier 1 grace period
+            if self._thread.is_alive():
+                logger.warning(
+                    f"Simulation worker thread did not terminate within 5.0s join timeout (Session: {target_uuid}). "
+                    "Escalating to Tier 2 process watchdog."
+                )
+                self._escalate_process_watchdog(target_proc, target_pid, target_uuid)
+
+                # Wait up to 2.0s for worker thread to exit now that process is killed / socket broken
+                self._thread.join(timeout=2.0)
+                if self._thread.is_alive():
+                    logger.critical(
+                        f"Simulation worker thread remained alive even after watchdog termination (Session: {target_uuid})."
+                    )
+                    return False, "Simulation worker did not terminate within timeout; shutdown pending; watchdog escalated."
+                else:
+                    logger.info(f"Worker thread exited after watchdog termination (Session: {target_uuid}).")
+                    return True, "Simulation stopped via watchdog process termination."
+
+        graceful_duration = time.time() - shutdown_request_time
+        logger.info(f"Graceful simulation shutdown succeeded in {graceful_duration:.2f}s (Session: {target_uuid}).")
+        return True, "Simulation stopped successfully and resources released."
 
     def reset_simulation(self) -> Tuple[bool, str]:
         """Resets the simulation state and cleans up resources."""
-        self.stop_simulation()
+        ok, msg = self.stop_simulation()
+        if not ok and self._thread and self._thread.is_alive():
+            return False, f"Cannot reset simulation: {msg}"
+
         with self._lock:
             self._current_sim_time = 0.0
             self._latest_states = {}
             self._cached_metrics = {}
+            self._latest_vehicles = []
             self._error_message = None
+            self._active_sumo_process = None
+            self._active_sumo_pid = None
+            self._watchdog_escalated = False
+            self._startup_status = "STOPPED"
+            self._sequence_number = 0
+            self._current_run_uuid = None
             self._record_decision(
                 sim_time=0.0,
                 junction_id="SYSTEM",
@@ -255,22 +802,50 @@ class SimulationService:
             )
             return True, "Simulation reset to clean state."
 
+    def _on_process_spawned(self, proc: subprocess.Popen, pid: Optional[int]) -> None:
+        """Callback invoked by SumoManager the exact instant subprocess.Popen is executed."""
+        with self._lock:
+            self._active_sumo_process = proc
+            self._active_sumo_pid = pid
+            logger.info(f"Captured spawned SUMO process handle: PID {pid} (Session: {self._current_run_uuid})")
+
     # ------------------------------------------------------------------
     # Worker Thread
     # ------------------------------------------------------------------
 
-    def _run_simulation_worker(self) -> None:
+    def _run_simulation_worker(self, checkpoint_path: Optional[Path] = None) -> None:
         """Internal background worker running the SUMO simulation loop."""
+        start_worker_time = time.time()
+        session_uuid = self._current_run_uuid
+        with self._lock:
+            self._startup_status = StartupStatus.STARTING
+
         config_path = SUMO_CONFIG_PATH
         if not config_path.is_file():
             err_msg = f"SUMO config file not found: {config_path}"
             logger.error(err_msg)
+            startup_res = StartupResult(
+                False,
+                err_msg,
+                StartupStatus.FAILED,
+                startup_duration_s=time.time() - start_worker_time,
+                error="CONFIG_NOT_FOUND",
+                run_uuid=session_uuid,
+            )
             with self._lock:
+                self._startup_status = StartupStatus.FAILED
                 self._error_message = err_msg
+                self._startup_result = startup_res
+                self._startup_event.set()
                 self._cleanup_sim(final_status="ERROR")
             return
 
+        final_st = "STOPPED"
+        sim: Optional[MultiIntersectionSimulation] = None
         try:
+            with self._lock:
+                self._startup_status = StartupStatus.STARTING
+
             sim = MultiIntersectionSimulation(
                 sumocfg_path=config_path,
                 mode=self._mode,
@@ -278,12 +853,68 @@ class SimulationService:
                 step_length=self._step_length,
                 decision_interval=self._decision_interval,
                 enable_emergency=self._enable_emergency,
+                on_process_spawned=self._on_process_spawned,
+                checkpoint_path=checkpoint_path,
             )
             with self._lock:
+                # Cancel if shutdown or session replaced before connection
+                if self._stop_requested or self._current_run_uuid != session_uuid:
+                    logger.warning(
+                        f"Worker for session {session_uuid} was cancelled before sim.start() was called. Aborting."
+                    )
+                    return
                 self._sim = sim
+                self._startup_status = StartupStatus.CONNECTING
 
+            logger.info(f"Worker starting SUMO/TraCI (Session: {session_uuid}, seed: {self._seed})...")
             sim.start(seed=self._seed)
-            logger.info("SUMO TraCI connection initialized.")
+
+            # Store confirmed process handle and PID
+            proc = sim.process
+            pid = sim.pid
+            with self._lock:
+                if proc is not None:
+                    self._active_sumo_process = proc
+                if pid is not None:
+                    self._active_sumo_pid = pid
+
+            # Validate connection readiness
+            if not sim.sumo_manager.is_running:
+                raise RuntimeError("SUMO manager reported not running after start().")
+
+            startup_dur = time.time() - start_worker_time
+            startup_res = StartupResult(
+                True,
+                f"Simulation started in {self._mode} mode (UUID: {session_uuid}, PID: {pid})",
+                StartupStatus.READY,
+                pid=pid,
+                startup_duration_s=startup_dur,
+                run_uuid=session_uuid,
+            )
+            with self._lock:
+                # Late worker / timeout guard:
+                # Do NOT publish READY if stop was requested, if startup already timed out,
+                # or if the active session UUID no longer matches this worker's session_uuid!
+                if (
+                    self._stop_requested
+                    or self._current_run_uuid != session_uuid
+                    or self._startup_status != StartupStatus.CONNECTING
+                ):
+                    logger.warning(
+                        f"Worker for session {session_uuid} completed startup after shutdown/timeout was requested "
+                        f"(active UUID: {self._current_run_uuid}, status: {self._startup_status}). Aborting startup publish."
+                    )
+                    if not self._startup_event.is_set():
+                        self._startup_event.set()
+                    return
+
+                self._startup_status = StartupStatus.READY
+                self._startup_result = startup_res
+                self._startup_event.set()
+
+            logger.info(
+                f"SUMO TraCI connection initialized and ready (Session: {session_uuid}, PID: {pid}, duration: {startup_dur:.2f}s)."
+            )
 
             step_counter = 0
             while not self._stop_requested:
@@ -291,6 +922,9 @@ class SimulationService:
                 if self._paused:
                     time.sleep(0.1)
                     continue
+
+                # Process queued TraCI commands exclusively on worker thread prior to simulationStep()
+                self._process_command_queue(sim, self._current_sim_time)
 
                 # Step simulation
                 sim_time = sim.sumo_manager.step()
@@ -301,10 +935,12 @@ class SimulationService:
                     sim.emergency_coordinator.update(sim_time)
                     self._check_emergency_progress(sim, sim_time)
 
-                # Coordinated / Baseline Decision Control
+                # Coordinated / MARL / Baseline Decision Control
                 if sim_time >= sim._next_decision_time:
                     sim._next_decision_time += sim.decision_interval
-                    if sim.mode == "coordinated":
+                    if sim.mode in ("marl_dqn", "marl_ppo") and sim.marl_controller is not None:
+                        self._run_marl_with_logging(sim, states, sim_time)
+                    elif sim.mode == "coordinated":
                         self._run_coordinated_with_logging(sim, states, sim_time)
 
                 # Collect Metrics
@@ -315,10 +951,35 @@ class SimulationService:
                 )
                 sim.metrics_collector.record_step(sim_time, states, emergency_duration=emergency_duration)
 
+                # Extract active vehicle positions for 3D digital twin
+                active_vehicles: List[Dict[str, Any]] = []
+                try:
+                    veh_ids = traci.vehicle.getIDList()
+                    for vid in veh_ids:
+                        vpos = traci.vehicle.getPosition(vid)
+                        vangle = traci.vehicle.getAngle(vid)
+                        vspeed = traci.vehicle.getSpeed(vid)
+                        vtype = traci.vehicle.getTypeID(vid)
+                        vedge = traci.vehicle.getRoadID(vid)
+                        velev = 8.0 if vedge in FLYOVER_EDGE_IDS else (-4.5 if vedge in UNDERPASS_EDGE_IDS else 0.0)
+                        active_vehicles.append({
+                            "id": vid,
+                            "type": vtype,
+                            "x": round(float(vpos[0]), 2),
+                            "y": round(float(vpos[1]), 2),
+                            "z": velev,
+                            "angle": round(float(vangle), 1),
+                            "speed": round(float(vspeed), 2),
+                            "edge": vedge,
+                        })
+                except Exception as veh_exc:
+                    logger.debug(f"Vehicle telemetry extraction notice: {veh_exc}")
+
                 # Update in-memory telemetry
                 with self._lock:
                     self._current_sim_time = sim_time
                     self._latest_states = states
+                    self._latest_vehicles = active_vehicles
                     self._cached_metrics = self._extract_metrics_summary(sim, states, sim_time)
 
                 # Periodic DB write (every 5 seconds)
@@ -332,34 +993,78 @@ class SimulationService:
                 # Check if target duration reached
                 if sim_time >= self._duration:
                     logger.info(f"Target duration {self._duration}s reached.")
+                    final_st = "COMPLETED"
                     break
 
                 # Sleep to synchronize with real-time if necessary
                 time.sleep(0.02)
 
-            # Simulation completed cleanly
-            with self._lock:
-                final_st = "COMPLETED" if self._current_sim_time >= self._duration else "STOPPED"
-                self._cleanup_sim(final_status=final_st)
+            if final_st != "COMPLETED":
+                final_st = "STOPPED"
 
         except Exception as exc:
-            logger.exception(f"Simulation run failed: {exc}")
+            startup_dur = time.time() - start_worker_time
+            err_msg = str(exc)
+            logger.exception(f"Simulation worker exception (Session: {session_uuid}): {err_msg}")
             with self._lock:
-                self._error_message = str(exc)
-                self._cleanup_sim(final_status="ERROR")
+                self._error_message = err_msg
+                # If startup has not completed yet, signal failure to waiting caller
+                if not self._startup_event.is_set():
+                    self._startup_status = StartupStatus.FAILED
+                    self._startup_result = StartupResult(
+                        False,
+                        f"Simulation startup failed: {err_msg}",
+                        StartupStatus.FAILED,
+                        pid=self._active_sumo_pid,
+                        startup_duration_s=startup_dur,
+                        error=err_msg,
+                        run_uuid=session_uuid,
+                    )
+                    self._startup_event.set()
+            final_st = "ERROR"
+        finally:
+            with self._lock:
+                self._cleanup_sim(final_status=final_st)
 
     def _cleanup_sim(self, final_status: str = "STOPPED") -> None:
         """Safely closes TraCI, updates database, and resets state flags."""
+        executing_thread = threading.current_thread().name
+        logger.info(f"Cleaning up simulation resources (invoked by thread: {executing_thread}, status: {final_status})")
+
+        if self._watchdog_escalated:
+            final_status = "KILLED_BY_WATCHDOG"
+
         if self._sim:
             try:
                 self._sim.close()
-            except Exception as e:
+            except (traci.exceptions.FatalTraCIError, ConnectionError, BrokenPipeError, Exception) as e:
                 logger.warning(f"Error during sim.close(): {e}")
             self._sim = None
 
+        self._active_sumo_process = None
+        self._active_sumo_pid = None
         self._running = False
         self._paused = False
         self._stop_requested = False
+        with self._lock:
+            self._latest_vehicles = []
+        if not self._watchdog_escalated:
+            self._startup_status = final_status
+        else:
+            self._startup_status = "KILLED_BY_WATCHDOG"
+
+        # Drain and cleanly cancel any pending commands
+        if self._command_queue is not None:
+            while not self._command_queue.empty():
+                try:
+                    cmd = self._command_queue.get_nowait()
+                    cmd.cancel_pending("SIMULATION_STOPPED", self._current_sim_time, executing_thread)
+                except queue.Empty:
+                    break
+            self._command_queue = None
+
+        # Broadcast terminal state update to active WebSocket clients
+        self._broadcast_telemetry()
 
         # Finalize Database record
         if self._current_run_id:
@@ -368,7 +1073,7 @@ class SimulationService:
                 run_rec = db.query(SimulationRun).filter(SimulationRun.id == self._current_run_id).first()
                 if run_rec:
                     run_rec.status = final_status
-                    run_rec.completed_at = datetime.utcnow()
+                    run_rec.completed_at = datetime.now(timezone.utc)
                     run_rec.duration_simulated = self._current_sim_time
                     if self._error_message:
                         run_rec.error_message = self._error_message
@@ -395,9 +1100,26 @@ class SimulationService:
         sim_time: float,
     ) -> Dict[str, Any]:
         """Calculates consolidated corridor metrics from states and collector."""
-        summary = sim.metrics_collector.compute_summary()
-        total_veh = sum(st.vehicle_count for st in states.values())
-        mean_speed = sum(st.average_speed_kmh for st in states.values()) / max(1, len(states))
+        emergency_metrics = sim.emergency_coordinator.metrics
+        emergency_duration = (
+            emergency_metrics.total_traversal_duration
+            if emergency_metrics.completed
+            else None
+        )
+        summary = sim.metrics_collector.compute_summary(
+            emergency_duration=emergency_duration,
+            emergency_cleared=emergency_metrics.completed,
+        )
+        # SUMO's network-wide count is sampled once per step by the collector.
+        # Junction approach vehicle counts can overlap and omit vehicles outside
+        # those approach lanes, so they are not an active-network denominator.
+        total_veh = summary.current_active_vehicles
+        speed_vehicle_count = sum(st.vehicle_count for st in states.values())
+        mean_speed = (
+            sum(st.average_speed_kmh * st.vehicle_count for st in states.values()) / speed_vehicle_count
+            if speed_vehicle_count > 0
+            else None
+        )
         mean_q = sum(st.total_queue for st in states.values()) / max(1, len(states))
         max_q = max((st.total_queue for st in states.values()), default=0)
         total_wait = sum(st.total_waiting_time for st in states.values())
@@ -406,14 +1128,22 @@ class SimulationService:
             "simulation_time": sim_time,
             "total_vehicles": total_veh,
             "throughput_vehicles": summary.total_corridor_trips_completed,
-            "mean_speed_kmh": round(mean_speed, 2),
+            "mean_corridor_travel_time_s": summary.mean_corridor_travel_time_s,
+            "mean_speed_kmh": round(mean_speed, 2) if mean_speed is not None else None,
             "total_corridor_waiting_time_s": round(total_wait, 2),
+            "mean_instantaneous_waiting_time_s": summary.mean_instantaneous_waiting_time_s,
+            "cumulative_delay_veh_s": summary.cumulative_delay_veh_s,
+            "cumulative_waiting_time_s": summary.cumulative_delay_veh_s,
             "mean_corridor_queue": round(mean_q, 2),
             "max_corridor_queue": max_q,
             "total_co2_kg": round(summary.total_co2_kg, 4),
             "total_nox_g": round(summary.total_nox_g, 4),
             "total_fuel_liters": round(summary.total_fuel_liters, 4),
-            "emergency_traversal_duration_s": round(summary.emergency_traversal_duration_s, 2),
+            "emergency_traversal_duration_s": (
+                round(summary.emergency_traversal_duration_s, 2)
+                if summary.emergency_traversal_duration_s is not None
+                else None
+            ),
             "junction_queues": {j: st.total_queue for j, st in states.items()},
         }
 
@@ -477,7 +1207,46 @@ class SimulationService:
         if metrics.completed and self._emergency_events:
             self._emergency_events[-1].completed = True
             self._emergency_events[-1].preemption_active = False
+            self._emergency_events[-1].arrival_time = metrics.j1_arrival_time
+            self._emergency_events[-1].clearance_time = metrics.j3_clearance_time
             self._emergency_events[-1].traversal_duration = metrics.total_traversal_duration
+
+    def _run_marl_with_logging(
+        self,
+        sim: MultiIntersectionSimulation,
+        states: Dict[str, IntersectionState],
+        sim_time: float,
+    ) -> None:
+        """Executes MARL policy decisions while capturing rationales."""
+        if not sim.marl_controller:
+            return
+
+        ai_obs = sim.get_ai_observations(states)
+        decisions = sim.marl_controller.decide(ai_obs, sim_time, eval_mode=True)
+        executed_ops = sim.marl_controller.apply_decisions(decisions, sim_time)
+
+        for j_id, dec in decisions.items():
+            op_str = executed_ops.get(j_id, "NONE")
+            logger.info(
+                f"[MARL RUNTIME] SimTime={sim_time:.1f}s | Mode={sim.mode} | Junction={j_id} | "
+                f"Agent={sim.marl_controller.algorithm.upper()} | "
+                f"ObsShape={dec.get('observation_shape', (14,))} | "
+                f"Action={dec.get('action_name')} ({dec.get('action')}) | "
+                f"TargetPhase={dec.get('target_phase')} | ExecutedOp={op_str} | "
+                f"Fallback={dec.get('is_fallback')}"
+            )
+            action_name = dec.get("action_name", "ACT")
+            obs_q = states[j_id].total_queue if j_id in states else None
+            self._record_decision(
+                sim_time=sim_time,
+                junction_id=j_id,
+                current_phase=dec.get("current_phase", 0),
+                target_phase=dec.get("target_phase"),
+                action=action_name,
+                reason=dec.get("reason", "MARL policy decision executed."),
+                controller=sim.mode,
+                observed_queue=obs_q,
+            )
 
     def _run_coordinated_with_logging(
         self,
@@ -496,29 +1265,56 @@ class SimulationService:
             upstream_inflow_bonus = int(sim.hub.get_expected_inflow("J2") * 5)
             effective_hosur_q = hosur_q + upstream_inflow_bonus
             elapsed = j2_ctrl.get_green_elapsed(sim_time)
+            j2_q = j2_state.total_queue
 
             if curr_phase == 0:  # Hosur Green
                 if elapsed >= j2_ctrl.min_green and madiwala_q > effective_hosur_q + 2:
                     j2_ctrl.request_switch(target_green_phase=2, sim_time=sim_time)
                     self._record_decision(
                         sim_time, "J2", 0, 2, "SWITCH",
-                        f"Cross-traffic demand (Madiwala: {madiwala_q} veh) exceeded Hosur pressure ({effective_hosur_q} veh)."
+                        f"Cross-traffic demand (Madiwala: {madiwala_q} veh) exceeded Hosur pressure ({effective_hosur_q} veh).",
+                        controller="coordinated",
+                        observed_queue=j2_q,
                     )
                 elif effective_hosur_q > 0 and effective_hosur_q >= madiwala_q:
                     j2_ctrl.extend_current_green(sim_time)
                     self._record_decision(
                         sim_time, "J2", 0, 0, "EXTEND",
-                        f"Extended Hosur Road green phase. Inflow bonus: +{upstream_inflow_bonus} vehicles from J1."
+                        f"Extended Hosur Road green phase. Inflow bonus: +{upstream_inflow_bonus} vehicles from J1.",
+                        controller="coordinated",
+                        observed_queue=j2_q,
+                    )
+                else:
+                    self._record_decision(
+                        sim_time, "J2", 0, 0, "KEEP",
+                        f"Maintaining Hosur Road green phase ({elapsed:.1f}s elapsed, min: {j2_ctrl.min_green:.0f}s).",
+                        controller="coordinated",
+                        observed_queue=j2_q,
                     )
             elif curr_phase == 2:  # Madiwala Green
                 if elapsed >= j2_ctrl.min_green and effective_hosur_q > madiwala_q + 2:
                     j2_ctrl.request_switch(target_green_phase=0, sim_time=sim_time)
                     self._record_decision(
                         sim_time, "J2", 2, 0, "SWITCH",
-                        f"Corridor arterial queue ({effective_hosur_q} veh) reclaimed green from Madiwala ({madiwala_q} veh)."
+                        f"Corridor arterial queue ({effective_hosur_q} veh) reclaimed green from Madiwala ({madiwala_q} veh).",
+                        controller="coordinated",
+                        observed_queue=j2_q,
                     )
                 elif madiwala_q > 0 and madiwala_q >= effective_hosur_q:
                     j2_ctrl.extend_current_green(sim_time)
+                    self._record_decision(
+                        sim_time, "J2", 2, 2, "EXTEND",
+                        f"Extended Madiwala Road green phase. Cross-traffic demand: {madiwala_q} veh.",
+                        controller="coordinated",
+                        observed_queue=j2_q,
+                    )
+                else:
+                    self._record_decision(
+                        sim_time, "J2", 2, 2, "KEEP",
+                        f"Maintaining Madiwala Road green phase ({elapsed:.1f}s elapsed, min: {j2_ctrl.min_green:.0f}s).",
+                        controller="coordinated",
+                        observed_queue=j2_q,
+                    )
 
         # J1 & J3 Progression Alignment
         for j_id, target_corridor_phase in [("J1", 2), ("J3", 2)]:
@@ -528,22 +1324,47 @@ class SimulationService:
                 q_cross = states[j_id].approach_queues.get("side_cross", 0)
                 curr_p = ctrl.get_phase()
                 elapsed = ctrl.get_green_elapsed(sim_time)
+                j_q = states[j_id].total_queue
 
                 if curr_p == target_corridor_phase:
                     if q_corridor > 0 and elapsed < ctrl.max_green:
                         ctrl.extend_current_green(sim_time)
+                        self._record_decision(
+                            sim_time, j_id, curr_p, curr_p, "EXTEND",
+                            f"Holding corridor green for platoon progression ({q_corridor} veh queued).",
+                            controller="coordinated",
+                            observed_queue=j_q,
+                        )
                     elif elapsed >= ctrl.min_green and q_cross > q_corridor + 2:
                         ctrl.request_switch(target_green_phase=0, sim_time=sim_time)
                         self._record_decision(
                             sim_time, j_id, curr_p, 0, "SWITCH",
-                            f"Side-cross queue ({q_cross} veh) exceeded corridor queue ({q_corridor} veh)."
+                            f"Side-cross queue ({q_cross} veh) exceeded corridor queue ({q_corridor} veh).",
+                            controller="coordinated",
+                            observed_queue=j_q,
+                        )
+                    else:
+                        self._record_decision(
+                            sim_time, j_id, curr_p, curr_p, "KEEP",
+                            f"Maintaining corridor green ({elapsed:.1f}s elapsed).",
+                            controller="coordinated",
+                            observed_queue=j_q,
                         )
                 else:
                     if elapsed >= ctrl.min_green and q_corridor > q_cross:
                         ctrl.request_switch(target_green_phase=target_corridor_phase, sim_time=sim_time)
                         self._record_decision(
                             sim_time, j_id, curr_p, target_corridor_phase, "SWITCH",
-                            f"Corridor progression aligned green phase {target_corridor_phase}."
+                            f"Corridor progression aligned green phase {target_corridor_phase}.",
+                            controller="coordinated",
+                            observed_queue=j_q,
+                        )
+                    else:
+                        self._record_decision(
+                            sim_time, j_id, curr_p, curr_p, "KEEP",
+                            f"Serving side cross street ({elapsed:.1f}s elapsed).",
+                            controller="coordinated",
+                            observed_queue=j_q,
                         )
 
     def _record_decision(
@@ -555,8 +1376,19 @@ class SimulationService:
         action: str,
         reason: str,
         is_override: bool = False,
+        controller: Optional[str] = None,
+        observed_queue: Optional[int] = None,
+        queue_after: Optional[int] = None,
     ) -> None:
         """Appends decision to in-memory history and database."""
+        # Update queue_after on the most recent prior decision for this junction if valid
+        if observed_queue is not None:
+            for past_dec in reversed(self._decisions_log):
+                if past_dec.junction_id == junction_id and past_dec.observed_queue is not None:
+                    if past_dec.queue_after is None:
+                        past_dec.queue_after = observed_queue
+                    break
+
         item = DecisionItemSchema(
             id=len(self._decisions_log) + 1,
             simulation_time=sim_time,
@@ -566,7 +1398,10 @@ class SimulationService:
             action=action,
             reason=reason,
             is_override=is_override,
-            timestamp=datetime.utcnow().isoformat(),
+            timestamp=datetime.now(timezone.utc).isoformat(),
+            controller=controller or getattr(self, "_mode", "coordinated"),
+            observed_queue=observed_queue,
+            queue_after=queue_after,
         )
         self._decisions_log.append(item)
         if len(self._decisions_log) > 200:
@@ -613,70 +1448,440 @@ class SimulationService:
         if not self.loop or not self.loop.is_running():
             return
 
+        with self._lock:
+            self._sequence_number += 1
+            seq = self._sequence_number
+            session_uuid = self._current_run_uuid
+            sim_time = self._current_sim_time
+            running = self._running
+            paused = self._paused
+            mode = self._mode
+
         payload = {
             "type": "TRAFFIC_UPDATE",
-            "simulation_time": self._current_sim_time,
-            "status": "RUNNING" if self._running and not self._paused else ("PAUSED" if self._paused else "STOPPED"),
-            "mode": self._mode,
+            "sequence_number": seq,
+            "session_uuid": session_uuid,
+            "timestamp_utc": datetime.now(timezone.utc).isoformat(),
+            "simulation_time": sim_time,
+            "status": "RUNNING" if running and not paused else ("PAUSED" if paused else "STOPPED"),
+            "mode": mode,
             "metrics": self.get_metrics(),
             "junctions": self.get_live_junctions(),
             "signals": self.get_signals(),
             "emergencies": self.get_emergencies(),
             "decisions": [d.model_dump() for d in self._decisions_log[-5:]],
+            "vehicles": self.get_live_vehicles(),
         }
 
         try:
-            asyncio.run_coroutine_threadsafe(ws_manager.broadcast(payload), self.loop)
+            ws_manager.submit_telemetry(payload, self.loop)
         except Exception as exc:
             logger.debug(f"Broadcast threadsafe scheduling error: {exc}")
 
     # ------------------------------------------------------------------
-    # Manual Operator Signal Override
+    # Thread-Safe TraCI Command Queue & Manual Operator Override
     # ------------------------------------------------------------------
+
+    def _process_command_queue(
+        self,
+        sim: MultiIntersectionSimulation,
+        current_sim_time: float,
+    ) -> None:
+        """
+        Processes pending traffic-signal override commands exclusively inside
+        the simulation worker thread prior to simulationStep().
+
+        Enforces:
+          - Atomic PENDING -> RUNNING state transition.
+          - Session matching (stale commands rejected).
+          - Non-expired timeout checks.
+          - Emergency green-wave preemption priority (rejects if junction is locked).
+          - Legal phase indexes {0, 1, 2, 3}.
+          - Minimum green constraints and yellow clearance transitions.
+          - Per-command exception isolation (non-fatal errors do not kill worker).
+          - Explicit simulation failure on fatal TraCI connection errors.
+        """
+        if self._command_queue is None:
+            return
+
+        worker_thread_name = threading.current_thread().name
+        now = time.time()
+
+        while not self._command_queue.empty():
+            try:
+                cmd = self._command_queue.get_nowait()
+            except queue.Empty:
+                break
+
+            try:
+                # 1. Check expiration or already cancelled/timed out while PENDING
+                if cmd.is_expired(now):
+                    cmd.cancel_pending("TIMED_OUT", current_sim_time, worker_thread_name)
+                    continue
+
+                if not cmd.try_transition_to_running():
+                    # Caller cancelled or timed out while PENDING; definitely do not execute
+                    logger.debug(f"Command {cmd.command_id} was cancelled/timed-out before worker execution.")
+                    continue
+
+                # 2. Check session validity (stale run rejection)
+                if cmd.session_uuid != self._current_run_uuid:
+                    res = CommandResult(
+                        success=False,
+                        message=f"Command rejected: Session {cmd.session_uuid} does not match active session {self._current_run_uuid}.",
+                        status=CommandStatus.CANCELLED,
+                        junction_id=cmd.junction_id,
+                        applied_phase=cmd.target_phase,
+                        simulation_time=current_sim_time,
+                        command_id=cmd.command_id,
+                        rejection_reason="SESSION_EXPIRED",
+                        executing_thread=worker_thread_name,
+                    )
+                    cmd.complete_execution(res)
+                    continue
+
+                # 3. Check junction controller
+                ctrl = sim.controllers.get(cmd.junction_id)
+                if ctrl is None:
+                    res = CommandResult(
+                        success=False,
+                        message=f"Invalid junction ID '{cmd.junction_id}'. Must be J1, J2, or J3.",
+                        status=CommandStatus.REJECTED,
+                        junction_id=cmd.junction_id,
+                        applied_phase=cmd.target_phase,
+                        simulation_time=current_sim_time,
+                        command_id=cmd.command_id,
+                        rejection_reason="INVALID_JUNCTION",
+                        executing_thread=worker_thread_name,
+                    )
+                    cmd.complete_execution(res)
+                    continue
+
+                # 4. Check Emergency Priority Lock (Invariant: Priority over manual override)
+                if ctrl.emergency_locked:
+                    curr_p = ctrl.get_phase()
+                    res = CommandResult(
+                        success=False,
+                        message=f"Override rejected: Junction {cmd.junction_id} is locked by active Emergency Green Wave priority.",
+                        status=CommandStatus.REJECTED,
+                        junction_id=cmd.junction_id,
+                        applied_phase=curr_p,
+                        simulation_time=current_sim_time,
+                        command_id=cmd.command_id,
+                        rejection_reason="EMERGENCY_LOCKED",
+                        executing_thread=worker_thread_name,
+                    )
+                    cmd.complete_execution(res)
+                    with self._lock:
+                        self._record_decision(
+                            sim_time=current_sim_time,
+                            junction_id=cmd.junction_id,
+                            current_phase=curr_p,
+                            target_phase=cmd.target_phase,
+                            action="OVERRIDE_REJECTED",
+                            reason="Rejected manual switch: Junction is locked by active emergency vehicle priority.",
+                            is_override=True,
+                        )
+                    continue
+
+                # 5. Validate phase
+                valid_phases = {0, 1, 2, 3}
+                if cmd.target_phase not in valid_phases:
+                    curr_p = ctrl.get_phase()
+                    res = CommandResult(
+                        success=False,
+                        message=f"Invalid phase index {cmd.target_phase}. Valid phases for {cmd.junction_id} are {sorted(list(valid_phases))}.",
+                        status=CommandStatus.REJECTED,
+                        junction_id=cmd.junction_id,
+                        applied_phase=curr_p,
+                        simulation_time=current_sim_time,
+                        command_id=cmd.command_id,
+                        rejection_reason="INVALID_PHASE",
+                        executing_thread=worker_thread_name,
+                    )
+                    cmd.complete_execution(res)
+                    continue
+
+                current_phase = ctrl.get_phase()
+
+                # 6. Already in target phase (NOOP)
+                if current_phase == cmd.target_phase:
+                    res = CommandResult(
+                        success=True,
+                        message=f"Manual override applied: Junction {cmd.junction_id} is already in target phase {cmd.target_phase}.",
+                        status=CommandStatus.EXECUTED,
+                        junction_id=cmd.junction_id,
+                        applied_phase=cmd.target_phase,
+                        simulation_time=current_sim_time,
+                        command_id=cmd.command_id,
+                        executing_thread=worker_thread_name,
+                    )
+                    cmd.complete_execution(res)
+                    with self._lock:
+                        self._record_decision(
+                            sim_time=current_sim_time,
+                            junction_id=cmd.junction_id,
+                            current_phase=current_phase,
+                            target_phase=cmd.target_phase,
+                            action="MANUAL_OVERRIDE_NOOP",
+                            reason=f"Operator requested phase switch to {cmd.target_phase}; junction already in phase {current_phase}.",
+                            is_override=True,
+                        )
+                    continue
+
+                # 7. Check green phase & min_green constraint
+                if current_phase in ctrl.green_phases:
+                    elapsed = ctrl.get_green_elapsed(current_sim_time)
+                    if elapsed < ctrl.min_green:
+                        remaining = ctrl.min_green - elapsed
+                        msg = (
+                            f"Override rejected: Minimum green time active on {cmd.junction_id} "
+                            f"(elapsed {elapsed:.1f}s < min {ctrl.min_green:.1f}s). Remaining: {remaining:.1f}s."
+                        )
+                        res = CommandResult(
+                            success=False,
+                            message=msg,
+                            status=CommandStatus.REJECTED,
+                            junction_id=cmd.junction_id,
+                            applied_phase=current_phase,
+                            simulation_time=current_sim_time,
+                            command_id=cmd.command_id,
+                            rejection_reason="MIN_GREEN_ACTIVE",
+                            executing_thread=worker_thread_name,
+                        )
+                        cmd.complete_execution(res)
+                        with self._lock:
+                            self._record_decision(
+                                sim_time=current_sim_time,
+                                junction_id=cmd.junction_id,
+                                current_phase=current_phase,
+                                target_phase=cmd.target_phase,
+                                action="OVERRIDE_REJECTED",
+                                reason=f"Rejected manual switch: Minimum green time active ({elapsed:.1f}s < {ctrl.min_green:.1f}s).",
+                                is_override=True,
+                            )
+                        continue
+
+                    # Min green satisfied: initiate switch through yellow transition
+                    switch_ok = ctrl.request_switch(target_green_phase=cmd.target_phase, sim_time=current_sim_time)
+                    if switch_ok:
+                        msg = f"Manual override successfully applied to {cmd.junction_id}: phase switched to {cmd.target_phase}."
+                        res = CommandResult(
+                            success=True,
+                            message=msg,
+                            status=CommandStatus.EXECUTED,
+                            junction_id=cmd.junction_id,
+                            applied_phase=cmd.target_phase,
+                            simulation_time=current_sim_time,
+                            command_id=cmd.command_id,
+                            executing_thread=worker_thread_name,
+                        )
+                        cmd.complete_execution(res)
+                        with self._lock:
+                            self._record_decision(
+                                sim_time=current_sim_time,
+                                junction_id=cmd.junction_id,
+                                current_phase=current_phase,
+                                target_phase=cmd.target_phase,
+                                action="MANUAL_OVERRIDE",
+                                reason=f"Operator manually forced phase switch to {cmd.target_phase}.",
+                                is_override=True,
+                            )
+                    else:
+                        msg = f"Override rejected: Junction {cmd.junction_id} could not execute switch."
+                        res = CommandResult(
+                            success=False,
+                            message=msg,
+                            status=CommandStatus.REJECTED,
+                            junction_id=cmd.junction_id,
+                            applied_phase=current_phase,
+                            simulation_time=current_sim_time,
+                            command_id=cmd.command_id,
+                            rejection_reason="SWITCH_FAILED",
+                            executing_thread=worker_thread_name,
+                        )
+                        cmd.complete_execution(res)
+                    continue
+
+                # 8. In yellow clearance phase
+                if ctrl.is_yellow(current_phase):
+                    msg = f"Override rejected: Junction {cmd.junction_id} is currently clearing yellow phase {current_phase}."
+                    res = CommandResult(
+                        success=False,
+                        message=msg,
+                        status=CommandStatus.REJECTED,
+                        junction_id=cmd.junction_id,
+                        applied_phase=current_phase,
+                        simulation_time=current_sim_time,
+                        command_id=cmd.command_id,
+                        rejection_reason="CLEARING_YELLOW",
+                        executing_thread=worker_thread_name,
+                    )
+                    cmd.complete_execution(res)
+                    with self._lock:
+                        self._record_decision(
+                            sim_time=current_sim_time,
+                            junction_id=cmd.junction_id,
+                            current_phase=current_phase,
+                            target_phase=cmd.target_phase,
+                            action="OVERRIDE_REJECTED",
+                            reason=f"Rejected manual switch: Junction is in yellow clearance phase {current_phase}.",
+                            is_override=True,
+                        )
+                    continue
+
+            except (traci.exceptions.FatalTraCIError, ConnectionError, BrokenPipeError) as fatal_exc:
+                logger.critical(
+                    f"Fatal TraCI connection failure during command execution "
+                    f"(command_id={cmd.command_id}, session={cmd.session_uuid}, junction={cmd.junction_id}): {fatal_exc}",
+                    exc_info=True,
+                )
+                fail_res = CommandResult(
+                    success=False,
+                    message=f"Fatal TraCI connection failure: {fatal_exc}",
+                    status=CommandStatus.REJECTED,
+                    junction_id=cmd.junction_id,
+                    applied_phase=cmd.target_phase,
+                    simulation_time=current_sim_time,
+                    command_id=cmd.command_id,
+                    rejection_reason="FATAL_TRACI_ERROR",
+                    executing_thread=worker_thread_name,
+                )
+                cmd.complete_execution(fail_res)
+                raise
+
+            except Exception as cmd_exc:
+                logger.exception(
+                    f"Command execution error (command_id={cmd.command_id}, session={cmd.session_uuid}, "
+                    f"junction={cmd.junction_id}): {cmd_exc}"
+                )
+                fail_res = CommandResult(
+                    success=False,
+                    message=f"Command execution error: {cmd_exc}",
+                    status=CommandStatus.REJECTED,
+                    junction_id=cmd.junction_id,
+                    applied_phase=cmd.target_phase,
+                    simulation_time=current_sim_time,
+                    command_id=cmd.command_id,
+                    rejection_reason="COMMAND_EXECUTION_EXCEPTION",
+                    executing_thread=worker_thread_name,
+                )
+                cmd.complete_execution(fail_res)
+                # Continue loop to process remaining commands safely
 
     def request_manual_override(
         self,
         junction_id: str,
         target_phase: int,
         confirmed: bool,
-    ) -> Tuple[bool, str]:
+        timeout_s: float = 3.0,
+    ) -> CommandResult:
         """
-        Executes a safe, operator-confirmed manual phase override on a specific traffic light.
-        Validates junction ID, phase legality, emergency lock status.
+        Enqueues an operator-confirmed manual phase override onto the simulation worker's
+        thread-safe TraCI command queue.
+
+        The calling thread NEVER touches TraCI directly. The command is processed exclusively
+        by the SumoSimulationWorker thread prior to simulationStep().
+
+        Returns a CommandResult (unpacks as (success: bool, message: str) for backward compatibility).
         """
+        caller_thread_name = threading.current_thread().name
+
         if not confirmed:
-            return False, "Manual override requires explicit operator confirmation."
+            return CommandResult(
+                success=False,
+                message="Manual override requires explicit operator confirmation.",
+                status=CommandStatus.REJECTED,
+                junction_id=junction_id,
+                applied_phase=target_phase,
+                simulation_time=self._current_sim_time,
+                rejection_reason="UNCONFIRMED",
+                executing_thread=caller_thread_name,
+            )
 
         with self._lock:
-            if not self._running or not self._sim:
-                return False, "Cannot override: Simulation is not currently running."
+            if not self._running or self._stop_requested or not self._sim or self._command_queue is None:
+                return CommandResult(
+                    success=False,
+                    message="Cannot override: Simulation is not currently running.",
+                    status=CommandStatus.REJECTED,
+                    junction_id=junction_id,
+                    applied_phase=target_phase,
+                    simulation_time=self._current_sim_time,
+                    rejection_reason="SIMULATION_NOT_RUNNING",
+                    executing_thread=caller_thread_name,
+                )
 
-            junction_id = junction_id.upper()
-            if junction_id not in self._sim.controllers:
-                return False, f"Invalid junction ID '{junction_id}'. Must be J1, J2, or J3."
-
-            ctrl = self._sim.controllers[junction_id]
-            if ctrl.emergency_locked:
-                return False, f"Override rejected: Junction {junction_id} is locked by active Emergency Green Wave priority."
+            junction_id_upper = junction_id.upper()
+            if junction_id_upper not in self._sim.controllers:
+                return CommandResult(
+                    success=False,
+                    message=f"Invalid junction ID '{junction_id}'. Must be J1, J2, or J3.",
+                    status=CommandStatus.REJECTED,
+                    junction_id=junction_id,
+                    applied_phase=target_phase,
+                    simulation_time=self._current_sim_time,
+                    rejection_reason="INVALID_JUNCTION",
+                    executing_thread=caller_thread_name,
+                )
 
             valid_phases = {0, 1, 2, 3}
             if target_phase not in valid_phases:
-                return False, f"Invalid phase index {target_phase}. Valid phases for {junction_id} are {sorted(list(valid_phases))}."
+                return CommandResult(
+                    success=False,
+                    message=f"Invalid phase index {target_phase}. Valid phases for {junction_id_upper} are {sorted(list(valid_phases))}.",
+                    status=CommandStatus.REJECTED,
+                    junction_id=junction_id_upper,
+                    applied_phase=target_phase,
+                    simulation_time=self._current_sim_time,
+                    rejection_reason="INVALID_PHASE",
+                    executing_thread=caller_thread_name,
+                )
 
-            current_phase = ctrl.get_phase()
-            ctrl.request_switch(target_green_phase=target_phase, sim_time=self._current_sim_time)
+            ctrl = self._sim.controllers[junction_id_upper]
+            if ctrl.emergency_locked:
+                return CommandResult(
+                    success=False,
+                    message=f"Override rejected: Junction {junction_id_upper} is locked by active Emergency Green Wave priority.",
+                    status=CommandStatus.REJECTED,
+                    junction_id=junction_id_upper,
+                    applied_phase=target_phase,
+                    simulation_time=self._current_sim_time,
+                    rejection_reason="EMERGENCY_LOCKED",
+                    executing_thread=caller_thread_name,
+                )
 
-            self._record_decision(
-                sim_time=self._current_sim_time,
-                junction_id=junction_id,
-                current_phase=current_phase,
+            cmd_id = f"cmd_{uuid.uuid4().hex[:8]}"
+            cmd = SignalOverrideCommand(
+                command_id=cmd_id,
+                session_uuid=self._current_run_uuid or "",
+                junction_id=junction_id_upper,
                 target_phase=target_phase,
-                action="MANUAL_OVERRIDE",
-                reason=f"Operator manually forced phase switch to {target_phase}.",
-                is_override=True,
+                confirmed=confirmed,
+                created_at=time.time(),
+                timeout_s=timeout_s,
             )
 
-            return True, f"Manual override successfully applied to {junction_id}: phase switched to {target_phase}."
+            try:
+                self._command_queue.put_nowait(cmd)
+            except queue.Full:
+                return CommandResult(
+                    success=False,
+                    message=f"Command queue is full (capacity {self._command_queue.maxsize}). Request rejected.",
+                    status=CommandStatus.REJECTED,
+                    junction_id=junction_id_upper,
+                    applied_phase=target_phase,
+                    simulation_time=self._current_sim_time,
+                    command_id=cmd_id,
+                    rejection_reason="QUEUE_FULL",
+                    executing_thread=caller_thread_name,
+                )
+
+        # Wait outside lock so worker thread is not blocked
+        try:
+            return cmd.future.result(timeout=timeout_s)
+        except concurrent.futures.TimeoutError:
+            return cmd.handle_caller_timeout(self._current_sim_time, caller_thread_name)
 
     # ------------------------------------------------------------------
     # Public Getters for API
@@ -685,17 +1890,45 @@ class SimulationService:
     def get_status(self) -> SimulationStatusResponse:
         """Returns comprehensive status of current simulation."""
         with self._lock:
+            is_actively_running = self._running and self._startup_status == StartupStatus.READY
+            current_status = (
+                self._startup_status.value
+                if isinstance(self._startup_status, StartupStatus)
+                else str(self._startup_status)
+            )
             return SimulationStatusResponse(
-                running=self._running,
+                running=is_actively_running,
                 paused=self._paused,
                 simulation_time=self._current_sim_time,
                 duration=self._duration,
                 mode=self._mode,
                 seed=self._seed,
-                controller="Coordinated Adaptive (Inflow-Aware + Green Wave)" if self._mode == "coordinated" else "Fixed-Time Baseline",
+                controller=(
+                    "MARL Deep Q-Network (Double-DQN Corridor)"
+                    if self._mode == "marl_dqn"
+                    else "MARL Proximal Policy Optimization (PPO Corridor)"
+                    if self._mode == "marl_ppo"
+                    else "Coordinated Adaptive (Inflow-Aware + Green Wave)"
+                    if self._mode == "coordinated"
+                    else "Fixed-Time Baseline"
+                ),
                 junctions=["J1", "J2", "J3"],
                 error=self._error_message,
+                status=current_status,
+                pid=self._active_sumo_pid,
+                run_uuid=self._current_run_uuid,
+                sequence_number=self._sequence_number,
             )
+
+    def get_sequence_number(self) -> int:
+        """Returns the current monotonic sequence number for the active simulation session."""
+        with self._lock:
+            return self._sequence_number
+
+    def get_live_vehicles(self) -> List[Dict[str, Any]]:
+        """Returns latest extracted SUMO vehicle positions and headings for 3D visualization."""
+        with self._lock:
+            return list(self._latest_vehicles)
 
     def get_live_junctions(self) -> Dict[str, Any]:
         """Returns latest extracted junction states."""
@@ -761,16 +1994,19 @@ class SimulationService:
                 return self._cached_metrics
             return {
                 "simulation_time": self._current_sim_time,
-                "total_vehicles": 0,
-                "throughput_vehicles": 0,
-                "mean_speed_kmh": 0.0,
-                "total_corridor_waiting_time_s": 0.0,
+                "total_vehicles": None,
+                "throughput_vehicles": None,
+                "mean_speed_kmh": None,
+                "total_corridor_waiting_time_s": None,
+                "mean_instantaneous_waiting_time_s": None,
+                "cumulative_delay_veh_s": None,
+                "cumulative_waiting_time_s": None,
                 "mean_corridor_queue": 0.0,
                 "max_corridor_queue": 0,
-                "total_co2_kg": 0.0,
-                "total_nox_g": 0.0,
-                "total_fuel_liters": 0.0,
-                "emergency_traversal_duration_s": 0.0,
+                "total_co2_kg": None,
+                "total_nox_g": None,
+                "total_fuel_liters": None,
+                "emergency_traversal_duration_s": None,
                 "junction_queues": {"J1": 0, "J2": 0, "J3": 0},
             }
 

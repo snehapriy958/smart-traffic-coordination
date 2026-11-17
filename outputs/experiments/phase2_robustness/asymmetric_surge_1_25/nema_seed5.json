@@ -1,0 +1,22 @@
+{
+  "scenario": "asymmetric_surge_1_25",
+  "scale": 1.25,
+  "controller": "nema",
+  "seed": 5,
+  "completed": true,
+  "execution_wall_time_s": 39.12,
+  "simulation_duration_s": 900.0,
+  "total_vehicles_inserted": 135,
+  "total_corridor_trips_completed": 135,
+  "mean_corridor_travel_time_s": 62.474074074074075,
+  "mean_corridor_speed_kmh": 25.128312259363103,
+  "cumulative_delay_veh_s": 15623.0,
+  "cumulative_waiting_time_s": 15623.0,
+  "mean_corridor_queue": 17.358888888888888,
+  "max_corridor_queue": 52,
+  "total_co2_kg": 68.62803786113898,
+  "total_nox_g": 51.58158601702153,
+  "total_fuel_liters": 29.6284,
+  "emergency_traversal_duration_s": 39.0,
+  "emergency_cleared": true
+}

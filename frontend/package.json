@@ -5,13 +5,19 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "node --test src/services/websocket.test.js src/utils/coordinateTransform.test.js src/utils/roadGeometryBuilder.test.js src/utils/urbanEnvironmentBuilder.test.js src/utils/emissionHistory.test.js src/components/metricComponents.test.js",
+    "test:transform": "node --test src/utils/coordinateTransform.test.js",
+    "test:geometry": "node --test src/utils/roadGeometryBuilder.test.js"
   },
   "dependencies": {
+    "@react-three/drei": "^9.122.0",
+    "@react-three/fiber": "^8.18.0",
     "lucide-react": "^1.16.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "recharts": "^2.12.7"
+    "recharts": "^2.12.7",
+    "three": "^0.187.0"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.3.0",

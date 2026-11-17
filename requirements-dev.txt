@@ -1,0 +1,15 @@
+# ==============================================================================
+# Smart Traffic Coordination System — Development & Testing Dependencies
+# ==============================================================================
+-r requirements.txt
+
+# Testing Framework & Async Test Clients
+pytest>=8.0.0,<10.0.0
+pytest-asyncio>=0.23.0,<1.0.0
+httpx>=0.27.0,<1.0.0
+
+# Code Quality & Formatting
+flake8>=7.0.0,<8.0.0
+
+# Platform Specific (Windows Process Management for stress test)
+pywin32>=306; sys_platform == "win32"

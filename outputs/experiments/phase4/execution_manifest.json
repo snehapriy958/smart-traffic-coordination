@@ -1,0 +1,108 @@
+{
+  "project": "Smart Traffic Coordination System \u2014 Bengaluru Silk Board Corridor (J1 -> J2 -> J3)",
+  "phase": "Phase 4 Causal Validation & Edge Deployment",
+  "start_time": "2026-11-10T21:00:00Z",
+  "last_updated": "2026-11-14T01:04:04+05:30",
+  "git_environment": {
+    "branch": "project-evolution/industry-research-realworld",
+    "expected_head": "e31de953ceb7fe878d531c888e7f27e532b13b37",
+    "protected_baseline_tag": "baseline/smart-traffic-v1-verified",
+    "status": "VERIFIED_CLEAN"
+  },
+  "preliminary_exploratory_workload": {
+    "label": "PRELIMINARY_5EP",
+    "status": "ARCHIVED",
+    "archived_at": "2026-11-10T23:03:15Z",
+    "note": "Archived under checkpoints/phase4/preliminary_5ep/ and outputs/experiments/phase4/preliminary_5ep/. Strictly excluded from confirmatory analysis.",
+    "series_4c": {
+      "training_runs": 25,
+      "episodes_per_run": 5,
+      "eval_runs": 250,
+      "archive_path": "outputs/experiments/phase4/preliminary_5ep/series_4c_reward_coupling"
+    },
+    "series_4e": {
+      "training_runs": 10,
+      "episodes_per_run": 5,
+      "eval_runs": 100,
+      "archive_path": "outputs/experiments/phase4/preliminary_5ep/series_4e_passenger_reward"
+    }
+  },
+  "confirmatory_150ep_workload": {
+    "total_training_runs_target": 65,
+    "episodes_per_run": 150,
+    "total_episodes_target": 9750,
+    "total_episodes_completed": 381,
+    "total_evaluation_runs_target": 846,
+    "total_evaluation_runs_completed": 196,
+    "series": {
+      "series_4a_safety_shield": {
+        "status": "COMPLETED",
+        "evaluation_runs_completed": 40,
+        "evaluation_runs_target": 40,
+        "summary_path": "outputs/experiments/phase4/series_4a_safety_shield/series_4a_summary.json"
+      },
+      "series_4b_observation_space": {
+        "status": "COMPLETED",
+        "active_task_id": null,
+        "worker_count": 3,
+        "training_runs_target": 30,
+        "training_runs_completed": 30,
+        "episodes_per_run": 150,
+        "episodes_target": 4500,
+        "episodes_completed": 4500,
+        "evaluation_runs_target": 300,
+        "evaluation_runs_completed": 300,
+        "verified_checkpoints_on_disk": 30,
+        "training_runs_remaining": 0,
+        "episodes_remaining": 0,
+        "safeguards": {
+          "min_available_ram_gb": 1.2,
+          "baseline_available_ram_gb": 3.03,
+          "status": "RAM verified safe (3.03 GB available >= 1.2 GB threshold)"
+        },
+        "evaluation_runs_remaining": 0,
+        "summary_path": "outputs/experiments/phase4/final_150ep/series_4b_observation_space/series_4b_summary.json",
+        "statistical_analysis_path": "outputs/experiments/phase4/series_4b_statistical_analysis.json"
+      },
+      "series_4c_reward_coupling": {
+        "status": "IN_PROGRESS",
+        "training_runs_target": 25,
+        "training_runs_completed": 3,
+        "episodes_per_run": 150,
+        "episodes_target": 3750,
+        "episodes_completed": 450,
+        "evaluation_runs_target": 250,
+        "evaluation_runs_completed": 30
+      },
+      "series_4d_transit_priority": {
+        "status": "COMPLETED",
+        "evaluation_runs_completed": 96,
+        "evaluation_runs_target": 96,
+        "summary_path": "outputs/experiments/phase4/series_4d_transit_priority/series_4d_summary.json"
+      },
+      "series_4e_passenger_reward": {
+        "status": "QUEUED_AFTER_4C",
+        "training_runs_target": 10,
+        "training_runs_completed": 0,
+        "episodes_per_run": 150,
+        "episodes_target": 1500,
+        "episodes_completed": 0,
+        "evaluation_runs_target": 100,
+        "evaluation_runs_completed": 0
+      },
+      "series_4f_edge_inference": {
+        "status": "COMPLETED",
+        "profiling_configurations_completed": 12,
+        "profiling_configurations_target": 12,
+        "bootstrap_resamples": 10000,
+        "summary_path": "outputs/experiments/phase4/series_4f_edge_inference/profiling_results.json"
+      },
+      "series_4g_communication": {
+        "status": "COMPLETED",
+        "evaluation_runs_completed": 60,
+        "evaluation_runs_target": 60,
+        "summary_path": "outputs/experiments/phase4/series_4g_communication/series_4g_summary.json"
+      }
+    }
+  }
+}

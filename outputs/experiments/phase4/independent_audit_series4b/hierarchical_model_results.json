@@ -1,0 +1,183 @@
+{
+  "variance_decomposition": {
+    "DQN_14D": {
+      "total_variance": 90.22104081632652,
+      "pct_var_train_seed": 65.24,
+      "pct_var_eval_seed": 6.4,
+      "pct_var_residual": 28.36,
+      "f_train_seed": 20.705,
+      "p_train_seed": 6.269646847466169e-09,
+      "f_eval_seed": 0.903,
+      "p_eval_seed": 0.5326415891077818
+    },
+    "DQN_4D": {
+      "total_variance": 448.35745534693876,
+      "pct_var_train_seed": 85.77,
+      "pct_var_eval_seed": 1.45,
+      "pct_var_residual": 12.78,
+      "f_train_seed": 60.409,
+      "p_train_seed": 1.7895626883442773e-15,
+      "f_eval_seed": 0.453,
+      "p_eval_seed": 0.8957401102573102
+    },
+    "DQN_8D": {
+      "total_variance": 246.0557688163266,
+      "pct_var_train_seed": 98.47,
+      "pct_var_eval_seed": 0.41,
+      "pct_var_residual": 1.12,
+      "f_train_seed": 789.293,
+      "p_train_seed": 1.6275603694559535e-34,
+      "f_eval_seed": 1.464,
+      "p_eval_seed": 0.1987385690104233
+    },
+    "MAPPO_14D": {
+      "total_variance": 39.69552506122448,
+      "pct_var_train_seed": 89.29,
+      "pct_var_eval_seed": 1.82,
+      "pct_var_residual": 8.89,
+      "f_train_seed": 90.442,
+      "p_train_seed": 2.8833225083644976e-18,
+      "f_eval_seed": 0.821,
+      "p_eval_seed": 0.6011461073426321
+    },
+    "MAPPO_4D": {
+      "total_variance": 191.670098,
+      "pct_var_train_seed": 98.96,
+      "pct_var_eval_seed": 0.48,
+      "pct_var_residual": 0.56,
+      "f_train_seed": 1579.759,
+      "p_train_seed": 6.819294642022695e-40,
+      "f_eval_seed": 3.385,
+      "p_eval_seed": 0.004203068654317948
+    },
+    "MAPPO_8D": {
+      "total_variance": 167.41906938775512,
+      "pct_var_train_seed": 97.32,
+      "pct_var_eval_seed": 0.5,
+      "pct_var_residual": 2.17,
+      "f_train_seed": 403.489,
+      "p_train_seed": 2.3368536160346603e-29,
+      "f_eval_seed": 0.93,
+      "p_eval_seed": 0.5110376606256306
+    }
+  },
+  "model_level_comparisons": [
+    {
+      "comparison": "MAPPO 14D vs 8D",
+      "mean_A": 87.48,
+      "mean_B": 85.65,
+      "mean_diff": 1.83,
+      "std_diff": 14.56,
+      "model_level_t_df4": 0.281,
+      "model_level_p": 0.7927231622766296,
+      "model_level_cohens_dz": 0.126,
+      "lmm_diff_coef": 1.83,
+      "lmm_z": 1.298,
+      "lmm_p_value": 0.19435934879521877
+    },
+    {
+      "comparison": "MAPPO 14D vs 4D",
+      "mean_A": 87.48,
+      "mean_B": 92.38,
+      "mean_diff": -4.9,
+      "std_diff": 19.5,
+      "model_level_t_df4": -0.562,
+      "model_level_p": 0.6042074017377461,
+      "model_level_cohens_dz": -0.251,
+      "lmm_diff_coef": -4.9,
+      "lmm_z": -2.67,
+      "lmm_p_value": 0.007574419444935483
+    },
+    {
+      "comparison": "MAPPO 8D vs 4D",
+      "mean_A": 85.65,
+      "mean_B": 92.38,
+      "mean_diff": -6.73,
+      "std_diff": 27.43,
+      "model_level_t_df4": -0.549,
+      "model_level_p": 0.6124584113779699,
+      "model_level_cohens_dz": -0.245,
+      "lmm_diff_coef": -6.73,
+      "lmm_z": -2.632,
+      "lmm_p_value": 0.008491810291690702
+    },
+    {
+      "comparison": "DQN 14D vs 8D",
+      "mean_A": 92.75,
+      "mean_B": 81.1,
+      "mean_diff": 11.64,
+      "std_diff": 21.49,
+      "model_level_t_df4": 1.212,
+      "model_level_p": 0.29226682671870996,
+      "model_level_cohens_dz": 0.542,
+      "lmm_diff_coef": 11.64,
+      "lmm_z": 5.393,
+      "lmm_p_value": 6.921646446467572e-08
+    },
+    {
+      "comparison": "DQN 14D vs 4D",
+      "mean_A": 92.75,
+      "mean_B": 87.79,
+      "mean_diff": 4.96,
+      "std_diff": 28.39,
+      "model_level_t_df4": 0.391,
+      "model_level_p": 0.7160028145074425,
+      "model_level_cohens_dz": 0.175,
+      "lmm_diff_coef": 4.96,
+      "lmm_z": 1.668,
+      "lmm_p_value": 0.09540064269392931
+    },
+    {
+      "comparison": "DQN 8D vs 4D",
+      "mean_A": 81.1,
+      "mean_B": 87.79,
+      "mean_diff": -6.69,
+      "std_diff": 12.26,
+      "model_level_t_df4": -1.219,
+      "model_level_p": 0.2898040070390118,
+      "model_level_cohens_dz": -0.545,
+      "lmm_diff_coef": -6.69,
+      "lmm_z": -4.077,
+      "lmm_p_value": 4.5538657582337896e-05
+    },
+    {
+      "comparison": "14D: MAPPO vs DQN",
+      "mean_A": 87.48,
+      "mean_B": 92.75,
+      "mean_diff": -5.26,
+      "std_diff": 11.24,
+      "model_level_t_df4": -1.048,
+      "model_level_p": 0.3539588215065466,
+      "model_level_cohens_dz": -0.468,
+      "lmm_diff_coef": -5.26,
+      "lmm_z": -3.905,
+      "lmm_p_value": 9.408836693616128e-05
+    },
+    {
+      "comparison": "8D: MAPPO vs DQN",
+      "mean_A": 85.65,
+      "mean_B": 81.1,
+      "mean_diff": 4.55,
+      "std_diff": 30.0,
+      "model_level_t_df4": 0.339,
+      "model_level_p": 0.751523334101694,
+      "model_level_cohens_dz": 0.152,
+      "lmm_diff_coef": 4.55,
+      "lmm_z": 1.626,
+      "lmm_p_value": 0.10392077256730443
+    },
+    {
+      "comparison": "4D: MAPPO vs DQN",
+      "mean_A": 92.38,
+      "mean_B": 87.79,
+      "mean_diff": 4.59,
+      "std_diff": 9.12,
+      "model_level_t_df4": 1.127,
+      "model_level_p": 0.32290475491401394,
+      "model_level_cohens_dz": 0.504,
+      "lmm_diff_coef": 4.59,
+      "lmm_z": 3.186,
+      "lmm_p_value": 0.0014430295648600545
+    }
+  ]
+}

@@ -1,0 +1,90 @@
+name: Continuous Integration & Verification
+
+on:
+  push:
+    branches:
+      - main
+      - project-evolution/**
+  pull_request:
+    branches:
+      - main
+      - project-evolution/**
+
+jobs:
+  backend-verification:
+    name: Backend Pytest & SUMO TraCI Suite
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Install Eclipse SUMO
+        run: |
+          sudo add-apt-repository ppa:sumo/stable -y
+          sudo apt-get update
+          sudo apt-get install -y sumo sumo-tools
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: Install Python Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements-dev.txt
+
+      - name: Verify Engineering Environment
+        env:
+          SUMO_HOME: /usr/share/sumo
+          PYTHONPATH: /usr/share/sumo/tools:.
+        run: |
+          python scripts/verify_environment.py
+
+      - name: Run Backend Regression Suite (236 Tests)
+        env:
+          SUMO_HOME: /usr/share/sumo
+          PYTHONPATH: /usr/share/sumo/tools:.
+        run: |
+          pytest tests/ -v --durations=10
+
+  frontend-verification:
+    name: Frontend Test Suite & Production Build
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm"
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install Frontend Dependencies
+        run: |
+          npm --prefix frontend ci
+
+      - name: Run Frontend Tests (91 Tests across 23 Suites)
+        run: |
+          npm --prefix frontend test
+
+      - name: Validate Production Build
+        run: |
+          npm --prefix frontend run build
+
+  docker-validation:
+    name: Docker Configuration & Syntax Validation
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Validate Docker Compose Configuration
+        run: |
+          docker compose config

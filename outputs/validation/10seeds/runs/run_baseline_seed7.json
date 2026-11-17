@@ -1,0 +1,112 @@
+{
+  "mode": "baseline",
+  "seed": 7,
+  "duration_s": 900,
+  "wall_time_s": 37.69,
+  "status": "COMPLETED",
+  "phase_switches": {
+    "J1": 38,
+    "J2": 40,
+    "J3": 38
+  },
+  "action_counts": {
+    "J1": {
+      "total_decisions": 0,
+      "KEEP": 0,
+      "SWITCH": 0,
+      "EXTEND": 0
+    },
+    "J2": {
+      "total_decisions": 0,
+      "KEEP": 0,
+      "SWITCH": 0,
+      "EXTEND": 0
+    },
+    "J3": {
+      "total_decisions": 0,
+      "KEEP": 0,
+      "SWITCH": 0,
+      "EXTEND": 0
+    }
+  },
+  "starvation_events_count": 0,
+  "starvation_events": [],
+  "regimes": {
+    "peak": {
+      "interval": [
+        0,
+        300
+      ],
+      "departed": 208,
+      "arrived": 125,
+      "corridor_trips": 29,
+      "unfinished": 83,
+      "avg_corridor_travel_time_s": 103.41,
+      "avg_net_travel_time_s": 79.66,
+      "avg_speed_kmh": 29.12,
+      "avg_waiting_time_s": 594.39,
+      "cumulative_delay_veh_s": 5306.0,
+      "avg_queue_veh": 17.69,
+      "max_queue_veh": 48,
+      "co2_kg": 26.9835,
+      "fuel_liters": 11.6386
+    },
+    "shoulder": {
+      "interval": [
+        300,
+        600
+      ],
+      "departed": 170,
+      "arrived": 223,
+      "corridor_trips": 73,
+      "unfinished": 30,
+      "avg_corridor_travel_time_s": 86.44,
+      "avg_net_travel_time_s": 90.67,
+      "avg_speed_kmh": 26.35,
+      "avg_waiting_time_s": 989.52,
+      "cumulative_delay_veh_s": 6787.0,
+      "avg_queue_veh": 22.62,
+      "max_queue_veh": 57,
+      "co2_kg": 26.7312,
+      "fuel_liters": 11.5484
+    },
+    "off_peak": {
+      "interval": [
+        600,
+        900
+      ],
+      "departed": 0,
+      "arrived": 30,
+      "corridor_trips": 7,
+      "unfinished": 0,
+      "avg_corridor_travel_time_s": 68.29,
+      "avg_net_travel_time_s": 81.03,
+      "avg_speed_kmh": 31.18,
+      "avg_waiting_time_s": 43.59,
+      "cumulative_delay_veh_s": 331.0,
+      "avg_queue_veh": 1.1,
+      "max_queue_veh": 14,
+      "co2_kg": 1.8303,
+      "fuel_liters": 0.7913
+    }
+  },
+  "full_900s": {
+    "interval": [
+      0,
+      900
+    ],
+    "departed": 378,
+    "arrived": 378,
+    "corridor_trips": 109,
+    "unfinished": 0,
+    "avg_corridor_travel_time_s": 89.79,
+    "avg_net_travel_time_s": 86.26,
+    "avg_speed_kmh": 28.15,
+    "avg_waiting_time_s": 542.5,
+    "cumulative_delay_veh_s": 12424.0,
+    "avg_queue_veh": 13.8,
+    "max_queue_veh": 57,
+    "co2_kg": 55.5449,
+    "fuel_liters": 23.9783
+  }
+}

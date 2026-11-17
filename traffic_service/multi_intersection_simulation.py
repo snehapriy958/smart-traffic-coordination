@@ -9,8 +9,13 @@ Provides clean observation/action hooks for external AI agents to attach later.
 
 from __future__ import annotations
 
+import logging
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Callable, Dict, List, Optional, Tuple, TYPE_CHECKING
+if TYPE_CHECKING:
+    import subprocess
+
+logger = logging.getLogger("simulation")
 
 from .communication import CorridorCommunicationHub
 from .corridor_metrics import CorridorMetricsCollector, CorridorMetricsSummary
@@ -31,22 +36,35 @@ class MultiIntersectionSimulation:
     def __init__(
         self,
         sumocfg_path: Path | str,
-        mode: str = "coordinated",  # 'baseline' or 'coordinated'
+        mode: str = "coordinated",  # 'baseline', 'coordinated', 'marl_ppo', or 'marl_dqn'
         gui: bool = False,
         step_length: float = 1.0,
         decision_interval: float = 5.0,
         enable_emergency: bool = True,
+        enable_safety_shield: bool = True,
+        enable_communication: bool = True,
+        observation_dim: int = 14,
+        label: str = "default",
+        on_process_spawned: Optional[Callable[[subprocess.Popen, Optional[int]], None]] = None,
+        checkpoint_path: Optional[Path | str] = None,
     ) -> None:
         self.sumocfg_path = Path(sumocfg_path)
         self.mode = mode.lower()
         self.step_length = step_length
         self.decision_interval = decision_interval
         self.enable_emergency = enable_emergency
+        self.enable_safety_shield = enable_safety_shield
+        self.enable_communication = enable_communication
+        self.observation_dim = observation_dim
+        self.label = label
+        self.on_process_spawned = on_process_spawned
 
         self.sumo_manager = SumoManager(
             sumocfg_path=self.sumocfg_path,
             gui=gui,
             step_length=step_length,
+            label=label,
+            on_process_spawned=on_process_spawned,
         )
 
         # ----------------------------------------------------
@@ -95,6 +113,11 @@ class MultiIntersectionSimulation:
             "J2": 0,
             "J3": 2,
         }
+        self.yellow_durations = {
+            "J1": 4.0,
+            "J2": 6.0,
+            "J3": 4.0,
+        }
 
         # Communication bus
         self.hub = CorridorCommunicationHub(corridor_sequence=["J1", "J2", "J3"])
@@ -116,6 +139,7 @@ class MultiIntersectionSimulation:
                 yellow_transitions=self.yellow_transitions[j_id],
                 min_green=15.0,
                 max_green=60.0,
+                yellow_duration=self.yellow_durations[j_id],
             )
             for j_id in ["J1", "J2", "J3"]
         }
@@ -134,11 +158,99 @@ class MultiIntersectionSimulation:
             step_length=step_length,
         )
 
+        # MARL Decision Controller for 'marl_dqn', 'marl_ppo', and 'marl_mappo'
+        if self.mode in ("marl_dqn", "marl_ppo", "marl_mappo"):
+            from .ai.marl_controller import MARLCorridorController
+            if self.mode == "marl_mappo":
+                algo = "mappo"
+            elif self.mode == "marl_ppo":
+                algo = "ppo"
+            else:
+                algo = "dqn"
+
+            self.marl_controller: Optional[MARLCorridorController] = MARLCorridorController(
+                algorithm=algo,
+                junctions=["J1", "J2", "J3"],
+                controllers=self.controllers,
+                communication_hub=self.hub,
+                enable_safety_shield=self.enable_safety_shield,
+                enable_communication=self.enable_communication,
+                observation_dim=self.observation_dim,
+            )
+            if checkpoint_path is not None:
+                ckpt_file = Path(checkpoint_path)
+            else:
+                primary_ckpt = Path(__file__).resolve().parent.parent / "checkpoints" / f"marl_{algo}_corridor.json"
+                fallback_p6_ckpt = Path(__file__).resolve().parent.parent / "checkpoints" / "p6" / f"{algo}_stage_a_best.json"
+                ckpt_file = primary_ckpt if primary_ckpt.is_file() else fallback_p6_ckpt
+
+            if not ckpt_file.is_file():
+                raise FileNotFoundError(
+                    f"MARL checkpoint file not found for mode '{self.mode}': {ckpt_file}"
+                )
+            loaded = self.marl_controller.load_checkpoint(ckpt_file)
+            if not loaded:
+                raise RuntimeError(
+                    f"Failed to load MARL checkpoint for mode '{self.mode}' from {ckpt_file}: invalid or corrupted checkpoint."
+                )
+            for j_id in ["J1", "J2", "J3"]:
+                if j_id not in self.marl_controller.agents:
+                    raise RuntimeError(
+                        f"Missing agent for junction '{j_id}' in MARL controller for mode '{self.mode}'"
+                    )
+            logger.info(
+                f"Successfully initialized MARL {algo.upper()} controller with checkpoint: {ckpt_file}"
+            )
+        else:
+            self.marl_controller = None
+
+        # Webster Optimum Controller for 'webster'
+        if self.mode == "webster":
+            from .webster_controller import WebsterCorridorController
+            self.webster_controller: Optional[WebsterCorridorController] = WebsterCorridorController(
+                controllers=self.controllers
+            )
+            logger.info("Successfully initialized Webster Corridor Controller.")
+        else:
+            self.webster_controller = None
+
+        # NEMA Actuated Controller for 'nema'
+        if self.mode == "nema":
+            from .nema_controller import NEMACorridorController
+            self.nema_controller: Optional[NEMACorridorController] = NEMACorridorController(
+                controllers=self.controllers,
+                step_length=self.step_length,
+            )
+            logger.info("Successfully initialized NEMA Actuated Controller.")
+        else:
+            self.nema_controller = None
+
+        # Max-Pressure Controller for 'max_pressure'
+        if self.mode == "max_pressure":
+            from .max_pressure_controller import MaxPressureCorridorController
+            self.max_pressure_controller: Optional[MaxPressureCorridorController] = MaxPressureCorridorController(
+                controllers=self.controllers,
+                step_length=self.step_length,
+            )
+            logger.info("Successfully initialized Max-Pressure Corridor Controller.")
+        else:
+            self.max_pressure_controller = None
+
         self._next_decision_time: float = 0.0
 
-    def start(self, seed: int = 42) -> None:
+    @property
+    def process(self):
+        """Returns the subprocess.Popen handle from SumoManager if available."""
+        return self.sumo_manager.process
+
+    @property
+    def pid(self) -> Optional[int]:
+        """Returns the OS PID from SumoManager if available."""
+        return self.sumo_manager.pid
+
+    def start(self, seed: int = 42, additional_args: Optional[List[str]] = None) -> None:
         """Starts the SUMO process."""
-        self.sumo_manager.start(seed=seed)
+        self.sumo_manager.start(seed=seed, additional_args=additional_args)
         self._next_decision_time = 0.0
 
     def close(self) -> None:
@@ -205,6 +317,52 @@ class MultiIntersectionSimulation:
         j2_corridor_q = states["J2"].approach_queues.get("corridor_hosur", 0)
         self.hub.publish_upstream_inflow("J2", outflow_rate_veh_s=j2_corridor_q * 0.1, timestamp=sim_time)
 
+        # 2b. Anti-starvation monitoring and safety preemption (every simulation second)
+        if self.marl_controller is not None:
+            curr_phases = {j: ctrl.get_phase() for j, ctrl in self.controllers.items()}
+            app_queues = {j: state.approach_queues for j, state in states.items()}
+            self.marl_controller.starvation_tracker.update(
+                current_phases=curr_phases,
+                approach_queues=app_queues,
+                step_length=self.step_length,
+                sim_time=sim_time,
+            )
+            for j_id in self.marl_controller.junctions:
+                ctrl = self.controllers.get(j_id)
+                if not ctrl or ctrl.emergency_locked:
+                    continue
+                starved = self.marl_controller.starvation_tracker.get_starved_approaches(j_id)
+                if starved and self.enable_safety_shield and ctrl.can_switch(sim_time):
+                    target_p = starved[0]["target_green_phase"]
+                    curr_p = ctrl.get_phase()
+                    if curr_p != target_p:
+                        # Register event and execute preemption switch immediately
+                        self.marl_controller.starvation_tracker.get_action_mask(
+                            j_id=j_id,
+                            current_phase=curr_p,
+                            can_switch=True,
+                            emergency_locked=False,
+                            sim_time=sim_time,
+                        )
+                        ctrl.request_switch(target_green_phase=target_p, sim_time=sim_time)
+                        logger.warning(
+                            f"[ANTI-STARVATION PREEMPTION] SimTime={sim_time:.1f}s | Junction={j_id} | "
+                            f"StarvedApproach={starved[0]['approach']} (red={starved[0]['red_duration_s']:.1f}s) | "
+                            f"Switched {curr_p} -> {target_p}"
+                        )
+
+        # 2c. Webster fixed-time cyclic control (evaluated every simulation second)
+        if self.mode == "webster" and self.webster_controller is not None:
+            self.webster_controller.step(sim_time)
+
+        # 2d. NEMA actuated control (evaluated every simulation second)
+        if self.mode == "nema" and self.nema_controller is not None:
+            self.nema_controller.step(sim_time, states)
+
+        # 2e. Max-Pressure queue-feedback control (evaluated every simulation second)
+        if self.mode == "max_pressure" and self.max_pressure_controller is not None:
+            self.max_pressure_controller.step(sim_time, states)
+
         # 3. Decision Control (every decision_interval seconds)
         if sim_time >= self._next_decision_time:
             self._next_decision_time += self.decision_interval
@@ -212,6 +370,24 @@ class MultiIntersectionSimulation:
             if actions is not None:
                 # External AI Agent Action Execution
                 self._apply_ai_actions(actions, sim_time)
+            elif self.mode in ("marl_dqn", "marl_ppo", "marl_mappo") and self.marl_controller is not None:
+                # MARL Coordinated Decision Execution
+                ai_obs = self.get_ai_observations(states)
+                decisions = self.marl_controller.decide(ai_obs, sim_time, eval_mode=True)
+                executed_ops = self.marl_controller.apply_decisions(decisions, sim_time)
+                for j_id, dec in decisions.items():
+                    op_str = executed_ops.get(j_id, "NONE")
+                    logger.info(
+                        f"[MARL RUNTIME] SimTime={sim_time:.1f}s | Mode={self.mode} | Junction={j_id} | "
+                        f"Agent={self.marl_controller.algorithm.upper()} | "
+                        f"ObsShape={dec.get('observation_shape', (14,))} | "
+                        f"Action={dec.get('action_name')} ({dec.get('action')}) | "
+                        f"TargetPhase={dec.get('target_phase')} | ExecutedOp={op_str} | "
+                        f"Fallback={dec.get('is_fallback')}"
+                    )
+            elif self.mode in ("webster", "nema", "max_pressure"):
+                # Classical controllers are evaluated at second-level granularity in steps 2c-2e
+                pass
             elif self.mode == "coordinated":
                 # Built-in Coordinated Adaptive Strategy
                 self._run_coordinated_control(states, sim_time)
@@ -257,8 +433,11 @@ class MultiIntersectionSimulation:
             hosur_q = j2_state.approach_queues.get("corridor_hosur", 0)
             madiwala_q = j2_state.approach_queues.get("madiwala", 0)
 
-            # Upstream bonus: incoming traffic released from J1
-            upstream_inflow_bonus = int(self.hub.get_expected_inflow("J2") * 5)
+            # Upstream bonus: incoming traffic released from J1 (gated by communication)
+            if self.enable_communication:
+                upstream_inflow_bonus = int(self.hub.get_expected_inflow("J2") * 5)
+            else:
+                upstream_inflow_bonus = 0
             effective_hosur_q = hosur_q + upstream_inflow_bonus
 
             elapsed = j2_ctrl.get_green_elapsed(sim_time)
@@ -298,11 +477,15 @@ class MultiIntersectionSimulation:
         try:
             while self.sumo_manager.get_time() < duration_seconds:
                 self.step()
+            emergency_completed = self.emergency_coordinator.metrics.completed
             emergency_dur = (
                 self.emergency_coordinator.metrics.total_traversal_duration
-                if self.emergency_coordinator.metrics.completed
-                else 0.0
+                if emergency_completed
+                else None
             )
-            return self.metrics_collector.compute_summary(emergency_duration=emergency_dur)
+            return self.metrics_collector.compute_summary(
+                emergency_duration=emergency_dur,
+                emergency_cleared=emergency_completed,
+            )
         finally:
             self.close()

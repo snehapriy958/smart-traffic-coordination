@@ -8,7 +8,7 @@ from __future__ import annotations
 
 from fastapi import APIRouter, HTTPException, status
 from backend.schemas import SignalOverrideRequest, SignalOverrideResponse, SignalsResponse
-from backend.simulation_service import sim_service
+from backend.simulation_service import CommandStatus, sim_service
 
 router = APIRouter(prefix="/api/signals", tags=["Signals"])
 
@@ -29,6 +29,7 @@ def override_signal(payload: SignalOverrideRequest) -> SignalOverrideResponse:
     """
     Executes an operator manual signal-phase override.
     Requires explicit confirmation flag. Respects safety constraints and emergency locks.
+    Dispatches to the thread-safe TraCI command queue.
     """
     if not payload.confirmed:
         raise HTTPException(
@@ -36,22 +37,33 @@ def override_signal(payload: SignalOverrideRequest) -> SignalOverrideResponse:
             detail="Override rejected: Operator confirmation flag must be explicitly True.",
         )
 
-    ok, msg = sim_service.request_manual_override(
+    res = sim_service.request_manual_override(
         junction_id=payload.junction_id,
         target_phase=payload.target_phase,
         confirmed=payload.confirmed,
     )
 
-    if not ok:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=msg,
-        )
+    if not res.success:
+        if res.status in {CommandStatus.TIMED_OUT, CommandStatus.EXECUTION_OUTCOME_UNKNOWN}:
+            raise HTTPException(
+                status_code=status.HTTP_504_GATEWAY_TIMEOUT,
+                detail=res.message,
+            )
+        elif res.status == CommandStatus.CANCELLED:
+            raise HTTPException(
+                status_code=status.HTTP_409_CONFLICT,
+                detail=res.message,
+            )
+        else:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=res.message,
+            )
 
     return SignalOverrideResponse(
         success=True,
-        message=msg,
-        junction_id=payload.junction_id.upper(),
-        applied_phase=payload.target_phase,
-        simulation_time=sim_service._current_sim_time,
+        message=res.message,
+        junction_id=res.junction_id or payload.junction_id.upper(),
+        applied_phase=res.applied_phase if res.applied_phase is not None else payload.target_phase,
+        simulation_time=res.simulation_time,
     )

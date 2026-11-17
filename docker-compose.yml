@@ -1,0 +1,73 @@
+# ==============================================================================
+# Smart Traffic Coordination System — Docker Compose Development Environment
+# Multi-container orchestration: FastAPI/SUMO Backend + React/Three.js Frontend
+# ==============================================================================
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: traffic-backend
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      - HOST=0.0.0.0
+      - PORT=8000
+      - DEBUG=false
+      - SUMO_HOME=/usr/share/sumo
+      - SUMO_CONFIG_PATH=sumo/silk_board/silk_board.sumocfg
+      - SUMO_GUI=false
+      - SUMO_STEP_LENGTH=1.0
+      - DATABASE_URL=sqlite:////app/data/traffic_dashboard.db
+      - CORS_ORIGINS=http://localhost:5173,http://localhost:3000,http://127.0.0.1:5173
+      - LOG_LEVEL=INFO
+      - STRUCTURED_LOGGING=true
+      - ENABLE_SECURITY_HEADERS=true
+    volumes:
+      - backend_data:/app/data
+      - ./outputs:/app/outputs
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8000/api/health || python3 -c \"import urllib.request; urllib.request.urlopen('http://localhost:8000/api/health')\" || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+    stop_signal: SIGINT
+    stop_grace_period: 30s
+    networks:
+      - traffic_net
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: traffic-frontend
+    restart: unless-stopped
+    ports:
+      - "5173:5173"
+    environment:
+      - VITE_API_URL=http://localhost:8000
+      - VITE_WS_URL=ws://localhost:8000/ws/traffic
+    depends_on:
+      backend:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O - http://127.0.0.1:5173/ || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    stop_signal: SIGINT
+    stop_grace_period: 15s
+    networks:
+      - traffic_net
+
+networks:
+  traffic_net:
+    driver: bridge
+
+volumes:
+  backend_data:
+    driver: local

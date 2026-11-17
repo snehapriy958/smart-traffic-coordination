@@ -14,7 +14,11 @@ from pathlib import Path
 from typing import Dict, List, Optional
 import traci
 
-from .state_extractor import IntersectionState
+from .state_extractor import (
+    FUEL_DENSITY_MG_PER_LITER,
+    FUEL_DENSITY_MG_PER_ML,
+    IntersectionState,
+)
 
 
 @dataclass
@@ -23,15 +27,24 @@ class CorridorMetricsSummary:
     simulation_duration: float = 0.0
     total_vehicles_inserted: int = 0
     total_corridor_trips_completed: int = 0
-    mean_corridor_travel_time_s: float = 0.0
+    current_active_vehicles: Optional[int] = None
+    mean_corridor_travel_time_s: Optional[float] = None  # None if total_corridor_trips_completed == 0
     mean_corridor_speed_kmh: float = 0.0
-    total_corridor_waiting_time_s: float = 0.0
+    # Waiting time & Delay metrics:
+    # 1. Snapshot approach accumulated wait (sum of accumulated wait times of queued approach vehicles per step)
+    total_corridor_waiting_time_s: float = 0.0  # Retained for backward-compatibility (s/step)
+    mean_instantaneous_accumulated_wait_s: float = 0.0  # Mean instantaneous sum of accumulated wait times (s/step)
+    mean_instantaneous_waiting_time_s: float = 0.0  # Alias for backward-compatibility
+    # 2. Mathematically valid cumulative vehicle delay: integral of queued vehicles over time sum(Q * dt)
+    cumulative_delay_veh_s: float = 0.0  # True cumulative vehicle delay in vehicle-seconds (veh*s)
+    cumulative_waiting_time_s: float = 0.0  # True cumulative delay (veh*s), resolving repeated-accumulation overcounting
     mean_corridor_queue: float = 0.0
     max_corridor_queue: int = 0
     total_co2_kg: float = 0.0
     total_nox_g: float = 0.0
     total_fuel_liters: float = 0.0
-    emergency_traversal_duration_s: float = 0.0
+    emergency_traversal_duration_s: Optional[float] = None  # None if emergency vehicle did not complete corridor
+    emergency_cleared: bool = False
     # Per-junction breakdowns
     j1_mean_queue: float = 0.0
     j2_mean_queue: float = 0.0
@@ -64,7 +77,12 @@ class CorridorMetricsCollector:
         # Emission accumulators
         self.cumulative_co2_mg: float = 0.0
         self.cumulative_nox_mg: float = 0.0
-        self.cumulative_fuel_ml: float = 0.0
+        self.cumulative_fuel_mg: float = 0.0
+
+    @property
+    def cumulative_fuel_ml(self) -> float:
+        """Volumetric cumulative fuel in ml, derived from mass and standard fuel density."""
+        return self.cumulative_fuel_mg / FUEL_DENSITY_MG_PER_ML
 
     def record_step(
         self,
@@ -77,9 +95,14 @@ class CorridorMetricsCollector:
         try:
             entry_vehs = traci.edge.getLastStepVehicleIDs(self.entry_edge)
             exit_vehs = traci.edge.getLastStepVehicleIDs(self.exit_edge)
+        except traci.TraCIException:
+            entry_vehs, exit_vehs = [], []
+        try:
+            # TraCI's network-wide count includes all vehicles currently loaded
+            # into the running network, independent of junction approach zones.
             active_count = traci.vehicle.getIDCount()
         except traci.TraCIException:
-            entry_vehs, exit_vehs, active_count = [], [], 0
+            active_count = None
 
         for veh_id in entry_vehs:
             if veh_id not in self._trip_entry_times:
@@ -98,18 +121,18 @@ class CorridorMetricsCollector:
         ]
         step_co2 = 0.0
         step_nox = 0.0
-        step_fuel = 0.0
+        step_fuel_mg = 0.0
         for edge_id in corridor_edges:
             try:
                 step_co2 += traci.edge.getCO2Emission(edge_id)
                 step_nox += traci.edge.getNOxEmission(edge_id)
-                step_fuel += traci.edge.getFuelConsumption(edge_id)
+                step_fuel_mg += traci.edge.getFuelConsumption(edge_id)
             except traci.TraCIException:
                 pass
 
         self.cumulative_co2_mg += step_co2 * self.step_length
         self.cumulative_nox_mg += step_nox * self.step_length
-        self.cumulative_fuel_ml += step_fuel * self.step_length
+        self.cumulative_fuel_mg += step_fuel_mg * self.step_length
 
         # 3. Aggregate junction queues and speeds
         j1_state = states.get("J1")
@@ -135,14 +158,18 @@ class CorridorMetricsCollector:
             "total_waiting_time": total_wait,
             "active_vehicles": active_count,
             "step_co2_mg": step_co2,
-            "step_fuel_ml": step_fuel,
+            "step_fuel_ml": step_fuel_mg / FUEL_DENSITY_MG_PER_ML,
             "cumulative_co2_kg": self.cumulative_co2_mg / 1_000_000.0,
-            "cumulative_fuel_liters": self.cumulative_fuel_ml / 1_000.0,
+            "cumulative_fuel_liters": self.cumulative_fuel_mg / FUEL_DENSITY_MG_PER_LITER,
             "emergency_duration": emergency_duration,
         }
         self.step_records.append(record)
 
-    def compute_summary(self, emergency_duration: float = 0.0) -> CorridorMetricsSummary:
+    def compute_summary(
+        self,
+        emergency_duration: Optional[float] = None,
+        emergency_cleared: bool = False,
+    ) -> CorridorMetricsSummary:
         """Calculates final aggregate metrics for the run."""
         if not self.step_records:
             return CorridorMetricsSummary()
@@ -151,7 +178,7 @@ class CorridorMetricsCollector:
         mean_travel_time = (
             sum(self._completed_travel_times) / len(self._completed_travel_times)
             if self._completed_travel_times
-            else 0.0
+            else None
         )
 
         queues = [r["total_corridor_queue"] for r in self.step_records]
@@ -162,19 +189,33 @@ class CorridorMetricsCollector:
         j2_queues = [r["j2_queue"] for r in self.step_records]
         j3_queues = [r["j3_queue"] for r in self.step_records]
 
+        mean_inst_wait = sum(waits) / len(waits) if waits else 0.0
+        # True cumulative delay: integral of queued vehicles across time (sum(Q * step_length))
+        # Eliminates repeated-accumulation overcounting of getAccumulatedWaitingTime
+        true_cumulative_delay = sum(queues) * self.step_length if queues else 0.0
+
+        # Valid emergency clearance duration (None if not completed)
+        amb_duration = emergency_duration if (emergency_cleared or (emergency_duration is not None and emergency_duration > 0.0)) else None
+
         return CorridorMetricsSummary(
             simulation_duration=sim_dur,
             total_vehicles_inserted=len(self._trip_entry_times) + len(self._completed_travel_times),
             total_corridor_trips_completed=len(self._completed_travel_times),
+            current_active_vehicles=self.step_records[-1].get("active_vehicles"),
             mean_corridor_travel_time_s=mean_travel_time,
             mean_corridor_speed_kmh=sum(speeds) / len(speeds) if speeds else 0.0,
-            total_corridor_waiting_time_s=sum(waits) / len(waits) if waits else 0.0,
+            total_corridor_waiting_time_s=mean_inst_wait,
+            mean_instantaneous_accumulated_wait_s=mean_inst_wait,
+            mean_instantaneous_waiting_time_s=mean_inst_wait,
+            cumulative_delay_veh_s=true_cumulative_delay,
+            cumulative_waiting_time_s=true_cumulative_delay,
             mean_corridor_queue=sum(queues) / len(queues) if queues else 0.0,
             max_corridor_queue=max(queues) if queues else 0,
             total_co2_kg=self.cumulative_co2_mg / 1_000_000.0,
             total_nox_g=self.cumulative_nox_mg / 1_000.0,
-            total_fuel_liters=self.cumulative_fuel_ml / 1_000.0,
-            emergency_traversal_duration_s=emergency_duration,
+            total_fuel_liters=round(self.cumulative_fuel_mg / FUEL_DENSITY_MG_PER_LITER, 4),
+            emergency_traversal_duration_s=amb_duration,
+            emergency_cleared=emergency_cleared or (amb_duration is not None),
             j1_mean_queue=sum(j1_queues) / len(j1_queues) if j1_queues else 0.0,
             j2_mean_queue=sum(j2_queues) / len(j2_queues) if j2_queues else 0.0,
             j3_mean_queue=sum(j3_queues) / len(j3_queues) if j3_queues else 0.0,

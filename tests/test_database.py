@@ -4,7 +4,7 @@ tests/test_database.py
 Unit tests for database initialization, models, and metric persistence.
 """
 
-from datetime import datetime
+from datetime import datetime, timezone
 import pytest
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -41,7 +41,7 @@ def test_simulation_run_persistence(test_db):
         status="RUNNING",
         seed=42,
         duration_requested=600,
-        started_at=datetime.utcnow(),
+        started_at=datetime.now(timezone.utc),
     )
     test_db.add(run)
     test_db.commit()

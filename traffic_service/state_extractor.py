@@ -14,12 +14,18 @@ from typing import Dict, List, Optional
 import traci
 
 
+# Standard automotive fuel density (HBEFA / Euro 4 / BS-VI petrol reference)
+# 1 Liter = 1,000 ml; density = 0.750 kg/L = 750 g/L = 750,000 mg/L = 750 mg/ml
+FUEL_DENSITY_MG_PER_LITER: float = 750_000.0
+FUEL_DENSITY_MG_PER_ML: float = 750.0
+
+
 @dataclass
 class EmissionSnapshot:
     """Instantaneous and accumulated emissions for vehicles in an intersection zone."""
     co2_mg_s: float = 0.0          # instantaneous CO2 (mg/s)
     nox_mg_s: float = 0.0          # instantaneous NOx (mg/s)
-    fuel_ml_s: float = 0.0         # instantaneous Fuel (ml/s)
+    fuel_ml_s: float = 0.0         # instantaneous Fuel volumetric rate (ml/s) converted from mg/s
     co_mg_s: float = 0.0           # instantaneous Carbon Monoxide (mg/s)
     pmx_mg_s: float = 0.0          # instantaneous Particulate Matter (mg/s)
     accumulated_co2_kg: float = 0.0
@@ -85,7 +91,12 @@ class IntersectionStateExtractor:
 
         # Accumulated metrics
         self.total_co2_mg: float = 0.0
-        self.total_fuel_ml: float = 0.0
+        self.total_fuel_mg: float = 0.0
+
+    @property
+    def total_fuel_ml(self) -> float:
+        """Volumetric fuel accumulation in ml, derived from mass and standard fuel density."""
+        return self.total_fuel_mg / FUEL_DENSITY_MG_PER_ML
 
     def get_lane_queue(self, lane_id: str) -> int:
         """Counts vehicles on the specified lane with speed <= queue_speed_threshold."""
@@ -121,10 +132,19 @@ class IntersectionStateExtractor:
             return 0, 0.0, 0.0, 0.0
 
     def extract_emissions(self, step_length: float = 1.0) -> EmissionSnapshot:
-        """Extracts instantaneous and accumulated emissions across all approach lanes."""
+        """
+        Extracts instantaneous and accumulated emissions across all approach lanes.
+
+        TraCI return units:
+          - getCO2Emission: mg/s
+          - getNOxEmission: mg/s
+          - getFuelConsumption: mg/s (mass flow rate)
+          - getCOEmission: mg/s
+          - getPMxEmission: mg/s
+        """
         co2_mg_s = 0.0
         nox_mg_s = 0.0
-        fuel_ml_s = 0.0
+        fuel_mg_s = 0.0
         co_mg_s = 0.0
         pmx_mg_s = 0.0
 
@@ -132,14 +152,20 @@ class IntersectionStateExtractor:
             try:
                 co2_mg_s += traci.lane.getCO2Emission(lane_id)
                 nox_mg_s += traci.lane.getNOxEmission(lane_id)
-                fuel_ml_s += traci.lane.getFuelConsumption(lane_id)
+                fuel_mg_s += traci.lane.getFuelConsumption(lane_id)
                 co_mg_s += traci.lane.getCOEmission(lane_id)
                 pmx_mg_s += traci.lane.getPMxEmission(lane_id)
             except traci.TraCIException:
                 pass
 
         self.total_co2_mg += co2_mg_s * step_length
-        self.total_fuel_ml += fuel_ml_s * step_length
+        self.total_fuel_mg += fuel_mg_s * step_length
+
+        # Convert fuel mass rate (mg/s) to volumetric flow rate (ml/s) using standard density
+        fuel_ml_s = fuel_mg_s / FUEL_DENSITY_MG_PER_ML
+
+        # Convert accumulated fuel mass (mg) to volume in liters
+        accumulated_fuel_liters = self.total_fuel_mg / FUEL_DENSITY_MG_PER_LITER
 
         return EmissionSnapshot(
             co2_mg_s=co2_mg_s,
@@ -148,7 +174,7 @@ class IntersectionStateExtractor:
             co_mg_s=co_mg_s,
             pmx_mg_s=pmx_mg_s,
             accumulated_co2_kg=self.total_co2_mg / 1_000_000.0,
-            accumulated_fuel_liters=self.total_fuel_ml / 1_000.0,
+            accumulated_fuel_liters=accumulated_fuel_liters,
         )
 
     def detect_emergency_vehicles(self) -> List[ApproachingEmergencyVehicle]:
