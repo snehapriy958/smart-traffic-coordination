@@ -75,7 +75,7 @@ flowchart TD
     end
 
     subgraph Controller_Layer ["Signal Control & Safety Engine"]
-        Safety_Shield["Deterministic Safety Shield (Min Green 10s, Yellow 4s, Starvation 60s)"]
+        Safety_Shield["Deterministic Safety Shield (Min Green 15s, J1/J3 Yellow 4s, J2 Yellow 6s, Starvation 60s)"]
         Emerg_Wave["Emergency Preemption Coordinator (Level-1 Lock)"]
         Fixed_Ctrl["Fixed-Time Baseline Controller"]
         Adaptive_Ctrl["Coordinated Adaptive Controller (Pressure + Inflow)"]
@@ -159,20 +159,20 @@ The platform provides a unified interface across classical, adaptive, and neural
 
 Both neural controllers process a standardized 14-dimensional normalized observation vector $s_{i,t} \in \mathbb{R}^{14}$ at each junction $J_i$:
 
-| Index | Feature Description | Normalization / Scaling | Operational Semantics |
+| Index | Feature Description | Normalization / Scaling Formula | Operational Semantics |
 | :---: | :--- | :--- | :--- |
-| **[0]** | `current_phase_norm` | $\text{phase} / 3.0$ | Active signal phase index |
-| **[1]** | `phase_elapsed_norm` | $\min(\text{elapsed} / 60.0, 1.0)$ | Continuous green elapsed time |
-| **[2]** | `time_to_switch_norm` | $\min(\text{switch\_wait} / 60.0, 1.0)$ | Time remaining until maximum green |
-| **[3]** | `can_switch_flag` | $1.0 \text{ if elapsed} \ge 15.0\text{ s else } 0.0$ | Minimum green constraint satisfied |
-| **[4]** | `corridor_queue_norm` | $Q_{\text{corridor}} / 50.0$ | Arterial Hosur Road queue length |
-| **[5]** | `side_queue_norm` | $Q_{\text{side}} / 50.0$ | Side-street approach queue length |
-| **[6]** | `total_queue_norm` | $Q_{\text{total}} / 100.0$ | Total aggregate intersection queue |
-| **[7]** | `average_speed_norm` | $v_{\text{avg}} / 16.67\text{ m/s}$ | Mean approach traffic speed |
-| **[8]** | `waiting_time_norm` | $\min(W_{\text{wait}} / 300.0, 1.0)$ | Total accumulated waiting seconds |
-| **[9]** | `vehicle_count_norm` | $\min(N_{\text{veh}} / 100.0, 1.0)$ | Active vehicle occupancy count |
-| **[10]** | `co2_emissions_norm` | $\min(\text{CO}_{2} / 5000.0\text{ mg/s}, 1.0)$ | Instantaneous carbon emission rate |
-| **[11]** | `upstream_inflow_norm`| $\min(\text{Inflow} / 20.0\text{ veh/s}, 1.0)$ | Anticipated arrival rate from upstream |
+| **[0]** | `current_phase_norm` | $\text{phase} / 3.0$ | Active signal phase index ($0 \le \text{phase} \le 3$) |
+| **[1]** | `phase_elapsed_norm` | $\min(\text{elapsed} / 60.0\text{ s}, 1.0)$ | Continuous green elapsed time (`max_green = 60.0`) |
+| **[2]** | `time_to_switch_norm` | $\min(\text{switch\_wait} / 60.0\text{ s}, 1.0)$ | Time remaining until maximum green boundary |
+| **[3]** | `can_switch_flag` | $1.0 \text{ if elapsed} \ge 15.0\text{ s else } 0.0$ | Minimum green constraint satisfied (`min_green = 15.0`) |
+| **[4]** | `corridor_queue_norm` | $\min(Q_{\text{corridor}} / 50.0\text{ veh}, 1.0)$ | Arterial Hosur Road queue length (`max_queue = 50.0`) |
+| **[5]** | `side_queue_norm` | $\min(Q_{\text{side}} / 50.0\text{ veh}, 1.0)$ | Side-street approach queue length (`max_queue = 50.0`) |
+| **[6]** | `total_queue_norm` | $\min(Q_{\text{total}} / 100.0\text{ veh}, 1.0)$ | Total aggregate intersection queue ($2 \times \text{max\_queue}$) |
+| **[7]** | `average_speed_norm` | $\min(v_{\text{avg}} / 60.0\text{ km/h}, 1.0)$ | Mean approach speed (`max_speed_kmh = 60.0`) |
+| **[8]** | `waiting_time_norm` | $\min(W_{\text{wait}} / 500.0\text{ s}, 1.0)$ | Total accumulated waiting seconds (`max_wait_time_s = 500.0`) |
+| **[9]** | `vehicle_count_norm` | $\min(N_{\text{veh}} / 100.0\text{ veh}, 1.0)$ | Active vehicle occupancy count ($2 \times \text{max\_queue}$) |
+| **[10]** | `co2_emissions_norm` | $\min(\text{CO}_{2} / 10{,}000.0\text{ mg/s}, 1.0)$ | Instantaneous carbon mass rate (`max_co2_mg_s = 10000.0`) |
+| **[11]** | `upstream_inflow_norm`| $\min(\text{Inflow} / 10.0\text{ veh/s}, 1.0)$ | Upstream expected vehicle inflow (`max_inflow_rate = 10.0`) |
 | **[12]** | `platoons_norm` | $\min(N_{\text{platoons}} / 5.0, 1.0)$ | Approaching coordinated vehicle platoons |
 | **[13]** | `emergency_flag` | $1.0 \text{ if ambulance detected else } 0.0$ | Emergency priority preemption indicator |
 
@@ -208,13 +208,15 @@ The authoritative master benchmark evaluates the four primary controllers across
 | :--- | :---: | :---: | :---: | :---: |
 | **Mean Corridor Travel Time** | $90.02 \pm 1.26\text{ s}$ | **$49.87 \pm 2.46\text{ s}$** ($-44.60\%$) | $56.64 \pm 2.22\text{ s}$ ($-37.08\%$) | $85.50 \pm 5.82\text{ s}$ ($-5.02\%$) |
 | **95% Confidence Interval** | $[89.12, 90.92]\text{ s}$ | **$[48.11, 51.63]\text{ s}$** | $[55.05, 58.22]\text{ s}$ | $[81.34, 89.66]\text{ s}$ |
-| **Cumulative Vehicle Delay** | $12{,}373.2 \pm 135.1\text{ veh}\cdot\text{s}$ | **$5{,}836.8 \pm 296.5\text{ veh}\cdot\text{s}$** ($-52.83\%$) | $8{,}024.4 \pm 261.2\text{ veh}\cdot\text{s}$ ($-35.15\%$) | $12{,}163.6 \pm 896.6\text{ veh}\cdot\text{s}$ ($-1.69\%$) |
+| **Cumulative Vehicle Delay** | $12{,}373.2 \pm 135.1\text{ veh}\cdot\text{s}$ | **$5{,}836.8 \pm 296.5\text{ veh}\cdot\text{s}$** ($-52.83\%$) | $8{,}024.4 \pm 284.9\text{ veh}\cdot\text{s}$ ($-35.15\%$) | $12{,}163.6 \pm 896.6\text{ veh}\cdot\text{s}$ ($-1.69\%$) |
 | **Mean Corridor Speed** | $28.21 \pm 0.37\text{ km/h}$ | **$37.98 \pm 0.26\text{ km/h}$** ($+34.66\%$) | $31.46 \pm 0.44\text{ km/h}$ ($+11.55\%$) | $25.56 \pm 0.91\text{ km/h}$ ($-9.37\%$) |
-| **Total Corridor $\text{CO}_2$** | $55.58 \pm 0.20\text{ kg}$ | **$42.72 \pm 0.64\text{ kg}$** ($-23.14\%$) | $47.15 \pm 0.48\text{ kg}$ ($-15.17\%$) | $55.03 \pm 1.70\text{ kg}$ ($-0.99\%$) |
-| **Total Petrol-Equivalent Fuel** | $23.99 \pm 0.08\text{ L}$ | **$18.44 \pm 0.28\text{ L}$** ($-23.15\%$) | $20.35 \pm 0.21\text{ L}$ ($-15.17\%$) | $23.76 \pm 0.73\text{ L}$ ($-0.98\%$) |
+| **Total Corridor $\text{CO}_2$** | $55.58 \pm 0.20\text{ kg}$ | **$42.72 \pm 0.64\text{ kg}$** ($-23.14\%$) | $47.15 \pm 0.65\text{ kg}$ ($-15.17\%$) | $55.03 \pm 1.70\text{ kg}$ ($-0.99\%$) |
+| **Total Petrol-Equivalent Fuel** | $23.99 \pm 0.08\text{ L}$ | **$18.44 \pm 0.28\text{ L}$** ($-23.15\%$) | $20.35 \pm 0.28\text{ L}$ ($-15.17\%$) | $23.76 \pm 0.73\text{ L}$ ($-0.98\%$) |
 | **Completed Trips** | $109.0 \pm 0.0$ | $109.0 \pm 0.0$ | $109.0 \pm 0.0$ | $109.0 \pm 0.0$ |
 | **Statistical Significance** | Reference | $p = 5.60 \times 10^{-13}$ (Significant) | $p = 5.90 \times 10^{-12}$ (Significant) | $p = 0.115$ (Not Significant) |
 | **Effect Size (Cohen's $d_z$)** | — | **$18.74$** (Very Large) | **$14.41$** (Very Large) | $0.77$ (Moderate) |
+
+*\* Note: All uncertainty bounds represent sample mean $\pm$ sample standard deviation ($s$, with Bessel's correction $N-1=9$, $\text{ddof}=1$) computed across $N=10$ matched evaluation seeds. 95% Confidence Intervals are calculated as $[\bar{x} - t_{0.025, 9} \cdot \text{SE}, \bar{x} + t_{0.025, 9} \cdot \text{SE}]$ with critical value $t_{0.025, 9} = 2.262$.*
 
 ### Statistical Rigor & Findings
 1. **Coordinated Adaptive Controller** is the top-performing strategy across all operational, efficiency, and environmental metrics, reducing travel time by **$44.60\%$** and cumulative delay by **$52.83\%$** ($p < 10^{-12}$).
@@ -231,12 +233,19 @@ The four-controller master benchmark above represents the primary validated comp
 
 ## 7. Emissions & Fuel Modeling Methodology
 
-Environmental emissions are extracted per-vehicle per-second directly from SUMO's integrated **HBEFA4 (Handbook Emission Factors for Road Transport v4.1)** emission framework using exact vehicle emission class IDs:
-- **Passenger Car (`car`, `vClass="passenger"`):** `HBEFA4/PC_petrol_Euro-4`
-- **Two-Wheeler (`motorcycle`, `vClass="motorcycle"`):** `HBEFA4/MC_4S_preEuro`
-- **Transit Bus (`bmtc_bus`, `vClass="bus"`):** `HBEFA4/UBus_Std_Euro-VI`
-- **Commercial Truck (`heavy_vehicle`, `vClass="truck"`):** `HBEFA4/RT_Euro-VI`
-- **Emergency Ambulance (`ambulance`, `vClass="emergency"`):** `HBEFA4/LCV_diesel_Euro-6ab`
+Environmental emissions are extracted per-vehicle per-second directly from the simulation engine. The system integrates Eclipse SUMO's native **HBEFA4 (Handbook Emission Factors for Road Transport v4.1/4.2)** emission modeling tables.
+
+### Vehicle Fleet & Emission Class Resolution
+
+In [`sumo/silk_board/demand/vehicle_types.add.xml`](sumo/silk_board/demand/vehicle_types.add.xml), vehicle types define the physical and behavioral attributes (`vClass`) without overriding default emission parameters. When executed, SUMO 1.26.0 automatically resolves each vehicle class to its default HBEFA4 emission sub-model. The table below reconciles the high-level canonical schema string (exposed by `backend/routers/experiments.py`) with the exact runtime emission class IDs verified via TraCI (`traci.vehicletype.getEmissionClass`):
+
+| Vehicle Type (`id`) | Configured `vClass` | API Canonical Label (`experiments.py`) | Verified SUMO 1.26.0 Runtime Class ID | Fuel Type |
+| :--- | :--- | :--- | :--- | :--- |
+| `car` | `passenger` | `PC_petrol_Euro-4` | `HBEFA4/PC_petrol_Euro-4` | Petrol |
+| `motorcycle` | `motorcycle` | `MC_4S_preEuro` | `HBEFA4/MC_4S_gt250cc_preEuro` | Petrol |
+| `bmtc_bus` | `bus` | `UBus_Std_Euro-VI` | `HBEFA4/UBus_Std_gt15-18t_Euro-VI_A-C` | Diesel |
+| `heavy_vehicle` | `truck` | `RT_Euro-VI` | `HBEFA4/RT_le7.5t_Euro-VI_A-C` | Diesel |
+| `ambulance` | `emergency` | `LCV_diesel_Euro-6ab` | `HBEFA4/LCV_diesel_N1-III_Euro-6ab` | Diesel |
 
 ### Petrol-Equivalent Fuel Volume Standardization
 SUMO computes raw fuel mass consumption in milligrams ($mg$) across the heterogeneous mixed fleet. Because the vehicle fleet combines petrol vehicles (cars, motorcycles) and diesel vehicles (buses, trucks), applying the international petrol reference density standard:
